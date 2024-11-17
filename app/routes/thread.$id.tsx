@@ -115,6 +115,7 @@ export async function action({request}: {request: Request}) {
             }
 
             await Wiki.moveDiscussion(discussionId, targetWiki.id);
+            break;
         }
         case 'status': {
             if (!(await User.checkPermission('update_thread_status', user))) {
@@ -268,7 +269,7 @@ export default function DiscussionRoute() {
                 ))}
             </div>
 
-            {thread.status || canUpdateState ? (
+            {thread.status === 1 || canUpdateState ? (
                 <Form ref={formRef} method="post" onSubmit={handleSubmitComment} className="flex gap-2 w-full">
                     <input type="hidden" name="action" value="comment" />
                     <input type="hidden" name="wikiId" value={thread.wiki.id} />

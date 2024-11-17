@@ -110,7 +110,7 @@ function DiscussionItem({discussion, wikiId, canUpdateState}: DiscussionItemProp
                     <Link to={`/thread/${discussion.id}`}>
                         <h3 className="font-medium text-blue-600 hover:underline">{discussion.title}</h3>
                     </Link>
-                    {discussion.status === 1 && <Lock className="h-4 w-4 text-gray-800" />}
+                    {discussion.status === 0 && <Lock className="h-4 w-4 text-gray-800" />}
                 </div>
                 <div className="text-sm text-gray-500 font-medium">{formatDate(discussion.createdAt)}</div>
             </div>

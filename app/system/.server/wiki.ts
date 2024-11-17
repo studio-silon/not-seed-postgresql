@@ -28,7 +28,7 @@ export class Wiki {
             },
             include: {
                 discussions: {
-                    where: {status: 0},
+                    where: {status: 1},
                     select: {id: true},
                 },
                 acls: true,
@@ -60,7 +60,7 @@ export class Wiki {
             },
             include: {
                 discussions: {
-                    where: {status: 0},
+                    where: {status: 1},
                     select: {id: true},
                 },
                 acls: true,
@@ -78,7 +78,7 @@ export class Wiki {
             },
             include: {
                 discussions: {
-                    where: {status: 0},
+                    where: {status: 1},
                     select: {id: true},
                 },
                 acls: true,
@@ -433,7 +433,7 @@ export class Wiki {
                     },
                 },
                 title,
-                status: 0,
+                status: 1,
                 ...(userData.userId ? {user: {connect: {id: userData.userId}}} : {ipAddress: userData.ipAddress}),
                 createdAt: new Date(),
                 updatedAt: new Date(),
