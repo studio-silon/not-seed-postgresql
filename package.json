@@ -12,7 +12,7 @@
         "build-storybook": "storybook build",
         "db:push": "prisma db push",
         "setup": "bun i -d && bun run db:push && bun run seed && bun run build",
-        "upgrade": "bun bun i -d && bun run db:push && bun run build",
+        "upgrade": "bun i -d && bun run db:push && bun run build",
         "seed": "bun prisma/seed.ts",
         "typecheck": "tsc"
     },
