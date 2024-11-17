@@ -1,5 +1,5 @@
 import {json, LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, useNavigate, Form, useSubmit, useNavigation} from '@remix-run/react';
+import {useLoaderData, useNavigate, Form, useSubmit, useNavigation, useRevalidator} from '@remix-run/react';
 import {Wiki} from '@/system/wiki';
 import {Button} from '~/stories/Button';
 import {ArrowLeft, Edit2, Lock, EyeOff, Eye, Send, Unlock, X, MoveRight} from 'lucide-react';
@@ -143,6 +143,18 @@ export default function DiscussionRoute() {
     const submit = useSubmit();
     const navigate = useNavigate();
     const navigation = useNavigation();
+
+    const revalidator = useRevalidator();
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            revalidator.revalidate();
+        }, 2000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [revalidator]);
 
     const formatDate = (date: string | Date) =>
         new Date(date).toLocaleDateString('ko-KR', {

@@ -1,10 +1,11 @@
 import {json, LoaderFunction, LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, Link} from '@remix-run/react';
+import {useLoaderData, Link, useRevalidator} from '@remix-run/react';
 import {prisma} from '~/db.server';
 import {Frame} from '~/components/Frame';
 import {JoinName} from '~/utils/wiki';
 import {ReverTypeToMessage} from '~/utils/wiki';
 import {Button} from '~/stories/Button';
+import {useEffect} from 'react';
 
 export async function loader({request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
@@ -53,6 +54,17 @@ export async function loader({request}: LoaderFunctionArgs) {
 
 export default function RecentChanges() {
     const {changes, page, totalPages} = useLoaderData<typeof loader>();
+    const revalidator = useRevalidator();
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            revalidator.revalidate();
+        }, 10000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [revalidator]);
 
     return (
         <Frame>

@@ -1,10 +1,11 @@
 import {json, LoaderFunction, LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, Link} from '@remix-run/react';
+import {useLoaderData, Link, useRevalidator} from '@remix-run/react';
 import {prisma} from '~/db.server';
 import {Frame} from '~/components/Frame';
 import {JoinName} from '~/utils/wiki';
 import {Button} from '~/stories/Button';
 import {MessageSquare, Lock} from 'lucide-react';
+import {useEffect} from 'react';
 
 export async function loader({request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
@@ -44,6 +45,18 @@ export async function loader({request}: LoaderFunctionArgs) {
 
 export default function RecentDiscussions() {
     const {discussions, page, totalPages} = useLoaderData<typeof loader>();
+
+    const revalidator = useRevalidator();
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            revalidator.revalidate();
+        }, 10000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [revalidator]);
 
     const formatDate = (date: string | Date) => {
         return new Date(date).toLocaleDateString('ko-KR', {
