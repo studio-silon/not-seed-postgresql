@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../wiki.db"
+}
+
+
+model SiteInfo {
+  id          Int      @id @default(autoincrement())
+  frontPage   String   @default("FrontPage")
+  title       String
+  description String
+  footer      String
+  owner       User     @relation(name: "SiteInfoToUser", fields: [ownerid], references: [id])
+  ownerid     Int      @unique
+  token       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  versions  WikiVersion[]
+  siteInfo  SiteInfo? @relation(name: "SiteInfoToUser")
+
+  comment Comment[]
+
+  discussions Discussion[]
+
+  permissions Permission[]
+
+  permissionHistorys PermissionHistory[]
+
+  permissionTargetHistorys PermissionHistory[] @relation("TargetUser")
+
+  groups GroupUsers[]
+}
+
+model Permission {
+  id        Int      @id @default(autoincrement())
+  log       String
+  type      String    
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+model Wiki {
+  id        Int      @id @default(autoincrement())
+  title     String 
+  namespace String
+  content   String
+  deleted   Boolean  @default(false)
+  rever     Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  versions  WikiVersion[]
+  discussions Discussion[]
+  acls Acl[]
+  file WikiFile?
+  permissionHistorys PermissionHistory[]
+  backlinks Backlink[]
+
+  @@unique([title, namespace])
+}
+
+model WikiVersion {
+  id        Int      @id @default(autoincrement())
+  rever     Int      @default(1)
+  log       String
+  type      Int      @default(0)
+  // 0: create/edit, 1: move, 2: delete, 3: restore
+  data      String 
+  // move: 'from,to' encodeUriComponent
+  // restore: 'from,to' [number, number]
+  content   String 
+  createdAt DateTime @default(now())
+  
+  wikiId    Int
+  wiki      Wiki     @relation(fields: [wikiId], references: [id])
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  ipAddress String? 
+}
+
+model WikiFile {
+  id        Int      @id @default(autoincrement())
+  rever     Int?     @default(1)
+ 
+  width     Int
+  height    Int
+  url       String
+
+  wikiId    Int      @unique
+  wiki      Wiki     @relation(fields: [wikiId], references: [id])
+}
+
+model Discussion {
+  id         Int        @id @default(autoincrement())
+  wiki       Wiki       @relation(fields: [wikiId], references: [id])
+  wikiId     Int
+  title      String  
+
+  userId     Int?      
+  user       User?      @relation(fields: [userId], references: [id])
+  ipAddress String? 
+  
+  status     Int        @default(0)
+  // 0: open, 1: closed
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  comments   Comment[]
+}
+
+model Comment {
+  id           Int        @id @default(autoincrement())
+  discussion   Discussion @relation(fields: [discussionId], references: [id])
+  discussionId Int
+  type         Int
+  // 0: comment, 1: open, 2: closed
+  content      String
+  userId       Int?      
+  user         User?      @relation(fields: [userId], references: [id])
+  ipAddress    String?    
+  createdAt    DateTime   @default(now())
+}
+
+model Acl {
+  id             Int        @id @default(autoincrement())
+  namespace      String?
+  wiki           Wiki?      @relation(fields: [wikiId], references: [id])
+  wikiId         Int?
+  condition_type String
+  condition      String
+  type           String
+  expiration     Int?
+  action         Boolean
+}
+
+model PermissionHistory {
+  id             Int        @id @default(autoincrement())
+  target         String?
+  targetType     String?
+  range          String?
+  targetUser     User?      @relation("TargetUser", fields: [targetUserId], references: [id])
+  targetUserId   Int?
+  targetPage     Wiki?      @relation(fields: [targetPageId], references: [id])
+  targetPageId   Int?
+  action         String
+  type           Int
+  // 0: user 1: add perms 2: remove perms 3: add acl 4: remove acl
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  userId         Int     
+  user           User       @relation(fields: [userId], references: [id])
+}
+
+model Backlink {
+  id             Int    @id @default(autoincrement())
+  from           Wiki   @relation(fields: [fromId], references: [id])
+  fromId         Int
+  to             String
+  type           String
+}
+
+model Group {
+  id   Int    @id @default(autoincrement())
+  name String
+  note String
+
+  users GroupUsers[]
+}
+
+model GroupUsers {
+  id             Int    @id @default(autoincrement())
+
+  group          Group @relation(fields: [groupId], references: [id])
+  groupId        Int
+ 
+  user           User?   @relation(fields: [userId], references: [id])
+  userId         Int?
+
+  ip             String?
+  expiration     Int?
+}

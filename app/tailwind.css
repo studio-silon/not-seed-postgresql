@@ -1,0 +1,22 @@
+@import './wiki.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'PretendardVariable';
+    src: url('./assets/PretendardVariable.woff2') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html,
+body {
+    font-family: 'PretendardVariable';
+    @apply bg-white dark:bg-gray-950;
+
+    @media (prefers-color-scheme: dark) {
+        color-scheme: dark;
+    }
+}
