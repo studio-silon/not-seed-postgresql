@@ -48,7 +48,7 @@ export async function loader({request}: LoaderFunctionArgs) {
         },
     });
 
-    return json({allPermissions});
+    return json({allPermissions, canAdmin: !!user?.siteInfo || (await User.checkPermission('admin', user))});
 }
 
 export async function action({request}: ActionFunctionArgs) {
@@ -56,6 +56,8 @@ export async function action({request}: ActionFunctionArgs) {
     const action = formData.get('_action') as string;
     const user = await getUser(request);
     const userData = await getUserData(request);
+
+    const canAdmin = !!user?.siteInfo || (await User.checkPermission('admin', user));
 
     if (!user || !(await User.checkPermission('grant', user))) {
         throw new Response('Forbidden', {status: 403});
@@ -65,6 +67,10 @@ export async function action({request}: ActionFunctionArgs) {
         const userId = parseInt(formData.get('userId') as string);
         const type = formData.get('type') as string;
         const log = formData.get('log') as string;
+
+        if (type === 'admin' && !canAdmin) {
+            throw new Response('Forbidden', {status: 403});
+        }
 
         await prisma.permission.create({
             data: {
@@ -136,7 +142,7 @@ export async function action({request}: ActionFunctionArgs) {
 }
 
 export default function PermissionRoute() {
-    const {allPermissions} = useLoaderData<typeof loader>();
+    const {allPermissions, canAdmin} = useLoaderData<typeof loader>();
 
     return (
         <Frame>
@@ -162,11 +168,13 @@ export default function PermissionRoute() {
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Permission Type</label>
                             <Select name="type" className="w-48">
-                                {Object.entries(permissions).map(([key, label]) => (
-                                    <option value={key} key={key}>
-                                        {label}
-                                    </option>
-                                ))}
+                                {Object.entries(permissions)
+                                    .filter(([type]) => type !== 'admin' || canAdmin)
+                                    .map(([key, label]) => (
+                                        <option value={key} key={key}>
+                                            {label}
+                                        </option>
+                                    ))}
                             </Select>
                         </div>
 

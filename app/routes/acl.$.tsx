@@ -283,7 +283,16 @@ export default function AclRoute() {
                                 <div key={acl.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                     <div className="space-y-1">
                                         <div className="text-sm font-medium">
-                                            {acl.condition_type === 'perm' ? '권한' : acl.condition_type === 'member' ? '사용자' : 'IP'}: {acl.condition}
+                                            {acl.condition_type === 'perm'
+                                                ? '권한'
+                                                : acl.condition_type === 'member'
+                                                  ? '사용자'
+                                                  : acl.condition_type === 'geoip'
+                                                    ? 'geoip'
+                                                    : acl.condition_type === 'group'
+                                                      ? '그룹'
+                                                      : 'IP'}
+                                            : {acl.condition}
                                         </div>
                                         <div className="text-sm text-gray-500">{acl.action ? '허용' : '차단'}</div>
                                     </div>
