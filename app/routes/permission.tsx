@@ -94,6 +94,7 @@ export async function action({request}: ActionFunctionArgs) {
                         id: user.id,
                     },
                 },
+                log,
             },
         });
     } else if (action === 'delete') {

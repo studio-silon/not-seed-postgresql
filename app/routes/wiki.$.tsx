@@ -353,7 +353,7 @@ export default function WikiRoute() {
                         </div>
                     ) : (
                         <div className="text-center py-12">
-                            <p className="text-gray-600 mb-4">이 문서는 당신에게는 금지되었습니다.</p>
+                            <p className="text-gray-600 mb-4">읽기 권한이 부족합니다.</p>
                         </div>
                     )}
                 </div>

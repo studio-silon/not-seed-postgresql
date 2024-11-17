@@ -160,6 +160,7 @@ model PermissionHistory {
   targetPageId   Int?
   action         String
   type           Int
+  log            String?
   // 0: user 1: add perms 2: remove perms 3: add acl 4: remove acl
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt

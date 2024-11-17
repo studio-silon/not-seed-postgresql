@@ -26,6 +26,7 @@ interface PermissionHistoryEntry {
     } | null;
     action: string;
     type: number;
+    log: string | null;
     createdAt: string;
     user: {
         username: string;
@@ -52,6 +53,10 @@ function getTypeMessage(type: number): string {
 function formatHistoryEntry(entry: PermissionHistoryEntry): string {
     const actor = entry.user.username;
     const typeMsg = getTypeMessage(entry.type);
+
+    if (entry.targetUser && entry.targetType === 'group') {
+        return `${actor}님이 ${entry.targetUser.username}님을 ${entry.action} 그룹에 ${entry.type === 1 ? '추가' : '제거'}`;
+    }
 
     if (entry.targetUser) {
         return `${actor}님이 ${entry.targetUser.username}${entry.type === 2 ? '님의' : '님에게'} ${entry.action} ${typeMsg}`;
@@ -130,6 +135,7 @@ export default function PermissionHistoryRoute() {
                     {history.map((entry) => (
                         <div key={entry.id} className="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
                             <p className="text-gray-900">{formatHistoryEntry(entry)}</p>
+                            {entry.log && <p className="text-gray-700 text-sm mt-1">사유: {entry.log}</p>}
                             <div className="mt-2 flex justify-between items-center">
                                 <span className="text-sm text-gray-500">{new Date(entry.createdAt).toLocaleString()}</span>
                             </div>

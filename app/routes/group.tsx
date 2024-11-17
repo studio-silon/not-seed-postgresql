@@ -6,6 +6,7 @@ import {Input} from '~/stories/Input';
 import {Frame} from '~/components/Frame';
 import {getUser, getUserData} from '~/utils/sessions.server';
 import {ArrowLeft, Plus, Trash2, UserPlus, UserMinus, Users} from 'lucide-react';
+import {Dialog} from '~/stories/Dialog';
 import metaTitle from '~/utils/meta';
 import {Combobox} from '~/stories/Combobox';
 import {useUserSearch} from '~/utils/useUserSearch';
@@ -13,27 +14,6 @@ import {prisma} from '~/db.server';
 import {User} from '~/system/.server/user';
 
 const ITEMS_PER_PAGE = 10;
-
-export const meta = metaTitle<typeof loader>(() => `Group Management`);
-
-function UserSearch() {
-    const {selectedUser, setSelectedUser, setSearchTerm, users} = useUserSearch();
-
-    return (
-        <>
-            <Combobox
-                value={selectedUser}
-                onChange={setSelectedUser}
-                options={users}
-                displayValue={(user) => user?.username || ''}
-                setSearchTerm={setSearchTerm}
-                className="w-48"
-                placeholder="Search users..."
-            />
-            <input type="hidden" name="userId" value={selectedUser?.id || ''} />
-        </>
-    );
-}
 
 export async function loader({request}: LoaderFunctionArgs) {
     const user = await getUser(request);
@@ -69,11 +49,93 @@ export async function loader({request}: LoaderFunctionArgs) {
     return json({groups, page, totalPages});
 }
 
+export const meta = metaTitle<typeof loader>(() => `Group Management`);
+
+function GroupMembershipForm({groupId}: {groupId: number}) {
+    const {selectedUser, setSelectedUser, setSearchTerm, users} = useUserSearch();
+
+    return (
+        <>
+            <Form method="post" className="flex flex-wrap gap-4 items-end mb-4 p-4 bg-gray-50 rounded-lg">
+                <input type="hidden" name="_action" value="add_member" />
+                <input type="hidden" name="groupId" value={groupId} />
+
+                <div className="space-y-2">
+                    <label className="text-sm font-medium">User</label>
+                    <Combobox
+                        value={selectedUser}
+                        onChange={setSelectedUser}
+                        options={users}
+                        displayValue={(user) => user?.username || ''}
+                        setSearchTerm={setSearchTerm}
+                        className="w-48"
+                        placeholder="Search users..."
+                    />
+                    <input type="hidden" name="userId" value={selectedUser?.id || ''} />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm font-medium">IP Address</label>
+                    <Input type="text" name="ip" className="w-48" placeholder="Optional IP address" />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm font-medium">Log</label>
+                    <Input name="log" className="w-48" placeholder="Enter reason for adding member..." />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm font-medium">Expiration</label>
+                    <Input type="datetime-local" name="expiration" className="w-48" />
+                </div>
+
+                <Button type="submit" className="flex items-center gap-2">
+                    <UserPlus className="w-4 h-4" /> Add Member
+                </Button>
+            </Form>
+        </>
+    );
+}
+
+function RemoveMemberForm({membership}: {membership: {id: number; user?: {username: string} | null; ip: string | null}}) {
+    const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
+    return (
+        <>
+            <Button onClick={() => setIsDialogOpen(true)} variant="ghost" size="sm" className="text-red-600 hover:text-red-700 size-8 p-0">
+                <UserMinus className="w-4 h-4 m-auto" />
+            </Button>
+
+            <Dialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+                <Form method="post">
+                    <Dialog.Title>그룹 사용자 제거</Dialog.Title>
+                    <Dialog.Content>
+                        <input type="hidden" name="_action" value="remove_member" />
+                        <input type="hidden" name="membershipId" value={membership.id} />
+
+                        <div className="space-y-4">
+                            <Input name="log" className="w-full" placeholder="Enter reason for removing member..." />
+                        </div>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onClick={() => setIsDialogOpen(false)} variant="ghost">
+                            취소
+                        </Button>
+                        <Button type="submit" onClick={() => setIsDialogOpen(false)}>
+                            제거
+                        </Button>
+                    </Dialog.Actions>
+                </Form>
+            </Dialog>
+        </>
+    );
+}
+
 export async function action({request}: ActionFunctionArgs) {
     const formData = await request.formData();
     const action = formData.get('_action') as string;
     const user = await getUser(request);
-    const userData = await getUserData(request);
+    const log = formData.get('log') as string;
 
     if (!user || !(await User.checkPermission('admin', user))) {
         throw new Response('Forbidden', {status: 403});
@@ -107,12 +169,33 @@ export async function action({request}: ActionFunctionArgs) {
             const expiration = formData.get('expiration') as string;
             const ip = formData.get('ip') as string;
 
-            await prisma.groupUsers.create({
+            const membership = await prisma.groupUsers.create({
                 data: {
                     groupId,
                     userId: userId || null,
                     ip: ip || null,
                     expiration: expiration ? Math.floor(new Date(expiration).getTime() / 1000) : null,
+                },
+                include: {
+                    group: true,
+                },
+            });
+
+            await prisma.permissionHistory.create({
+                data: {
+                    targetUser: userId
+                        ? {
+                              connect: {id: userId},
+                          }
+                        : undefined,
+                    target: ip || undefined,
+                    targetType: 'group',
+                    action: membership.group.name,
+                    type: 1,
+                    user: {
+                        connect: {id: user.id},
+                    },
+                    log,
                 },
             });
             break;
@@ -120,9 +203,35 @@ export async function action({request}: ActionFunctionArgs) {
 
         case 'remove_member': {
             const membershipId = parseInt(formData.get('membershipId') as string);
-            await prisma.groupUsers.delete({
+
+            const membership = await prisma.groupUsers.findUnique({
                 where: {id: membershipId},
+                include: {group: true, user: true},
             });
+
+            if (membership) {
+                await prisma.groupUsers.delete({
+                    where: {id: membershipId},
+                });
+
+                await prisma.permissionHistory.create({
+                    data: {
+                        targetUser: membership.userId
+                            ? {
+                                  connect: {id: membership.userId},
+                              }
+                            : undefined,
+                        target: membership.ip || undefined,
+                        targetType: 'group',
+                        action: membership.group.name,
+                        type: 2,
+                        user: {
+                            connect: {id: user.id},
+                        },
+                        log,
+                    },
+                });
+            }
             break;
         }
     }
@@ -181,29 +290,7 @@ export default function GroupRoute() {
                                     </Form>
                                 </div>
 
-                                <Form method="post" className="flex flex-wrap gap-4 items-end mb-4 p-4 bg-gray-50 rounded-lg">
-                                    <input type="hidden" name="_action" value="add_member" />
-                                    <input type="hidden" name="groupId" value={group.id} />
-
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium">User</label>
-                                        <UserSearch />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium">IP Address</label>
-                                        <Input type="text" name="ip" className="w-48" placeholder="Optional IP address" />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium">Expiration</label>
-                                        <Input type="datetime-local" name="expiration" className="w-48" />
-                                    </div>
-
-                                    <Button type="submit" className="flex items-center gap-2">
-                                        <UserPlus className="w-4 h-4" /> Add Member
-                                    </Button>
-                                </Form>
+                                <GroupMembershipForm groupId={group.id} />
 
                                 <div className="space-y-2">
                                     {group.users.map((membership) => (
@@ -214,13 +301,7 @@ export default function GroupRoute() {
                                                     <div className="text-xs text-gray-500">Expires: {new Date(membership.expiration * 1000).toLocaleString()}</div>
                                                 )}
                                             </div>
-                                            <Form method="post">
-                                                <input type="hidden" name="_action" value="remove_member" />
-                                                <input type="hidden" name="membershipId" value={membership.id} />
-                                                <Button type="submit" variant="ghost" size="sm" className="text-red-600 hover:text-red-700 size-8 p-0">
-                                                    <UserMinus className="w-4 h-4 m-auto" />
-                                                </Button>
-                                            </Form>
+                                            <RemoveMemberForm membership={membership} />
                                         </div>
                                     ))}
                                 </div>
