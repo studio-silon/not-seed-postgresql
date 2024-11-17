@@ -459,6 +459,16 @@ export class Wiki {
         return discussions;
     }
 
+    public static async updateDiscussion(discussionId: number, title: string) {
+        return await prisma.discussion.update({
+            where: {id: discussionId},
+            data: {
+                title,
+                updatedAt: new Date(),
+            },
+        });
+    }
+
     public static async addComment(discussionId: number, content: string, type: number, userData: UserData) {
         return await prisma.comment.create({
             data: {
@@ -481,6 +491,29 @@ export class Wiki {
         });
     }
 
+    public static async hideComment(commentId: number, hide: boolean, userId: number) {
+        return await prisma.comment.update({
+            where: {id: commentId},
+            data: {
+                hidden: hide,
+                hiddenBy: hide ? userId : null,
+                hiddenAt: hide ? new Date() : null,
+            },
+        });
+    }
+
+    public static async moveDiscussion(discussionId: number, targetWikiId: number) {
+        return await prisma.discussion.update({
+            where: {id: discussionId},
+            data: {
+                wiki: {
+                    connect: {id: targetWikiId},
+                },
+                updatedAt: new Date(),
+            },
+        });
+    }
+
     public static async getDiscussion(discussionId: number) {
         return await prisma.discussion.findUnique({
             where: {id: discussionId},
@@ -492,6 +525,9 @@ export class Wiki {
                         type: true,
                         content: true,
                         createdAt: true,
+                        hidden: true,
+                        hiddenBy: true,
+                        hiddenAt: true,
                         user: {
                             select: {
                                 username: true,

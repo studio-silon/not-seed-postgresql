@@ -1,35 +1,35 @@
 import React, {useState} from 'react';
-import {Form, useRouteLoaderData} from '@remix-run/react';
-import {Card} from '../stories/Card';
+import {Form, useLoaderData} from '@remix-run/react';
 import {Button} from '../stories/Button';
 import {Input} from '../stories/Input';
-import {Lock, Mail, Eye, EyeOff, UserIcon} from 'lucide-react';
-import {commitSession, getSession, getUser} from '../utils/sessions.server';
+import {Eye, EyeOff} from 'lucide-react';
 import {LoaderFunctionArgs, redirect} from '@remix-run/node';
-import {getCookie, setCookie} from '~/utils/cookies.server';
+import {getUser, commitSession, getSession} from '../utils/sessions.server';
 import {User} from '~/system/.server/user';
+import {getCookie, setCookie} from '~/utils/cookies.server';
 import metaTitle from '~/utils/meta';
-import type {loader as RootLoader} from '../root';
 
-export const meta = metaTitle(() => '로그인');
+export const meta = metaTitle(() => 'Edit Profile');
 
 export async function loader({request}: LoaderFunctionArgs) {
-    const cookie = await getCookie(request);
-    if (await getUser(request)) {
+    const user = await getUser(request);
+
+    if (!user) {
+        const cookie = await getCookie(request);
         cookie.toast = {
             type: 'error',
-            message: '이미 로그인되있습니다.',
+            message: '로그인이 필요합니다.',
         };
 
-        return redirect('/', {
+        return redirect('/login', {
             headers: [['Set-Cookie', await setCookie(cookie)]],
         });
     }
 
-    return null;
+    return {user};
 }
 
-export async function action({request, params}: {request: Request; params: {'*': string}}) {
+export async function action({request}: LoaderFunctionArgs) {
     const formData = await request.formData();
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
@@ -37,58 +37,58 @@ export async function action({request, params}: {request: Request; params: {'*':
     const session = await getSession(request.headers.get('Cookie'));
     const cookie = await getCookie(request);
 
-    if (request.method === 'POST') {
-        const user = await User.signin(username, password);
-
-        if (!user) {
-            cookie.toast = {
-                type: 'error',
-                message: '로그인을 실패했습니다.',
-            };
-
-            return redirect('/login', {
-                headers: [['Set-Cookie', await setCookie(cookie)]],
-            });
-        }
-
-        session.set('userId', user.id);
-
+    const userId = session.get('userId');
+    if (!userId) {
         cookie.toast = {
-            type: 'success',
-            message: '로그인이 성공했습니다!',
+            type: 'error',
+            message: '사용자 정보가 없습니다.',
         };
-
-        return redirect('/', {
-            headers: [
-                ['Set-Cookie', await commitSession(session)],
-                ['Set-Cookie', await setCookie(cookie)],
-            ],
+        return redirect('/login', {
+            headers: [['Set-Cookie', await setCookie(cookie)]],
         });
     }
 
-    return null;
+    const updatedUser = await User.update(userId, {username, password});
+
+    if (!updatedUser) {
+        cookie.toast = {
+            type: 'error',
+            message: '프로필 업데이트에 실패했습니다.',
+        };
+        return redirect('/edit', {
+            headers: [['Set-Cookie', await setCookie(cookie)]],
+        });
+    }
+
+    cookie.toast = {
+        type: 'success',
+        message: '계정이 성공적으로 업데이트되었습니다!',
+    };
+    return redirect('/', {
+        headers: [['Set-Cookie', await setCookie(cookie)]],
+    });
 }
 
-export default function Login() {
-    const root = useRouteLoaderData<typeof RootLoader>('root');
+export default function EditUser() {
+    const {user} = useLoaderData<typeof loader>();
     const [showPassword, setShowPassword] = useState(false);
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4">
             <div className="w-full max-w-sm space-y-8">
-                <h1 className="text-2xl font-medium text-center">Sign in to {root?.site.title}</h1>
+                <h1 className="text-2xl font-medium text-center">Edit Profile</h1>
 
                 <Form method="post" className="space-y-4">
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm mb-1">아이디</label>
-                            <Input type="text" name="username" placeholder="아이디 입력" required />
+                            <Input type="text" name="username" placeholder="아이디 입력" defaultValue={user.username} required />
                         </div>
 
                         <div>
                             <label className="block text-sm mb-1">비밀번호</label>
                             <div className="relative">
-                                <Input type={showPassword ? 'text' : 'password'} name="password" placeholder="비밀번호 입력" className="pr-10" required />
+                                <Input type={showPassword ? 'text' : 'password'} name="password" placeholder="새 비밀번호 입력" className="pr-10" />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
@@ -100,13 +100,12 @@ export default function Login() {
                         </div>
 
                         <Button type="submit" variant="primary" size="md" className="w-full">
-                            로그인
+                            업데이트
                         </Button>
 
                         <div className="text-center text-sm">
-                            계정이 없으신가요?{' '}
-                            <a href="/signup" className="text-blue-600 hover:underline">
-                                가입
+                            <a href="/" className="text-blue-600 hover:underline">
+                                돌아가기
                             </a>
                         </div>
                     </div>

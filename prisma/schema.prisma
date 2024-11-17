@@ -132,6 +132,9 @@ model Comment {
   user         User?      @relation(fields: [userId], references: [id])
   ipAddress    String?    
   createdAt    DateTime   @default(now())
+  hidden       Boolean    @default(false)  
+  hiddenBy     Int?      
+  hiddenAt     DateTime? 
 }
 
 model Acl {

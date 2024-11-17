@@ -134,12 +134,25 @@ export function Navbar() {
 
                             <Dropdown.Content align="right" className="w-[200px]">
                                 <Dropdown.Text>{root?.user ? root?.user.username : 'Please login'}</Dropdown.Text>
-                                <Link to={'/login'}>
-                                    <Dropdown.Item>Login</Dropdown.Item>
-                                </Link>
-                                <Link to={'/logout'}>
-                                    <Dropdown.Item>Logout</Dropdown.Item>
-                                </Link>
+                                {root?.user ? (
+                                    <>
+                                        <Link to={'/editUser'}>
+                                            <Dropdown.Item>회원 정보 수정</Dropdown.Item>
+                                        </Link>
+                                        <Link to={'/logout'}>
+                                            <Dropdown.Item>Logout</Dropdown.Item>
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link to={'/login'}>
+                                            <Dropdown.Item>Login</Dropdown.Item>
+                                        </Link>
+                                        <Link to={'/signup'}>
+                                            <Dropdown.Item>Sign up</Dropdown.Item>
+                                        </Link>
+                                    </>
+                                )}
                             </Dropdown.Content>
                         </Dropdown>
 

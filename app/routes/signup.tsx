@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Form} from '@remix-run/react';
+import {Form, useRouteLoaderData} from '@remix-run/react';
 import {Card} from '../stories/Card';
 import {Button} from '../stories/Button';
 import {Input} from '../stories/Input';
@@ -9,6 +9,7 @@ import {LoaderFunctionArgs, redirect} from '@remix-run/node';
 import {getCookie, setCookie} from '~/utils/cookies.server';
 import metaTitle from '~/utils/meta';
 import {User} from '~/system/.server/user';
+import type {loader as RootLoader} from '../root';
 
 export const meta = metaTitle(() => '회원가입');
 
@@ -59,66 +60,48 @@ export async function action({request, params}: {request: Request; params: {'*':
 }
 
 export default function Login() {
+    const root = useRouteLoaderData<typeof RootLoader>('root');
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50/5 backdrop-blur px-4">
-            <Card className="w-full max-w-md bg-white/5 backdrop-blur border border-secondary-300/20">
-                <Card.Header className="space-y-2">
-                    <Card.Title className="text-2xl font-semibold text-center text-brand">I am Not Seed</Card.Title>
-                    <Card.Description className="text-center text-secondary-600">Welcome back! Please login to your account.</Card.Description>
-                </Card.Header>
+        <div className="min-h-screen flex items-center justify-center px-4">
+            <div className="w-full max-w-sm space-y-8">
+                <h1 className="text-2xl font-medium text-center">Sign up to {root?.site.title}</h1>
 
-                <Card.Content>
-                    <Form className="space-y-4" method="post">
-                        <div className="space-y-2">
-                            <div className="relative">
-                                <Input type="text" name="username" placeholder="아이디" className="pl-10" required leftIcon={<UserIcon size={16} />} />
-                            </div>
+                <Form method="post" className="space-y-4">
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm mb-1">아이디</label>
+                            <Input type="text" name="username" placeholder="아이디 입력" required />
                         </div>
 
-                        <div className="space-y-2">
+                        <div>
+                            <label className="block text-sm mb-1">비밀번호</label>
                             <div className="relative">
-                                <Input
-                                    type={showPassword ? 'text' : 'password'}
-                                    name="password"
-                                    placeholder="비밀번호"
-                                    className="pl-10 pr-10"
-                                    required
-                                    leftIcon={<Lock size={16} />}
-                                />
-                                <Button
+                                <Input type={showPassword ? 'text' : 'password'} name="password" placeholder="비밀번호 입력" className="pr-10" required />
+                                <button
                                     type="button"
-                                    variant="ghost"
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
                                     onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                 >
-                                    {showPassword ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
-                                </Button>
+                                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </button>
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between text-sm">
-                            <a href="/forgot-password" className="text-brand hover:underline">
-                                비밀번호 찾기
+                        <Button type="submit" variant="primary" size="md" className="w-full">
+                            가입
+                        </Button>
+
+                        <div className="text-center text-sm">
+                            이미 계정이 있으신가요?{' '}
+                            <a href="/login" className="text-blue-600 hover:underline">
+                                로그인
                             </a>
                         </div>
-
-                        <Button type="submit" className="w-full bg-brand hover:bg-brand/90">
-                            회원가입
-                        </Button>
-                    </Form>
-                </Card.Content>
-
-                <Card.Footer className="flex flex-col space-y-4 text-center">
-                    <div className="text-sm text-gray-600">
-                        이미 계정이 있으신가요?{' '}
-                        <a href="/signup" className="text-brand hover:underline">
-                            로그인
-                        </a>
                     </div>
-                </Card.Footer>
-            </Card>
+                </Form>
+            </div>
         </div>
     );
 }

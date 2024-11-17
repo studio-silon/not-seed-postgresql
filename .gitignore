@@ -12,3 +12,5 @@ wiki.db
 build-storybook.log
 
 /app/examples
+
+/session

@@ -17,7 +17,7 @@ const sessionCookie = createCookie('PHPSESSID', {
 });
 
 export const {getSession, commitSession, destroySession} = createFileSessionStorage<SessionData, SessionFlashData>({
-    dir: '/app/session',
+    dir: './session',
     cookie: sessionCookie,
 });
 
