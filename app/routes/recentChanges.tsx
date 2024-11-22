@@ -27,12 +27,17 @@ export async function loader({request}: LoaderFunctionArgs) {
                 orderBy: {
                     createdAt: 'desc',
                 },
-                include: {
+                select: {
                     user: {
                         select: {
                             username: true,
                         },
                     },
+                    log: true,
+                    createdAt: true,
+                    ipAddress: true,
+                    type: true,
+                    data: true,
                 },
             },
         },
@@ -69,10 +74,10 @@ export default function RecentChanges() {
     return (
         <Frame>
             <div className="flex flex-col">
-                <div className="flex items-center justify-between mb-6 bg-white rounded-lg p-4 shadow-sm">
+                <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
                     <h1 className="text-2xl font-bold">최근 변경</h1>
                 </div>
-                <div className="bg-white rounded-lg shadow-sm">
+                <div className="rounded-lg bg-white shadow-sm">
                     {changes.map((change) => (
                         <div key={change.id} className="border-b border-gray-100 p-4 hover:bg-gray-50">
                             <div className="flex items-center gap-2">
@@ -85,7 +90,7 @@ export default function RecentChanges() {
                                     </Link>
                                     <span className="text-sm text-gray-500">{ReverTypeToMessage(change.versions[0])}</span>
                                 </div>
-                                <div className="ml-auto sm:ml-0 flex items-center gap-2">
+                                <div className="ml-auto flex items-center gap-2 sm:ml-0">
                                     <Link to={`/history/${JoinName(change.namespace, change.title)}`}>
                                         <Button variant="ghost" size="sm">
                                             역사
@@ -101,7 +106,7 @@ export default function RecentChanges() {
 
                             {change.versions[0].log && <p className="mt-1 text-sm text-gray-600">{change.versions[0].log}</p>}
 
-                            <div className="mt-2 flex items-center text-sm text-gray-500 sm:justify-start justify-between">
+                            <div className="mt-2 flex items-center justify-between text-sm text-gray-500 sm:justify-start">
                                 <span>{change.versions[0].user?.username || change.versions[0].ipAddress || 'Unknown'}</span>
                                 <span className="mx-2 hidden sm:inline">•</span>
                                 <span>{new Date(change.versions[0].createdAt).toLocaleString()}</span>
@@ -111,7 +116,7 @@ export default function RecentChanges() {
                 </div>
 
                 {totalPages > 1 && (
-                    <div className="flex justify-between mt-4">
+                    <div className="mt-4 flex justify-between">
                         {page > 1 && (
                             <Link to={`?page=${page - 1}`}>
                                 <Button variant="ghost">이전</Button>

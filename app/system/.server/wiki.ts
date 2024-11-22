@@ -333,7 +333,6 @@ export class Wiki {
                         log: true,
                         type: true,
                         data: true,
-                        content: true,
                         createdAt: true,
                         user: {
                             select: {

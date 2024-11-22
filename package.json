@@ -13,8 +13,8 @@
 		"db:push": "prisma db push",
 		"setup": "bun i -d && bun run db:push && bun run seed && bun run build",
 		"upgrade": "bun i -d && bun run db:push && bun run build",
-		"skin:setup": "cross-env MODE=skin bun run setup",
-		"skin:upgrade": "cross-env MODE=skin bun run upgrade",
+		"skin:setup": "bun i && cross-env MODE=skin bun run setup",
+		"skin:upgrade": "bun i && cross-env MODE=skin bun run upgrade",
 		"seed": "bun prisma/seed.ts",
 		"typecheck": "tsc"
 	},
