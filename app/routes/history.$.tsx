@@ -149,11 +149,13 @@ export default function HistoryPage() {
                                     <span className="text-sm text-gray-500">{ReverTypeToMessage(version)}</span>
                                 </div>
                                 <div className="ml-auto sm:ml-0 flex items-center gap-2">
-                                    <Link to={`/diff/${params['*']}?rever=${version.rever}`}>
-                                        <Button variant="ghost" size="sm">
-                                            비교
-                                        </Button>
-                                    </Link>
+                                    {version.rever > 1 && (
+                                        <Link to={`/diff/${params['*']}?original=${version.rever - 1}&modified=${version.rever}`}>
+                                            <Button variant="ghost" size="sm">
+                                                비교
+                                            </Button>
+                                        </Link>
+                                    )}
                                     <Button
                                         variant="ghost"
                                         size="sm"
