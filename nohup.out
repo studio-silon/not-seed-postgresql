@@ -1,0 +1,8 @@
+$ remix vite:dev
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.5:5173/
+  ➜  Network: http://172.18.0.1:5173/
+오후 9:11:31 [vite] hmr update /app/routes/discussion.$.tsx, /app/tailwind.css
+오후 9:11:40 [vite] hmr update /app/routes/discussion.$.tsx, /app/tailwind.css
+오후 9:11:50 [vite] hmr update /app/routes/discussion.$.tsx, /app/tailwind.css
+오후 9:11:58 [vite] hmr update /app/routes/recentDiscuss.tsx, /app/tailwind.css

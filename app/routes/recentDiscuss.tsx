@@ -87,7 +87,7 @@ export default function RecentDiscussions() {
                                     <Link to={`/thread/${discussion.id}`} className="font-medium text-blue-600 hover:underline">
                                         {discussion.title}
                                     </Link>
-                                    {discussion.status === 1 && <Lock className="h-4 w-4 text-gray-500" />}
+                                    {discussion.status === 0 && <Lock className="h-4 w-4 text-gray-500" />}
                                 </div>
                             </div>
 
