@@ -6,3 +6,99 @@ $ remix vite:dev
 오후 9:11:40 [vite] hmr update /app/routes/discussion.$.tsx, /app/tailwind.css
 오후 9:11:50 [vite] hmr update /app/routes/discussion.$.tsx, /app/tailwind.css
 오후 9:11:58 [vite] hmr update /app/routes/recentDiscuss.tsx, /app/tailwind.css
+ErrorResponseImpl {
+  status: 403,
+  statusText: '',
+  internal: false,
+  data: 'Forbidden'
+}
+ErrorResponseImpl {
+  status: 403,
+  statusText: '',
+  internal: false,
+  data: 'Forbidden'
+}
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+오후 2:44:07 [vite] Internal server error: URI malformed
+      at decodeURI (<anonymous>)
+      at viteTransformMiddleware (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:61808:13)
+      at call (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41363:7)
+      at next (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41307:5)
+      at viteServePublicMiddleware (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:51642:14)
+      at call (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41363:7)
+      at next (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41307:5)
+      at viteHMRPingMiddleware (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:63103:7)
+      at call (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41363:7)
+      at next (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41307:5)
+      at next (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41285:14)
+      at viteCachedTransformMiddleware (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:61795:5)
+      at call (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41363:7)
+      at next (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41307:5)
+      at cors (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41835:7)
+      at file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41871:17
+      at originCallback (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41861:15)
+      at file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41866:13
+      at optionsCallback (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41846:9)
+      at corsMiddleware (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41851:7)
+      at call (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41363:7)
+      at next (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41307:5)
+      at Function.handle (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41310:3)
+      at Server.app (file:///home/urobot2011/node/project/wiki/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:41175:37)
+      at Server.emit (node:events:519:28)
+      at parserOnIncoming (node:_http_server:1137:12)
+      at HTTPParser.parserOnHeadersComplete (node:_http_common:119:17)
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+Error: Warning: Single fetch-enabled apps should not be making ?_data requests, this is likely to break in the future
+    at requestHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/server-runtime/dist/server.js:115:21)
+    at nodeHandler (/home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:839:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/urobot2011/node/project/wiki/node_modules/@remix-run/dev/dist/vite/plugin.js:842:15
+error: script "dev" was terminated by signal SIGKILL (Forced quit)

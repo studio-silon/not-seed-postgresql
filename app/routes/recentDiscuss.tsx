@@ -6,6 +6,7 @@ import {JoinName} from '~/utils/wiki';
 import {Button} from '~/stories/Button';
 import {MessageSquare, Lock} from 'lucide-react';
 import {useEffect} from 'react';
+import {UserPopover} from '~/components/UserPopover';
 
 export async function loader({request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
@@ -92,7 +93,7 @@ export default function RecentDiscussions() {
                             </div>
 
                             <div className="mt-2 flex items-center text-sm text-gray-500 sm:justify-start justify-between">
-                                <span>{discussion.user?.username || discussion.ipAddress || 'Unknown'}</span>
+                                <UserPopover username={discussion.user?.username} ip={discussion.ipAddress ?? '0.0.0.0'} />
                                 <span className="mx-2 hidden sm:inline">•</span>
                                 <span>{formatDate(discussion.createdAt)}</span>
                             </div>

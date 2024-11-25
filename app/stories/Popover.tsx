@@ -1,5 +1,5 @@
 import React from 'react';
-import {Popover as HeadlessPopover} from '@headlessui/react';
+import * as PopoverPrimitive from '@radix-ui/react-popover';
 import {cn} from '../utils/classMerge';
 
 interface PopoverRootProps {
@@ -7,50 +7,30 @@ interface PopoverRootProps {
     className?: string;
 }
 
-export const Popover = ({children, className}: PopoverRootProps) => {
-    return <HeadlessPopover className={cn('relative inline-block', className)}>{children}</HeadlessPopover>;
+export const Popover = ({children}: PopoverRootProps) => {
+    return <PopoverPrimitive.Root modal={false}>{children}</PopoverPrimitive.Root>;
 };
 
-interface TriggerProps {
-    children: React.ReactNode;
-    asChild?: boolean;
-}
+const Trigger = PopoverPrimitive.Trigger;
 
-const Trigger = ({children, asChild}: TriggerProps) => {
-    const Component = asChild ? HeadlessPopover.Button : 'button';
-
-    return <HeadlessPopover.Button as={Component}>{children}</HeadlessPopover.Button>;
-};
-
-interface ContentProps {
-    children: React.ReactNode;
-    align?: 'start' | 'center' | 'end';
-    side?: 'top' | 'right' | 'bottom' | 'left';
-    className?: string;
-}
-
-const Content = ({children, align = 'center', side = 'bottom', className}: ContentProps) => {
-    return (
-        <HeadlessPopover.Panel
-            className={cn(
-                'absolute z-50 min-w-[18rem] rounded-xl bg-white shadow-lg ring-1 ring-black/5 outline-none',
-                'animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2',
-                {
-                    'left-0': align === 'start',
-                    'right-0 translate-x-0': align === 'end',
-                    'left-1/2 -translate-x-1/2': align === 'center',
-                    'top-[calc(100%+4px)]': side === 'bottom',
-                    'bottom-[calc(100%+4px)]': side === 'top',
-                    'left-[calc(100%+4px)]': side === 'right',
-                    'right-[calc(100%+4px)]': side === 'left',
-                },
-                className,
-            )}
-        >
-            {children}
-        </HeadlessPopover.Panel>
-    );
-};
+const Content = React.forwardRef<React.ElementRef<typeof PopoverPrimitive.Content>, React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>>(
+    ({className, align = 'center', sideOffset = 4, ...props}, ref) => (
+        <PopoverPrimitive.Portal>
+            <PopoverPrimitive.Content
+                ref={ref}
+                align={align}
+                sideOffset={sideOffset}
+                className={cn(
+                    'z-50 w-fit border border-black/5 text-background-text rounded-xl bg-background shadow-lg outline-none',
+                    'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    'data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+                    className,
+                )}
+                {...props}
+            />
+        </PopoverPrimitive.Portal>
+    ),
+);
 
 interface HeaderProps {
     children: React.ReactNode;
@@ -84,7 +64,7 @@ interface CloseProps {
 }
 
 const Close = ({children}: CloseProps) => {
-    return <HeadlessPopover.Button>{children}</HeadlessPopover.Button>;
+    return <PopoverPrimitive.Close>{children}</PopoverPrimitive.Close>;
 };
 
 interface SeparatorProps {

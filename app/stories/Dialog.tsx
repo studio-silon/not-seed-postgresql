@@ -75,7 +75,7 @@ interface ActionsProps {
 }
 
 const Actions = ({children, className}: ActionsProps) => {
-    return <div className={cn('flex mt-4 gap-2', className)}>{children}</div>;
+    return <div className={cn('flex mt-4 gap-1', className)}>{children}</div>;
 };
 
 Dialog.Title = Title;

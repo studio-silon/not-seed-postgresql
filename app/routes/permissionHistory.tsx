@@ -9,6 +9,7 @@ import {prisma} from '~/db.server';
 import {User} from '~/system/.server/user';
 import metaTitle from '~/utils/meta';
 import {JoinName} from '~/utils/wiki';
+import {UserPopover} from '~/components/UserPopover';
 
 export const meta = metaTitle<typeof loader>(() => `Permission History`);
 
@@ -50,28 +51,55 @@ function getTypeMessage(type: number): string {
     }
 }
 
-function formatHistoryEntry(entry: PermissionHistoryEntry): string {
+function formatHistoryEntry(entry: PermissionHistoryEntry): React.ReactNode {
     const actor = entry.user.username;
     const typeMsg = getTypeMessage(entry.type);
 
     if (entry.targetUser && entry.targetType === 'group') {
-        return `${actor}님이 ${entry.targetUser.username}님을 ${entry.action} 그룹에 ${entry.type === 1 ? '추가' : '제거'}`;
+        return (
+            <span>
+                <UserPopover username={actor} ip={'0.0.0.0'} />
+                님이 <UserPopover username={entry.targetUser.username} ip={'0.0.0.0'} />
+                님을 {entry.action} 그룹에 {entry.type === 1 ? '추가' : '제거'}
+            </span>
+        );
     }
 
     if (entry.targetUser) {
-        return `${actor}님이 ${entry.targetUser.username}${entry.type === 2 ? '님의' : '님에게'} ${entry.action} ${typeMsg}`;
+        return (
+            <span>
+                <UserPopover username={actor} ip={'0.0.0.0'} />
+                님이 <UserPopover username={entry.targetUser.username} ip={'0.0.0.0'} />
+                {entry.type === 2 ? '님의' : '님에게'} {entry.action} {typeMsg}
+            </span>
+        );
     }
 
     if (entry.targetPage) {
         const pageName = JoinName(entry.targetPage.namespace, entry.targetPage.title);
-        return `${actor}님이 ${pageName} 문서에서 ${entry.range} 범위로 ${entry.targetType}: ${entry.target} ${entry.action} ${typeMsg}`;
+        return (
+            <span>
+                <UserPopover username={actor} ip={'0.0.0.0'} />
+                님이 {pageName} 문서에서 {entry.range} 범위로 {entry.targetType}: {entry.target} {entry.action} {typeMsg}
+            </span>
+        );
     }
 
     if (entry.target) {
-        return `${actor}님이 ${entry.target}의 ${entry.action} ${typeMsg}`;
+        return (
+            <span>
+                <UserPopover username={actor} ip={'0.0.0.0'} />
+                님이 {entry.target}의 {entry.action} {typeMsg}
+            </span>
+        );
     }
 
-    return `${actor}님이 ${entry.action} ${typeMsg}`;
+    return (
+        <span>
+            <UserPopover username={actor} ip={'0.0.0.0'} />
+            님이 {entry.action} {typeMsg}
+        </span>
+    );
 }
 
 export async function loader({request}: LoaderFunctionArgs) {

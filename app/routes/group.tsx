@@ -74,10 +74,12 @@ function GroupMembershipForm({groupId}: {groupId: number}) {
                     <input type="hidden" name="userId" value={selectedUser?.id || ''} />
                 </div>
 
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">IP Address</label>
-                    <Input type="text" name="ip" className="w-48" placeholder="Optional IP address" />
-                </div>
+                {!selectedUser && (
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">IP Address</label>
+                        <Input type="text" name="ip" className="w-48" placeholder="IP address" />
+                    </div>
+                )}
 
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Log</label>
@@ -165,7 +167,20 @@ export async function action({request}: ActionFunctionArgs) {
 
         case 'add_member': {
             const groupId = parseInt(formData.get('groupId') as string);
-            const userId = parseInt(formData.get('userId') as string);
+            const userId = formData.has('userId')
+                ? parseInt(formData.get('userId') as string)
+                : formData.has('username')
+                  ? (
+                        await prisma.user.findUnique({
+                            where: {
+                                username: formData.get('username') as string,
+                            },
+                            select: {
+                                id: true,
+                            },
+                        })
+                    )?.id
+                  : undefined;
             const expiration = formData.get('expiration') as string;
             const ip = formData.get('ip') as string;
 
@@ -281,13 +296,15 @@ export default function GroupRoute() {
                                         <h3 className="text-lg font-semibold">{group.name}</h3>
                                         <p className="text-sm text-gray-500">{group.note}</p>
                                     </div>
-                                    <Form method="post" className="flex">
-                                        <input type="hidden" name="_action" value="delete_group" />
-                                        <input type="hidden" name="groupId" value={group.id} />
-                                        <Button type="submit" variant="ghost" size="sm" className="text-red-600 hover:text-red-700 size-8 p-0">
-                                            <Trash2 className="w-4 h-4 m-auto" />
-                                        </Button>
-                                    </Form>
+                                    {group.id !== 1 && (
+                                        <Form method="post" className="flex">
+                                            <input type="hidden" name="_action" value="delete_group" />
+                                            <input type="hidden" name="groupId" value={group.id} />
+                                            <Button type="submit" variant="ghost" size="sm" className="text-red-600 hover:text-red-700 size-8 p-0">
+                                                <Trash2 className="w-4 h-4 m-auto" />
+                                            </Button>
+                                        </Form>
+                                    )}
                                 </div>
 
                                 <GroupMembershipForm groupId={group.id} />

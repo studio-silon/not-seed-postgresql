@@ -20,6 +20,17 @@ async function main() {
             },
         },
     });
+
+    await prisma.group.createMany({
+        data: [
+            {
+                name: '차단된 사용자',
+                note: '차단된 사용자 그룹',
+            },
+        ],
+    });
+
+    console.log('Seeding completed');
 }
 
 main()

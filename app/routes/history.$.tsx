@@ -16,6 +16,7 @@ import {JoinName} from '~/utils/wiki';
 import {Acl} from '~/system/.server/acl';
 import {prisma} from '~/db.server';
 import backLinkInit from '@/parser/backlink.server';
+import { UserPopover } from '~/components/UserPopover';
 
 export const meta = metaTitle<typeof loader>((data) => (data.wiki ? '역사: ' + JoinName(data.wiki.namespace, data.wiki.title) : ''));
 
@@ -171,7 +172,7 @@ export default function HistoryPage() {
 
                             {version.log && <p className="mt-1 text-sm text-gray-600">{version.log}</p>}
                             <div className="mt-2 flex items-center text-sm text-gray-500 sm:justify-start justify-between">
-                                <span>{version.user?.username || version.ipAddress || 'Unknown'}</span>
+                                <UserPopover username={version.user?.username} ip={version.ipAddress ?? '0.0.0.0'} />
                                 <span className="mx-2 hidden sm:inline">•</span>
                                 <span>{new Date(version.createdAt).toLocaleString()}</span>
                             </div>

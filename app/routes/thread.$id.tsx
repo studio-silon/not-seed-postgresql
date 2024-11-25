@@ -14,6 +14,7 @@ import {prisma} from '~/db.server';
 import {Input} from '~/stories/Input';
 import {Toggle} from '~/stories/Toggle';
 import Dialog from '~/stories/Dialog';
+import {UserPopover} from '~/components/UserPopover';
 
 export const meta = metaTitle<typeof loader>((data) => (data.thread ? data.thread.title : ''));
 
@@ -246,7 +247,7 @@ export default function DiscussionRoute() {
                                 <a id={'#r-' + index + 1} href={'#r-' + index + 1} className="text-blue-500">
                                     #{index + 1}
                                 </a>
-                                <span className="font-medium text-gray-700">{comment.user?.username || comment.ipAddress}</span>
+                                <UserPopover className="font-medium text-gray-700" username={comment.user?.username} ip={comment.ipAddress ?? '0.0.0.0'} />
                                 {comment.hidden && <span className="text-xs text-gray-500">(숨김 처리됨)</span>}
                             </div>
                             <div className="flex items-center gap-2">

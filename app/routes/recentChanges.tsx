@@ -6,6 +6,7 @@ import {JoinName} from '~/utils/wiki';
 import {ReverTypeToMessage} from '~/utils/wiki';
 import {Button} from '~/stories/Button';
 import {useEffect} from 'react';
+import {UserPopover} from '~/components/UserPopover';
 
 export async function loader({request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
@@ -107,7 +108,7 @@ export default function RecentChanges() {
                             {change.versions[0].log && <p className="mt-1 text-sm text-gray-600">{change.versions[0].log}</p>}
 
                             <div className="mt-2 flex items-center justify-between text-sm text-gray-500 sm:justify-start">
-                                <span>{change.versions[0].user?.username || change.versions[0].ipAddress || 'Unknown'}</span>
+                                <UserPopover username={change.versions[0].user?.username} ip={change.versions[0].ipAddress ?? '0.0.0.0'} />
                                 <span className="mx-2 hidden sm:inline">•</span>
                                 <span>{new Date(change.versions[0].createdAt).toLocaleString()}</span>
                             </div>
