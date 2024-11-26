@@ -33,6 +33,8 @@ import {prisma} from '~/db.server';
 import parser from '@/parser/markup.server';
 import backLinkInit from '@/parser/backlink.server';
 import {Badge} from '~/stories/Badge';
+import {UserPopover} from '~/components/UserPopover';
+import Dialog from '~/stories/Dialog';
 
 const getImageSize = promisify(sizeOf);
 
@@ -69,11 +71,21 @@ export async function loader({request, params}: LoaderFunctionArgs & {params: {'
     }
 
     if (wiki && !(await Acl.isAllowed(wiki, user, userData, 'read'))) {
-        return json({wiki: null, parse: null, backlinks: [], name: params['*'], forbidden: true});
+        return json({wiki: null, canEdit: false, canMove: false, canDelete: false, parse: null, backlinks: [], editRequests: [], name: params['*'], forbidden: true});
     }
+
+    const canEdit = wiki && (await Acl.isAllowed(wiki, user, userData, 'edit'));
+    const canMove = wiki && (await Acl.isAllowed(wiki, user, userData, 'move'));
+    const canDelete = wiki && (await Acl.isAllowed(wiki, user, userData, 'delete'));
+
+    const editRequests = canEdit ? await Wiki.getEditRequests(namespace, title) : [];
 
     return defer({
         wiki,
+        canEdit,
+        canMove,
+        canDelete,
+        editRequests,
         backlinks:
             wiki?.namespace === '분류'
                 ? await prisma.backlink.findMany({
@@ -106,9 +118,48 @@ export async function action({request, params}: {request: Request; params: {'*':
     const content = formData.get('content') as string;
     const user = await getUser(request);
     const userData = await getUserData(request);
+    const actionType = formData.get('actionType') as string;
 
     const wiki = await Wiki.getPage(namespace, oldTitle);
     let wikiId = wiki?.id;
+
+    if (wiki && !(await Acl.isAllowed(wiki, user, userData, 'read'))) {
+        throw new Response('Forbidden', {status: 403});
+    }
+
+    if (actionType === 'create_edit_request') {
+        const newName = formData.get('title') as string;
+        const isDeleting = formData.get('isDeleting') === '1';
+        const log = formData.get('log') as string;
+        const content = formData.get('content') as string;
+
+        const requestType = isDeleting ? 2 : params['*'] !== newName ? 1 : 0;
+
+        const [newNamespace, newTitle] = Wiki.splitName(newName);
+
+        const editRequest = await Wiki.createEditRequest(
+            namespace,
+            oldTitle,
+            requestType,
+            content,
+            requestType === 1 ? newNamespace : null,
+            requestType === 1 ? newTitle : null,
+            log,
+            userData,
+        );
+
+        return redirect(`/wiki/${urlEncoding(params['*'])}`);
+    }
+
+    if (actionType === 'handle_edit_request') {
+        const requestId = Number(formData.get('requestId'));
+        const action = formData.get('action') as 'accept' | 'reject';
+        const reviewLog = formData.get('reviewLog') as string;
+
+        await Wiki.handleEditRequest(requestId, action, reviewLog, userData);
+
+        return redirect(`/wiki/${urlEncoding(params['*'])}`);
+    }
 
     if (wiki && !(await Acl.isAllowed(wiki, user, userData, 'edit'))) {
         throw new Response('Forbidden', {status: 403});
@@ -197,11 +248,25 @@ export async function action({request, params}: {request: Request; params: {'*':
 }
 
 export default function WikiRoute() {
-    const {wiki, backlinks, name, parse, forbidden} = useLoaderData<typeof loader>();
+    const {wiki, backlinks, canEdit, canMove, canDelete, editRequests, name, parse, forbidden} = useLoaderData<typeof loader>();
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [selectedEditRequest, setSelectedEditRequest] = useState<any>(null);
     const [isRAW, setIsRAW] = useState(false);
     const [title, setTitle] = useState(name);
+
+    const shouldCreateEditRequest = (action: 'edit' | 'move' | 'delete') => {
+        switch (action) {
+            case 'edit':
+                return !canEdit;
+            case 'move':
+                return !canMove;
+            case 'delete':
+                return !canDelete;
+            default:
+                return false;
+        }
+    };
 
     useEffect(() => {
         setTitle(name);
@@ -301,6 +366,66 @@ export default function WikiRoute() {
                     </Suspense>
                 )}
             </div>
+            {!isEditing && canEdit && editRequests && editRequests.length > 0 && (
+                <div className="mt-4 bg-white rounded-lg p-4 shadow-sm">
+                    <h2 className="text-lg font-semibold mb-3">편집 요청</h2>
+                    <ul className="space-y-2">
+                        {editRequests.map(
+                            (request) =>
+                                request && (
+                                    <li key={request.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
+                                        <div>
+                                            <span className="font-medium">
+                                                <UserPopover username={request.user?.username} ip={request.ipAddress || '0.0.0.0'} />가 이 문서를 {request.type === 0 && '편집'}
+                                                {request.type === 1 && '이동'}
+                                                {request.type === 2 && '삭제'}
+                                                하려고 합니다.
+                                            </span>
+                                            {request.log && <p className="text-sm text-gray-600">{request.log}</p>}
+                                        </div>
+                                        <Button onClick={() => setSelectedEditRequest(request)} variant="outline" size="sm">
+                                            리뷰
+                                        </Button>
+                                    </li>
+                                ),
+                        )}
+                    </ul>
+                </div>
+            )}
+
+            {selectedEditRequest && (
+                <Dialog isOpen={selectedEditRequest} onClose={() => setSelectedEditRequest(null)}>
+                    <Form method="post" onSubmit={() => setSelectedEditRequest(null)}>
+                        <input type="hidden" name="actionType" value="handle_edit_request" />
+                        <input type="hidden" name="requestId" value={selectedEditRequest.id} />
+                        <Dialog.Title>편집 요청 리뷰</Dialog.Title>
+                        <Dialog.Content>
+                            <div className="mb-4">
+                                <p>
+                                    <UserPopover username={selectedEditRequest.user?.username} ip={selectedEditRequest.ipAddress || '0.0.0.0'} />가 이 문서를{' '}
+                                    {selectedEditRequest.type === 0 && '편집'}
+                                    {selectedEditRequest.type === 1 && '이동'}
+                                    {selectedEditRequest.type === 2 && '삭제'}
+                                    하려고 합니다.
+                                </p>
+                                {selectedEditRequest.log && <p className="mt-2 text-gray-600">로그: {selectedEditRequest.log}</p>}
+                                {selectedEditRequest.type === 0 && (
+                                    <pre className="mt-2 p-2 bg-gray-100 rounded w-full break-words whitespace-normal">{selectedEditRequest.content}</pre>
+                                )}
+                            </div>
+                            <Input name="reviewLog" placeholder="편집 로그 작성..." className="w-full" />
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <Button type="submit" name="action" value="reject" variant="ghost">
+                                거절
+                            </Button>
+                            <Button type="submit" name="action" value="accept">
+                                승락
+                            </Button>
+                        </Dialog.Actions>
+                    </Form>
+                </Dialog>
+            )}
             {isEditing ? (
                 <Form
                     method="post"
@@ -311,6 +436,11 @@ export default function WikiRoute() {
                     encType={isFilePage ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}
                 >
                     <div className="space-y-4">
+                        <input
+                            type="hidden"
+                            name="actionType"
+                            value={shouldCreateEditRequest(isDeleting ? 'delete' : name !== title ? 'move' : 'edit') ? 'create_edit_request' : 'update'}
+                        />
                         <input type="hidden" name="title" value={title} />
                         <input type="hidden" name="isDeleting" value={isDeleting ? '1' : '0'} />
 
@@ -329,7 +459,9 @@ export default function WikiRoute() {
                             >
                                 취소
                             </Button>
-                            <Button type="submit">{isDeleting ? '삭제' : '저장'}</Button>
+                            <Button type="submit">
+                                {shouldCreateEditRequest(isDeleting ? 'delete' : name !== title ? 'move' : 'edit') ? '편집 요청' : isDeleting ? '삭제' : '저장'}
+                            </Button>
                         </div>
                     </div>
                 </Form>

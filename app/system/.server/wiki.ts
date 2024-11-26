@@ -423,6 +423,115 @@ export class Wiki {
         return updatedWiki;
     }
 
+    public static async createEditRequest(
+        namespace: string,
+        title: string,
+        type: number,
+        content: string | null,
+        newNamespace: string | null,
+        newTitle: string | null,
+        log: string | null,
+        userData: UserData,
+    ) {
+        const wiki = await prisma.wiki.findUnique({
+            where: {
+                title_namespace: {namespace, title},
+            },
+        });
+
+        if (!wiki) {
+            throw new Error('Wiki page not found');
+        }
+
+        return await prisma.editRequest.create({
+            data: {
+                wiki: {
+                    connect: {id: wiki.id},
+                },
+                type,
+                content,
+                newNamespace,
+                newTitle,
+                log,
+                ...(userData.userId ? {user: {connect: {id: userData.userId}}} : {ipAddress: userData.ipAddress}),
+                status: 0,
+            },
+        });
+    }
+
+    public static async getEditRequests(namespace: string, title: string) {
+        const wiki = await prisma.wiki.findUnique({
+            where: {
+                title_namespace: {namespace, title},
+            },
+            select: {id: true},
+        });
+
+        if (!wiki) {
+            return [];
+        }
+
+        return await prisma.editRequest.findMany({
+            where: {
+                wikiId: wiki.id,
+                status: 0,
+            },
+            include: {
+                user: {
+                    select: {username: true},
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+    }
+
+    public static async handleEditRequest(requestId: number, action: 'accept' | 'reject', reviewLog: string | null, userData: UserData) {
+        const editRequest = await prisma.editRequest.findUnique({
+            where: {id: requestId},
+            include: {
+                wiki: true,
+            },
+        });
+
+        if (!editRequest) {
+            throw new Error('Edit request not found');
+        }
+
+        if (action === 'accept') {
+            switch (editRequest.type) {
+                case 0:
+                    await this.updatePage(editRequest.wiki.namespace, editRequest.wiki.title, editRequest.content || '', editRequest.log || '편집 요청 승락', userData);
+                    break;
+                case 1:
+                    await this.movePage(
+                        editRequest.wiki.namespace,
+                        editRequest.wiki.title,
+                        editRequest.newNamespace || editRequest.wiki.namespace,
+                        editRequest.newTitle || editRequest.wiki.title,
+                        editRequest.content || editRequest.wiki.content,
+                        editRequest.log || '이동 요청 승락',
+                        userData,
+                    );
+                    break;
+                case 2:
+                    await this.deletePage(editRequest.wiki.namespace, editRequest.wiki.title, editRequest.log || '삭제 요청 승락', userData);
+                    break;
+            }
+        }
+
+        return await prisma.editRequest.update({
+            where: {id: requestId},
+            data: {
+                status: action === 'accept' ? 1 : 2,
+                reviewedBy: userData.userId,
+                reviewedAt: new Date(),
+                reviewLog,
+            },
+        });
+    }
+
     public static async createDiscussion(wikiId: number, title: string, userData: UserData) {
         return await prisma.discussion.create({
             data: {

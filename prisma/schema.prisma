@@ -42,6 +42,9 @@ model User {
   permissionTargetHistorys PermissionHistory[] @relation("TargetUser")
 
   groups GroupUsers[]
+
+  editRequests EditRequest[]
+  reviewedEditRequests EditRequest[] @relation("ReviewedEditRequests")
 }
 
 model Permission {
@@ -68,6 +71,7 @@ model Wiki {
   file WikiFile?
   permissionHistorys PermissionHistory[]
   backlinks Backlink[]
+  editRequests EditRequest[]
 
   @@unique([title, namespace])
 }
@@ -195,4 +199,31 @@ model GroupUsers {
 
   ip             String?
   expiration     Int?
+}
+
+model EditRequest {
+  id             Int      @id @default(autoincrement())
+  wiki           Wiki     @relation(fields: [wikiId], references: [id])
+  wikiId         Int
+  
+  type           Int      // 0: edit, 1: move, 2: delete
+  newNamespace   String?  
+  newTitle       String?
+  content        String?
+  log            String?
+
+  userId         Int?
+  user           User?    @relation(fields: [userId], references: [id])
+  ipAddress      String?
+
+  status         Int      @default(0)
+  // 0: pending, 1: accepted, 2: rejected
+
+  reviewedBy     Int?
+  reviewedByUser User?    @relation("ReviewedEditRequests", fields: [reviewedBy], references: [id])
+  reviewedAt     DateTime?
+  reviewLog      String?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

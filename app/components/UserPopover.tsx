@@ -53,7 +53,7 @@ export function UserPopover({className = '', username, ip}: {className?: string;
                             <Button variant="ghost">사용자 문서 보기</Button>
                         </Link>
                     )}
-                    {(root.user.siteInfo || root.user.permissions.map((p) => p.type).includes('admin')) && (
+                    {(root.user?.siteInfo || root.user?.permissions.map((p) => p.type).includes('admin')) && (
                         <Button variant="danger" onClick={() => setIsOpen(true)}>
                             차단
                         </Button>
