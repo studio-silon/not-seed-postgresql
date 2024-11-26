@@ -1,4 +1,4 @@
-import {json, LoaderFunction, ActionFunction, redirect} from '@remix-run/node';
+import {json, LoaderFunction, ActionFunction, redirect, LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData, useParams, Link, Form} from '@remix-run/react';
 import {Wiki} from '@/system/wiki';
 import {Button} from '~/stories/Button';
@@ -16,31 +16,11 @@ import {JoinName} from '~/utils/wiki';
 import {Acl} from '~/system/.server/acl';
 import {prisma} from '~/db.server';
 import backLinkInit from '@/parser/backlink.server';
-import { UserPopover } from '~/components/UserPopover';
+import {UserPopover} from '~/components/UserPopover';
 
 export const meta = metaTitle<typeof loader>((data) => (data.wiki ? '역사: ' + JoinName(data.wiki.namespace, data.wiki.title) : ''));
 
-interface HistoryData {
-    wiki: {
-        id: number;
-        versions: {
-            id: number;
-            rever: number;
-            log: string;
-            type: number;
-            data: string;
-            content: string;
-            createdAt: string;
-            user: {
-                username: string;
-            } | null;
-            ipAddress: string | null;
-        }[];
-    };
-    totalPages: number;
-}
-
-export const loader: LoaderFunction = async ({params, request}) => {
+export async function loader({params, request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('page')) || 1;
     const [namespace, title] = Wiki.splitName(params['*'] || '');
@@ -57,7 +37,7 @@ export const loader: LoaderFunction = async ({params, request}) => {
     }
 
     return json(historyData);
-};
+}
 
 export async function action({request, params}: {request: Request; params: {'*': string}}) {
     const formData = await request.formData();
@@ -101,7 +81,7 @@ export async function action({request, params}: {request: Request; params: {'*':
 }
 
 export default function HistoryPage() {
-    const {wiki, totalPages} = useLoaderData<HistoryData>();
+    const {wiki, totalPages} = useLoaderData<typeof loader>();
     const params = useParams();
     const [currentPage, setCurrentPage] = useState(1);
     const [isOpen, setIsOpen] = useState(false);
