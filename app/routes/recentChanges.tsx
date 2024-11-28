@@ -17,9 +17,6 @@ export async function loader({request}: LoaderFunctionArgs) {
     const changes = await prisma.wiki.findMany({
         take: pageSize,
         skip: (page - 1) * pageSize,
-        where: {
-            deleted: false,
-        },
         orderBy: {
             updatedAt: 'desc',
         },
