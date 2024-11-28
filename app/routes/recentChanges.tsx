@@ -7,6 +7,7 @@ import {ReverTypeToMessage} from '~/utils/wiki';
 import {Button} from '~/stories/Button';
 import {useEffect} from 'react';
 import {UserPopover} from '~/components/UserPopover';
+import {ReverMiniDiff} from '~/components/ReverMiniDiff';
 
 export async function loader({request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
@@ -34,6 +35,8 @@ export async function loader({request}: LoaderFunctionArgs) {
                             username: true,
                         },
                     },
+                    added: true,
+                    removed: true,
                     log: true,
                     createdAt: true,
                     ipAddress: true,
@@ -89,7 +92,8 @@ export default function RecentChanges() {
                                     <Link to={`/wiki/${JoinName(change.namespace, change.title)}?rever=${change.rever}`} className="text-sm text-gray-500">
                                         r{change.rever}
                                     </Link>
-                                    <span className="text-sm text-gray-500">{ReverTypeToMessage(change.versions[0])}</span>
+                                    {change.versions[0].type !== 0 && <span className="text-sm text-gray-500">{ReverTypeToMessage(change.versions[0])}</span>}
+                                    <ReverMiniDiff rever={change.versions[0]} />
                                 </div>
                                 <div className="ml-auto flex items-center gap-2 sm:ml-0">
                                     <Link to={`/history/${JoinName(change.namespace, change.title)}`}>

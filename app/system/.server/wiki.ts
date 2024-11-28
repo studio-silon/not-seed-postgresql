@@ -3,6 +3,7 @@ import {prisma} from '~/db.server';
 import {JoinName, SplitName} from '~/utils/wiki';
 
 import {v1 as uuidv1} from 'uuid';
+import {calculateDifferences} from '~/utils/diff';
 
 export interface UserData {
     userId?: number;
@@ -106,6 +107,22 @@ export class Wiki {
     }
 
     public static async updatePage(namespace: string, title: string, content: string, log: string, userData: UserData) {
+        const existingPage = await prisma.wiki.findUnique({
+            where: {
+                title_namespace: {namespace, title},
+            },
+            select: {content: true},
+        });
+
+        let added = 0;
+        let removed = 0;
+
+        if (existingPage) {
+            const diff = calculateDifferences(existingPage.content, content);
+            added = diff.added;
+            removed = diff.removed;
+        }
+
         const wiki = await prisma.wiki.upsert({
             where: {
                 title_namespace: {namespace, title},
@@ -149,6 +166,8 @@ export class Wiki {
                 rever: wiki.rever,
                 type: 0,
                 data: '',
+                added,
+                removed,
                 content,
                 log: log,
                 createdAt: new Date(),
@@ -334,6 +353,8 @@ export class Wiki {
                         type: true,
                         data: true,
                         createdAt: true,
+                        added: true,
+                        removed: true,
                         user: {
                             select: {
                                 username: true,
@@ -370,6 +391,8 @@ export class Wiki {
         }
 
         const {page, version} = pageWithVersion;
+
+        const diff = calculateDifferences(page.content, version.content);
 
         const updatedWiki = await prisma.wiki.update({
             where: {
@@ -413,6 +436,8 @@ export class Wiki {
                 ipAddress: userData.ipAddress,
                 rever: updatedWiki.rever,
                 type: 3,
+                added: diff.added,
+                removed: diff.removed,
                 data: JSON.stringify([rever]),
                 content: version.content,
                 log: log,

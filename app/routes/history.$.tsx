@@ -17,6 +17,7 @@ import {Acl} from '~/system/.server/acl';
 import {prisma} from '~/db.server';
 import backLinkInit from '@/parser/backlink.server';
 import {UserPopover} from '~/components/UserPopover';
+import {ReverMiniDiff} from '~/components/ReverMiniDiff';
 
 export const meta = metaTitle<typeof loader>((data) => (data.wiki ? '역사: ' + JoinName(data.wiki.namespace, data.wiki.title) : ''));
 
@@ -127,7 +128,8 @@ export default function HistoryPage() {
                                     <Link to={`/wiki/${params['*']}?rever=${version.rever}`} className="font-medium text-blue-600 hover:underline">
                                         r{version.rever}
                                     </Link>
-                                    <span className="text-sm text-gray-500">{ReverTypeToMessage(version)}</span>
+                                    {version.type !== 0 && <span className="text-sm text-gray-500">{ReverTypeToMessage(version)}</span>}
+                                    <ReverMiniDiff rever={version} />
                                 </div>
                                 <div className="ml-auto sm:ml-0 flex items-center gap-2">
                                     {version.rever > 1 && (

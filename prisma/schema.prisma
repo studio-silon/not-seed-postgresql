@@ -85,6 +85,8 @@ model WikiVersion {
   data      String 
   // move: 'from,to' encodeUriComponent
   // restore: 'from,to' [number, number]
+  added     Int      @default(0)
+  removed   Int      @default(0)
   content   String 
   createdAt DateTime @default(now())
   
