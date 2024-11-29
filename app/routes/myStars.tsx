@@ -22,11 +22,14 @@ export async function loader({request}: LoaderFunctionArgs) {
                 select: {
                     namespace: true,
                     title: true,
+                    updatedAt: true,
                 },
             },
         },
         orderBy: {
-            id: 'desc',
+            wiki: {
+                updatedAt: 'desc',
+            },
         },
     });
 
