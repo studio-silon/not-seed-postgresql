@@ -139,6 +139,12 @@ export function Navbar() {
                                         <Link to={'/editUser'}>
                                             <Dropdown.Item>회원 정보 수정</Dropdown.Item>
                                         </Link>
+                                        <Link to={'/myStars'}>
+                                            <Dropdown.Item>내 문서함</Dropdown.Item>
+                                        </Link>
+                                        <Link to={'/contribution/user/' + encodeURI(root?.user.username)}>
+                                            <Dropdown.Item>내 기여내역</Dropdown.Item>
+                                        </Link>
                                         <Link to={'/logout'}>
                                             <Dropdown.Item>Logout</Dropdown.Item>
                                         </Link>

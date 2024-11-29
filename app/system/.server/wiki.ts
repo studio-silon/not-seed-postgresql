@@ -34,8 +34,28 @@ export class Wiki {
                 },
                 acls: true,
                 file: true,
+                stars: {
+                    select: {
+                        id: true,
+                    },
+                },
             },
         });
+    }
+
+    public static async isStared(id: number, userId: number) {
+        return (
+            (await prisma.star.count({
+                where: {
+                    wikiId: id,
+                    userId,
+                },
+                cacheStrategy: {
+                    ttl: 20,
+                    swr: 20,
+                },
+            })) > 0
+        );
     }
 
     public static async getBacklinkByTo(name: string) {
@@ -66,6 +86,11 @@ export class Wiki {
                 },
                 acls: true,
                 file: true,
+                stars: {
+                    select: {
+                        id: true,
+                    },
+                },
             },
         });
     }
@@ -84,6 +109,11 @@ export class Wiki {
                 },
                 acls: true,
                 file: true,
+                stars: {
+                    select: {
+                        id: true,
+                    },
+                },
             },
         });
 

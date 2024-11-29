@@ -71,20 +71,35 @@ export async function loader({request, params}: LoaderFunctionArgs & {params: {'
     }
 
     if (wiki && !(await Acl.isAllowed(wiki, user, userData, 'read'))) {
-        return json({wiki: null, canEdit: false, canMove: false, canDelete: false, parse: null, backlinks: [], editRequests: [], name: params['*'], forbidden: true});
+        return json({
+            wiki: null,
+            user: false,
+            canEdit: false,
+            canMove: false,
+            canDelete: false,
+            isStared: false,
+            parse: null,
+            backlinks: [],
+            editRequests: [],
+            name: params['*'],
+            forbidden: true,
+        });
     }
 
     const canEdit = wiki && (await Acl.isAllowed(wiki, user, userData, 'edit'));
     const canMove = wiki && (await Acl.isAllowed(wiki, user, userData, 'move'));
     const canDelete = wiki && (await Acl.isAllowed(wiki, user, userData, 'delete'));
+    const isStared = wiki && user && (await Wiki.isStared(wiki.id, user.id));
 
     const editRequests = canEdit ? await Wiki.getEditRequests(namespace, title) : [];
 
     return defer({
         wiki,
+        user: user?.id !== undefined,
         canEdit,
         canMove,
         canDelete,
+        isStared,
         editRequests,
         backlinks:
             wiki?.namespace === '분류'
@@ -122,6 +137,27 @@ export async function action({request, params}: {request: Request; params: {'*':
 
     const wiki = await Wiki.getPage(namespace, oldTitle);
     let wikiId = wiki?.id;
+
+    if (actionType === 'toggle_star') {
+        const wikiId = wiki?.id;
+        if (!wikiId || !user) {
+            throw new Response('Bad Request', {status: 400});
+        }
+
+        const existingStar = await prisma.star.findFirst({
+            where: {wikiId, userId: user.id},
+        });
+
+        if (existingStar) {
+            await prisma.star.delete({where: {id: existingStar.id}});
+        } else {
+            await prisma.star.create({
+                data: {wikiId, userId: user.id},
+            });
+        }
+
+        return redirect(`/wiki/${urlEncoding(params['*'])}`);
+    }
 
     if (wiki && !(await Acl.isAllowed(wiki, user, userData, 'read'))) {
         throw new Response('Forbidden', {status: 403});
@@ -248,7 +284,7 @@ export async function action({request, params}: {request: Request; params: {'*':
 }
 
 export default function WikiRoute() {
-    const {wiki, backlinks, canEdit, canMove, canDelete, editRequests, name, parse, forbidden} = useLoaderData<typeof loader>();
+    const {wiki, user, backlinks, canEdit, canMove, canDelete, isStared, editRequests, name, parse, forbidden} = useLoaderData<typeof loader>();
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [selectedEditRequest, setSelectedEditRequest] = useState<any>(null);
@@ -292,9 +328,14 @@ export default function WikiRoute() {
                         )}
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" className="size-8 p-0">
-                            <Star className="h-4 w-4 m-auto" />
-                        </Button>
+                        {wiki && user && (
+                            <Form method="post">
+                                <input type="hidden" name="actionType" value="toggle_star" />
+                                <Button type="submit" variant="ghost" size="sm" className={'size-8 p-0'} aria-label={isStared ? '스타 해제' : '스타 추가'}>
+                                    <Star className={cn('h-4 w-4 m-auto', isStared && 'text-yellow-500')} />
+                                </Button>
+                            </Form>
+                        )}
                         <Toggle onClick={() => setIsEditing(!isEditing)} isActive={isEditing}>
                             <Edit2 className="h-4 w-4 m-auto" />
                         </Toggle>

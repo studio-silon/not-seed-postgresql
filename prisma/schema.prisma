@@ -45,6 +45,8 @@ model User {
 
   editRequests EditRequest[]
   reviewedEditRequests EditRequest[] @relation("ReviewedEditRequests")
+
+  stars Star[]
 }
 
 model Permission {
@@ -73,7 +75,17 @@ model Wiki {
   backlinks Backlink[]
   editRequests EditRequest[]
 
+  stars Star[]
+
   @@unique([title, namespace])
+}
+
+model Star {
+  id        Int      @id @default(autoincrement())
+  wiki Wiki @relation(fields: [wikiId], references: [id])
+  wikiId Int
+  user User @relation(fields: [userId], references: [id])
+  userId Int
 }
 
 model WikiVersion {
