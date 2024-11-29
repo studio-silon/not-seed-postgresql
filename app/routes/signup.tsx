@@ -36,7 +36,8 @@ export async function action({request, params}: {request: Request; params: {'*':
                 message: '회원가입을 실패했습니다.',
             };
 
-            return redirect('/login', {
+            return redirect('/signup', {
+                status: IS_SKIN_MODE ? 400 : 302,
                 headers: [['Set-Cookie', await setCookie(cookie)]],
             });
         }

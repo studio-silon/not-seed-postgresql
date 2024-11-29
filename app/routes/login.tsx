@@ -47,6 +47,7 @@ export async function action({request, params}: {request: Request; params: {'*':
             };
 
             return redirect('/login', {
+                status: IS_SKIN_MODE ? 400 : 302,
                 headers: [['Set-Cookie', await setCookie(cookie)]],
             });
         }

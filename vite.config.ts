@@ -31,4 +31,7 @@ export default defineConfig({
             external: ['pg-hstore'],
         },
     },
+    define: {
+        IS_SKIN_MODE: process.env.MODE === 'skin',
+    },
 });

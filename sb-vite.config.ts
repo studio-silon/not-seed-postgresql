@@ -14,5 +14,8 @@ export default defineConfig(({mode}) => {
                 plugins: [tailwindcss()],
             },
         },
+        define: {
+            IS_SKIN_MODE: false,
+        },
     };
 });
