@@ -4,7 +4,8 @@ import type {loader as rootLoader} from '~/root';
 type LoaderFunction1 =
     | LoaderFunction
     | ((args: LoaderFunctionArgs & {params: {'*': string}}) => ReturnType<LoaderFunction>)
-    | ((args: LoaderFunctionArgs & {params: {id: string}}) => ReturnType<LoaderFunction>);
+    | ((args: LoaderFunctionArgs & {params: {id: string}}) => ReturnType<LoaderFunction>)
+    | ((args: LoaderFunctionArgs & {params: {id: string; page: string}}) => ReturnType<LoaderFunction>);
 
 export default function metaTitle<LoaderType extends LoaderFunction1>(
     cb: (data: SerializeFrom<LoaderType>, rootData: SerializeFrom<typeof rootLoader>) => string,

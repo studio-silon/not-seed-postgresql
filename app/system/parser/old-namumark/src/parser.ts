@@ -192,6 +192,11 @@ export class Parser {
 
                         break;
 
+                    case '<#':
+                        currentCell.param['bgcolor'] = '#' + this.tableParam();
+
+                        break;
+
                     case '<colbgcolor=':
                         currentCell.param['colbgcolor'] = this.tableParam();
 

@@ -95,6 +95,7 @@ const rules: string[] = [
     '<tablewidth=',
     '<table width=',
     '<bgcolor=',
+    '<#',
     '<colbgcolor=',
     '<rowbgcolor=',
     '<tablebgcolor=',

@@ -134,7 +134,7 @@
         line-height: 1.6;
     }
 
-    .wiki .wiki-table,
+    /*.wiki .wiki-table,
     .wiki .wiki-table td {
         border: 1px solid #e5e7eb;
         background-color: #f9fafb;
@@ -146,6 +146,28 @@
         margin: 1rem 0;
         border-collapse: separate;
         border-spacing: 0;
+    }*/
+
+    .wiki-table {
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        border-width: 1px;
+        border-collapse: collapse;
+    }
+
+    .wiki-table tr,
+    .wiki-table td {
+        padding: 0.3rem;
+    }
+
+    .table-center,
+    .table-center .wiki-table {
+        float: center;
+    }
+
+    .table-right,
+    .table-right .wiki-table {
+        float: right;
     }
 
     .wiki .wiki-macro-toc {
@@ -210,8 +232,17 @@
             background-color: #1f2937;
         }
 
-        .wiki .wiki-table,
+        /*.wiki .wiki-table,
         .wiki .wiki-table td {
+            border-color: #374151;
+            background-color: #1f2937;
+        }
+
+        .wiki-table {
+            border-radius: 7px;
+        }*/
+
+        .wiki-table {
             border-color: #374151;
             background-color: #1f2937;
         }
