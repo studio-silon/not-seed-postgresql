@@ -76,6 +76,12 @@ export class Renderer {
         return str + 'px';
     }
 
+    private getColor(colorString: string, isDark: boolean) {
+        if (!colorString) return null;
+        const colors = colorString.split(',');
+        return isDark ? (colors.length > 1 ? colors[1].trim() : colors[0].trim()) : colors[0].trim();
+    }
+
     private async getHTML(nodes: Node[]) {
         return (await Promise.all(nodes.map((node: Node) => this.walk(node)))).join('');
     }
@@ -408,40 +414,71 @@ export class Renderer {
             }
 
             case 'Table': {
+                const columnStyles: {[key: string]: string} = {};
+                const darkColumnStyles: {[key: string]: string} = {};
+
+                node.items.forEach((row) => {
+                    row.items.forEach((cell, colIndex) => {
+                        if (cell.param['colbgcolor']) {
+                            const colbgcolor = this.getColor(cell.param['colbgcolor'], false);
+                            if (colbgcolor && !columnStyles[colIndex]) {
+                                columnStyles[colIndex] = colbgcolor;
+                            }
+
+                            const darkColbgcolor = this.getColor(cell.param['colbgcolor'], true);
+                            if (darkColbgcolor && !darkColumnStyles[colIndex]) {
+                                darkColumnStyles[colIndex] = darkColbgcolor;
+                            }
+                        }
+                    });
+                });
+
                 return (
                     `<table class="wiki-table" style="${this.disableQuot(
                         (node.param['width'] ? 'width: ' + this.autoPx(node.param['width']) + ';' : '') +
-                            (node.param['bgcolor'] ? 'background-color: ' + node.param['bgcolor'] + ';' : '') +
-                            (node.param['color'] ? 'color: ' + node.param['color'] + ';' : '') +
-                            (node.param['bordercolor'] ? 'border-color: ' + node.param['bordercolor'] + ';' : '') +
+                            (node.param['bgcolor'] ? 'background-color: ' + this.getColor(node.param['bgcolor'], false) + ';' : '') +
+                            (node.param['color'] ? 'color: ' + this.getColor(node.param['color'], false) + ';' : '') +
+                            (node.param['bordercolor'] ? 'border-color: ' + this.getColor(node.param['bordercolor'], false) + ';' : '') +
                             (node.param['align'] ? 'float: ' + node.param['align'] + ';' : ''),
+                    )}" dark-style="${this.disableQuot(
+                        (node.param['bgcolor'] ? 'background-color: ' + this.getColor(node.param['bgcolor'], true) + ';' : '') +
+                            (node.param['color'] ? 'color: ' + this.getColor(node.param['color'], true) + ';' : '') +
+                            (node.param['bordercolor'] ? 'border-color: ' + this.getColor(node.param['bordercolor'], true) + ';' : ''),
                     )}">` +
                     (node.names.length > 0 ? `<caption>${await this.getHTML(node.names)}</caption>` : '') +
                     '<tbody>' +
                     (
                         await Promise.all(
                             node.items.map(
-                                async (row) =>
+                                async (row, rowIndex) =>
                                     `<tr style="${this.disableQuot(
-                                        (row.param['bgcolor'] ? 'background-color: ' + row.param['bgcolor'] + ';' : '') +
-                                            (row.param['color'] ? 'color: ' + row.param['color'] + ';' : ''),
+                                        (row.param['bgcolor'] ? 'background-color: ' + this.getColor(row.param['bgcolor'], false) + ';' : '') +
+                                            (row.param['color'] ? 'color: ' + this.getColor(row.param['color'], false) + ';' : ''),
+                                    )}" dark-style="${this.disableQuot(
+                                        (row.param['bgcolor'] ? 'background-color: ' + this.getColor(row.param['bgcolor'], true) + ';' : '') +
+                                            (row.param['color'] ? 'color: ' + this.getColor(row.param['color'], true) + ';' : ''),
                                     )}">` +
                                     (
                                         await Promise.all(
                                             row.items.map(
-                                                async (cell) =>
+                                                async (cell, colIndex) =>
                                                     `<td ${cell.param['colspan'] ? 'colspan="' + this.disableQuot(cell.param['colspan']) + '" ' : ''}${
                                                         cell.param['rowspan'] ? 'rowspan="' + this.disableQuot(cell.param['rowspan']) + '" ' : ''
-                                                    }${cell.param['colbgcolor'] ? 'data-colbgcolor="' + this.disableQuot(cell.param['colbgcolor']) + '" ' : ''}${
-                                                        cell.param['colcolor'] ? 'data-colcolor="' + this.disableQuot(cell.param['colcolor']) + '" ' : ''
                                                     }style="${this.disableQuot(
                                                         (cell.param['vertical-align'] ? 'vertical-align: ' + cell.param['vertical-align'] + ';' : '') +
                                                             (cell.param['width'] ? 'width: ' + this.autoPx(cell.param['width']) + ';' : '') +
                                                             (cell.param['height'] ? 'height: ' + this.autoPx(cell.param['height']) + ';' : '') +
                                                             (cell.param['align'] ? 'text-align: ' + cell.param['align'] + ';' : 'text-align: center;') +
                                                             (cell.param['nopad'] ? 'padding: 0;' : '') +
-                                                            (cell.param['bgcolor'] ? 'background-color: ' + cell.param['bgcolor'] + ';' : '') +
-                                                            (cell.param['color'] ? 'color: ' + cell.param['color'] + ';' : ''),
+                                                            (cell.param['bgcolor'] ? 'background-color: ' + this.getColor(cell.param['bgcolor'], false) + ';' : '') +
+                                                            (cell.param['colbgcolor'] ? 'background-color: ' + this.getColor(cell.param['colbgcolor'], false) + ';' : '') +
+                                                            (columnStyles[colIndex] && !cell.param['colbgcolor'] ? 'background-color: ' + columnStyles[colIndex] + ';' : '') +
+                                                            (cell.param['color'] ? 'color: ' + this.getColor(cell.param['color'], false) + ';' : ''),
+                                                    )}" dark-style="${this.disableQuot(
+                                                        (cell.param['bgcolor'] ? 'background-color: ' + this.getColor(cell.param['bgcolor'], true) + ';' : '') +
+                                                            (cell.param['colbgcolor'] ? 'background-color: ' + this.getColor(cell.param['colbgcolor'], true) + ';' : '') +
+                                                            (columnStyles[colIndex] && !cell.param['colbgcolor'] ? 'background-color: ' + darkColumnStyles[colIndex] + ';' : '') +
+                                                            (cell.param['color'] ? 'color: ' + this.getColor(cell.param['color'], true) + ';' : ''),
                                                     )}">` +
                                                     (await this.getHTML(cell.items)) +
                                                     '</td>',
