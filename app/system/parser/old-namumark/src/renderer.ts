@@ -66,8 +66,8 @@ export class Renderer {
 
     private fixParamBug(str: string): string {
         return str
-            .replace(/@([^=@]*?)=([^@]*?)@/g, (match: string, name: string, value: string) => this.param![name] || value)
-            .replace(/@([^@]*?)@/g, (match: string, name: string) => this.param![name] || '');
+            .replace(/@([^=@]*?)=([^@]*?)@/g, (match: string, name: string, value: string) => (this.param ? this.param[name] || value : value))
+            .replace(/@([^@]*?)@/g, (match: string, name: string) => (this.param ? this.param[name] || '' : ''));
     }
 
     private autoPx(str: string): string {
@@ -128,7 +128,7 @@ export class Renderer {
             }
 
             case 'Block': {
-                return `<div class="wiki-block" style="${this.fixParamBug(this.disableQuot(node.style))}">${await this.getHTML(node.items)}</div>`;
+                return `<div class="wiki-block" style="${node.style ? this.fixParamBug(this.disableQuot(node.style)) : ''}">${await this.getHTML(node.items)}</div>`;
             }
 
             case 'Html': {

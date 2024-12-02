@@ -304,22 +304,6 @@ export class Parser {
                 this.cursor++;
 
                 return node;
-            } else if (token.value === '\n' && this.tokens[this.cursor + 1]?.type === 'rule' && this.tokens[this.cursor + 1].value.match(/^#{1,6}$/)) {
-                this.cursor++;
-
-                const node = new Node('Heading', {items: [], depth: this.tokens[this.cursor].value.length, folding: false});
-
-                this.heading = node;
-
-                this.cursor++;
-
-                while (this.tokens[this.cursor] && this.tokens[this.cursor].value !== '\n') {
-                    node.items.push(this.walk());
-                }
-
-                this.cursor++;
-
-                return node;
             } else if (token.value.startsWith('{{{#!wiki')) {
                 const node = new Node('Block', {style: token.style || '', items: []});
 
@@ -506,18 +490,6 @@ export class Parser {
                 this.cursor++;
 
                 return node;
-            } else if (token.value === '$$틀$$') {
-                const node = new Node('Frame', {items: []});
-
-                this.cursor++;
-
-                while (this.tokens[this.cursor] && !(this.tokens[this.cursor].type === 'rule' && this.tokens[this.cursor].value === '$$틀$$')) {
-                    node.items.push(this.walk());
-                }
-
-                this.cursor++;
-
-                return node;
             } else if (token.value.match(/^-{4,9}$/)) {
                 const node = new Node('HorizontalLine', {});
 
@@ -585,18 +557,6 @@ export class Parser {
                 if (this.tokens[this.cursor].value === ')]]') node.link += ')';
 
                 this.cursor++;
-
-                return node;
-            } else if (token.value === '### 분류 ') {
-                const node = new Node('Category', {link: ''});
-
-                this.cursor++;
-
-                while (this.tokens[this.cursor] && this.tokens[this.cursor].value !== '\n') {
-                    node.link += this.tokens[this.cursor];
-
-                    this.cursor++;
-                }
 
                 return node;
             } else if (token.value === '[[파일:') {
@@ -981,28 +941,6 @@ export class Parser {
                 this.cursor++;
 
                 return node;
-            } else if (token.value === '### 틀 ') {
-                const node = new Node('Include', {name: '틀:', param: {}});
-
-                this.cursor++;
-
-                while (
-                    this.tokens[this.cursor] &&
-                    this.tokens[this.cursor].value !== '\n' &&
-                    !(this.tokens[this.cursor].type === 'rule' && this.tokens[this.cursor].value === '|')
-                ) {
-                    node.name += this.tokens[this.cursor];
-
-                    this.cursor++;
-                }
-
-                if (this.tokens[this.cursor]?.value === '|') {
-                    this.cursor++;
-
-                    node.param = this.getParam('|', '\n');
-                }
-
-                return node;
             } else if (token.value === '@') {
                 const node = new Node('Param', {name: '', items: []});
 
@@ -1220,7 +1158,7 @@ export class Parser {
                 this.cursor = _cursor;
 
                 return new Node('Literal', {value: '|'});
-            } else if (token.value === '\n' && this.tokens[this.cursor + 1]?.value === '//') {
+            } else if (token.value === '\n' && this.tokens[this.cursor + 1]?.value === '##') {
                 const node = new Node('Comment', {value: ''});
 
                 this.cursor++;
