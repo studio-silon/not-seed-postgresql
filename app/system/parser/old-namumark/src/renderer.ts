@@ -414,20 +414,39 @@ export class Renderer {
             }
 
             case 'Table': {
-                const columnStyles: {[key: string]: string} = {};
-                const darkColumnStyles: {[key: string]: string} = {};
+                const columnStyles: {[key: string]: {bg?: string; color?: string}} = {};
+                const darkColumnStyles: {[key: string]: {bg?: string; color?: string}} = {};
 
                 node.items.forEach((row) => {
                     row.items.forEach((cell, colIndex) => {
                         if (cell.param['colbgcolor']) {
                             const colbgcolor = this.getColor(cell.param['colbgcolor'], false);
-                            if (colbgcolor && !columnStyles[colIndex]) {
-                                columnStyles[colIndex] = colbgcolor;
+                            if (colbgcolor && !columnStyles[colIndex]?.bg) {
+                                if (!columnStyles[colIndex]) columnStyles[colIndex] = {};
+
+                                columnStyles[colIndex].bg = colbgcolor;
                             }
 
                             const darkColbgcolor = this.getColor(cell.param['colbgcolor'], true);
-                            if (darkColbgcolor && !darkColumnStyles[colIndex]) {
-                                darkColumnStyles[colIndex] = darkColbgcolor;
+                            if (darkColbgcolor && !darkColumnStyles[colIndex]?.bg) {
+                                if (!darkColumnStyles[colIndex]) darkColumnStyles[colIndex] = {};
+
+                                darkColumnStyles[colIndex].bg = darkColbgcolor;
+                            }
+                        }
+                        if (cell.param['colcolor']) {
+                            const colcolor = this.getColor(cell.param['colcolor'], false);
+                            if (colcolor && !columnStyles[colIndex]?.color) {
+                                if (!columnStyles[colIndex]) columnStyles[colIndex] = {};
+
+                                columnStyles[colIndex].color = colcolor;
+                            }
+
+                            const darkColcolor = this.getColor(cell.param['colcolor'], true);
+                            if (darkColcolor && !darkColumnStyles[colIndex]?.bg) {
+                                if (!darkColumnStyles[colIndex]) darkColumnStyles[colIndex] = {};
+
+                                darkColumnStyles[colIndex].color = darkColcolor;
                             }
                         }
                     });
@@ -471,13 +490,13 @@ export class Renderer {
                                                             (cell.param['align'] ? 'text-align: ' + cell.param['align'] + ';' : 'text-align: center;') +
                                                             (cell.param['nopad'] ? 'padding: 0;' : '') +
                                                             (cell.param['bgcolor'] ? 'background-color: ' + this.getColor(cell.param['bgcolor'], false) + ';' : '') +
-                                                            (cell.param['colbgcolor'] ? 'background-color: ' + this.getColor(cell.param['colbgcolor'], false) + ';' : '') +
-                                                            (columnStyles[colIndex] && !cell.param['colbgcolor'] ? 'background-color: ' + columnStyles[colIndex] + ';' : '') +
+                                                            (columnStyles[colIndex]?.bg ? 'background-color: ' + columnStyles[colIndex].bg + ';' : '') +
+                                                            (columnStyles[colIndex]?.color ? 'color: ' + columnStyles[colIndex].color + ';' : '') +
                                                             (cell.param['color'] ? 'color: ' + this.getColor(cell.param['color'], false) + ';' : ''),
                                                     )}" dark-style="${this.disableQuot(
                                                         (cell.param['bgcolor'] ? 'background-color: ' + this.getColor(cell.param['bgcolor'], true) + ';' : '') +
-                                                            (cell.param['colbgcolor'] ? 'background-color: ' + this.getColor(cell.param['colbgcolor'], true) + ';' : '') +
-                                                            (columnStyles[colIndex] && !cell.param['colbgcolor'] ? 'background-color: ' + darkColumnStyles[colIndex] + ';' : '') +
+                                                            (darkColumnStyles[colIndex]?.bg ? 'background-color: ' + darkColumnStyles[colIndex].bg + ';' : '') +
+                                                            (darkColumnStyles[colIndex]?.color ? 'color: ' + darkColumnStyles[colIndex].color + ';' : '') +
                                                             (cell.param['color'] ? 'color: ' + this.getColor(cell.param['color'], true) + ';' : ''),
                                                     )}">` +
                                                     (await this.getHTML(cell.items)) +
