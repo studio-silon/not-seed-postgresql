@@ -310,7 +310,7 @@ export class Renderer {
 
             case 'Include': {
                 try {
-                    if (this.depth > 9) return '';
+                    if (this.depth > 0) return '';
 
                     const name = node.name.trim();
 
