@@ -38,6 +38,8 @@ export class Renderer {
 
     public newLines: number = 0;
 
+    public maxHeaderLevel: number = 0;
+
     constructor(findPage?: findPageFn, findImage?: findImageFn, getThreads?: getThreadsFn, getURL?: getURLFn, pageCount?: pageCountFn) {
         if (findPage) this.findPage = findPage;
         if (findImage) this.findImage = findImage;
@@ -68,6 +70,12 @@ export class Renderer {
             .replace(/@([^@]*?)@/g, (match: string, name: string) => this.param![name] || '');
     }
 
+    private autoPx(str: string): string {
+        if (isNaN(+str[str.length - 1])) return str;
+
+        return str + 'px';
+    }
+
     private async getHTML(nodes: Node[]) {
         return (await Promise.all(nodes.map((node: Node) => this.walk(node)))).join('');
     }
@@ -93,10 +101,12 @@ export class Renderer {
             case 'Heading': {
                 const name = await this.getHTML(node.items);
 
-                this.headerCounters[node.depth - 1]++;
-                for (let i = node.depth; i < 6; i++) this.headerCounters[i] = 0;
+                const depth = node.depth + 1 - this.maxHeaderLevel;
+
+                this.headerCounters[depth - 1]++;
+                for (let i = depth; i < 6; i++) this.headerCounters[i] = 0;
                 const counts = [];
-                for (let i = 0; i < node.depth; i++) counts.push(this.headerCounters[i]);
+                for (let i = 0; i < depth; i++) counts.push(this.headerCounters[i]);
 
                 const id = node.value ? UrlEncoding(node.value) : counts.join('.');
 
@@ -104,13 +114,11 @@ export class Renderer {
                     name: this.removeHTML(name),
                     closed: !node.folding,
                     id,
-                    size: node.depth,
+                    size: depth,
                     count: id + '.',
                 });
 
-                return `<h${node.depth} id="s-${id}" class="wiki-heading${node.folding ? ' wiki-close-heading' : ''}"><a href="#toc">${counts.join('.')}.</a> ${name}</h${
-                    node.depth
-                }>`;
+                return `<h${depth} id="s-${id}" class="wiki-heading${node.folding ? ' wiki-close-heading' : ''}"><a href="#toc">${counts.join('.')}.</a> ${name}</h${depth}>`;
             }
 
             case 'Block': {
@@ -231,28 +239,28 @@ export class Renderer {
                         return `<iframe src="https://www.youtube.com/embed/${encodeURIComponent(node.code)}${
                             node.param['start'] ? '?start=' + encodeURIComponent(node.param['start']) : ''
                         }${node.param['end'] ? (node.param['start'] ? '&' : '?') + 'end=' + encodeURIComponent(node.param['end']) : ''}"${
-                            node.param['width'] ? ' width="' + this.disableQuot(node.param['width']) + '"' : ''
-                        }${node.param['height'] ? ' width="' + this.disableQuot(node.param['height']) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+                            node.param['width'] ? ' width="' + this.disableQuot(this.autoPx(node.param['width'])) + '"' : ''
+                        }${node.param['height'] ? ' width="' + this.disableQuot(this.autoPx(node.param['height'])) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
 
                     case 'kakaotv':
                         return `<iframe src="https//tv.kakao.com/embed/player/cliplink/${encodeURIComponent(node.code)}"${
-                            node.param['width'] ? ' width="' + this.disableQuot(node.param['width']) + '"' : ''
-                        }${node.param['height'] ? ' width="' + this.disableQuot(node.param['height']) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+                            node.param['width'] ? ' width="' + this.disableQuot(this.autoPx(node.param['width'])) + '"' : ''
+                        }${node.param['height'] ? ' width="' + this.disableQuot(this.autoPx(node.param['height'])) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
 
                     case 'nicovideo':
                         return `<iframe src="https//embed.nicovideo.jp/watch/sm${encodeURIComponent(node.code)}"${
-                            node.param['width'] ? ' width="' + this.disableQuot(node.param['width']) + '"' : ''
-                        }${node.param['height'] ? ' width="' + this.disableQuot(node.param['height']) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+                            node.param['width'] ? ' width="' + this.disableQuot(this.autoPx(node.param['width'])) + '"' : ''
+                        }${node.param['height'] ? ' width="' + this.disableQuot(this.autoPx(node.param['height'])) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
 
                     case 'vimeo':
                         return `<iframe src="https//player.vimeo.com/video/${encodeURIComponent(node.code)}"${
-                            node.param['width'] ? ' width="' + this.disableQuot(node.param['width']) + '"' : ''
-                        }${node.param['height'] ? ' width="' + this.disableQuot(node.param['height']) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+                            node.param['width'] ? ' width="' + this.disableQuot(this.autoPx(node.param['width'])) + '"' : ''
+                        }${node.param['height'] ? ' width="' + this.disableQuot(this.autoPx(node.param['height'])) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
 
                     case 'navertv':
                         return `<iframe src="https//tv.naver.com/embed/${encodeURIComponent(node.code)}"${
-                            node.param['width'] ? ' width="' + this.disableQuot(node.param['width']) + '"' : ''
-                        }${node.param['height'] ? ' width="' + this.disableQuot(node.param['height']) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+                            node.param['width'] ? ' width="' + this.disableQuot(this.autoPx(node.param['width'])) + '"' : ''
+                        }${node.param['height'] ? ' width="' + this.disableQuot(this.autoPx(node.param['height'])) + '"' : ''} frameborder="0" allowfullscreen loading="lazy"></iframe>`;
 
                     default:
                         return '';
@@ -402,11 +410,11 @@ export class Renderer {
             case 'Table': {
                 return (
                     `<table class="wiki-table" style="${this.disableQuot(
-                        (node.param['width'] ? 'width: ' + node.param['width'] + ';' : '') +
+                        (node.param['width'] ? 'width: ' + this.autoPx(node.param['width']) + ';' : '') +
                             (node.param['bgcolor'] ? 'background-color: ' + node.param['bgcolor'] + ';' : '') +
                             (node.param['color'] ? 'color: ' + node.param['color'] + ';' : '') +
                             (node.param['bordercolor'] ? 'border-color: ' + node.param['bordercolor'] + ';' : '') +
-                            (node.param['align'] ? 'text-align: ' + node.param['align'] + ';' : ''),
+                            (node.param['align'] ? 'float: ' + node.param['align'] + ';' : ''),
                     )}">` +
                     (node.names.length > 0 ? `<caption>${await this.getHTML(node.names)}</caption>` : '') +
                     '<tbody>' +
@@ -428,8 +436,8 @@ export class Renderer {
                                                         cell.param['colcolor'] ? 'data-colcolor="' + this.disableQuot(cell.param['colcolor']) + '" ' : ''
                                                     }style="${this.disableQuot(
                                                         (cell.param['vertical-align'] ? 'vertical-align: ' + cell.param['vertical-align'] + ';' : '') +
-                                                            (cell.param['width'] ? 'width: ' + cell.param['width'] + ';' : '') +
-                                                            (cell.param['height'] ? 'height: ' + cell.param['height'] + ';' : '') +
+                                                            (cell.param['width'] ? 'width: ' + this.autoPx(cell.param['width']) + ';' : '') +
+                                                            (cell.param['height'] ? 'height: ' + this.autoPx(cell.param['height']) + ';' : '') +
                                                             (cell.param['align'] ? 'text-align: ' + cell.param['align'] + ';' : 'text-align: center;') +
                                                             (cell.param['nopad'] ? 'padding: 0;' : '') +
                                                             (cell.param['bgcolor'] ? 'background-color: ' + cell.param['bgcolor'] + ';' : '') +
@@ -492,6 +500,12 @@ export class Renderer {
         }
     }
 
+    private getMaxHeaderLevel(node: Node) {
+        if (node.type === 'Heading') {
+            if (this.maxHeaderLevel > node.depth) this.maxHeaderLevel = node.depth;
+        }
+    }
+
     public async run(name: string, nodes: Node[], param: {[str: string]: string} | null = null, depth: number = 0) {
         this.name = name;
         this.categories = [];
@@ -505,6 +519,10 @@ export class Renderer {
 
         this.headers = [];
         this.headerCounters = [0, 0, 0, 0, 0, 0];
+
+        this.maxHeaderLevel = 6;
+
+        nodes.forEach(this.getMaxHeaderLevel.bind(this));
 
         let html = await this.getHTML(nodes);
 
