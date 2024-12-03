@@ -139,6 +139,10 @@ export class Renderer {
                 return '';
             }
 
+            case 'Br': {
+                return '<br/>';
+            }
+
             case 'Class': {
                 return `<div class="wiki-class ${this.fixParamBug(this.disableQuot(node.style))}">${await this.getHTML(node.items)}</div>`;
             }

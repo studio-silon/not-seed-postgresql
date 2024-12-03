@@ -1115,7 +1115,7 @@ export class Parser {
 
                 return node;
             } else if (token.value === '[br]') {
-                const node = new Node('Literal', {value: '\n'});
+                const node = new Node('Br', {});
 
                 this.cursor++;
 
