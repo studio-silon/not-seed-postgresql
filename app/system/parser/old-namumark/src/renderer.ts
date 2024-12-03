@@ -92,13 +92,7 @@ export class Renderer {
         switch (node.type) {
             case 'Literal': {
                 if (node.value === '\n') {
-                    if (this.newLines++ > 0) {
-                        this.newLines = 0;
-
-                        return '<br />';
-                    }
-
-                    return '\n';
+                    return '<br />';
                 }
 
                 return this.disableTag(node.value);

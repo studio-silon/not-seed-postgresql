@@ -134,6 +134,46 @@
         line-height: 1.6;
     }
 
+    .wiki .wiki-size.size-up-1 {
+        font-size: 1.244em;
+    }
+
+    .wiki .wiki-size.size-up-2 {
+        font-size: 1.333em;
+    }
+
+    .wiki .wiki-size.size-up-3 {
+        font-size: 1.422em;
+    }
+
+    .wiki .wiki-size.size-up-4 {
+        font-size: 1.511em;
+    }
+
+    .wiki .wiki-size.size-up-5 {
+        font-size: 1.6em;
+    }
+
+    .wiki .wiki-size.size-down-1 {
+        font-size: 0.889em;
+    }
+
+    .wiki .wiki-size.size-down-2 {
+        font-size: 0.8em;
+    }
+
+    .wiki .wiki-size.size-down-3 {
+        font-size: 0.711em;
+    }
+
+    .wiki .wiki-size.size-down-4 {
+        font-size: 0.622em;
+    }
+
+    .wiki .wiki-size.size-down-5 {
+        font-size: 0.533em;
+    }
+
     .wiki-table {
         border: 1px solid #d1d5db;
         background-color: #f9fafb;
