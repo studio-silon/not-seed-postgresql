@@ -480,7 +480,7 @@ export default function WikiRoute() {
                         <input
                             type="hidden"
                             name="actionType"
-                            value={shouldCreateEditRequest(isDeleting ? 'delete' : name !== title ? 'move' : 'edit') ? 'create_edit_request' : 'update'}
+                            value={wiki && shouldCreateEditRequest(isDeleting ? 'delete' : name !== title ? 'move' : 'edit') ? 'create_edit_request' : 'update'}
                         />
                         <input type="hidden" name="title" value={title} />
                         <input type="hidden" name="isDeleting" value={isDeleting ? '1' : '0'} />
@@ -501,7 +501,7 @@ export default function WikiRoute() {
                                 취소
                             </Button>
                             <Button type="submit">
-                                {shouldCreateEditRequest(isDeleting ? 'delete' : name !== title ? 'move' : 'edit') ? '편집 요청' : isDeleting ? '삭제' : '저장'}
+                                {wiki && shouldCreateEditRequest(isDeleting ? 'delete' : name !== title ? 'move' : 'edit') ? '편집 요청' : isDeleting ? '삭제' : '저장'}
                             </Button>
                         </div>
                     </div>
