@@ -27,7 +27,7 @@ export function UserPopover({className = '', username, ip}: {className?: string;
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-medium">기간</label>
-                            <Input type="datetime-local" name="expiration" className="w-48" />
+                            <Input type="datetime-local" name="expiration" className="w-52" />
                         </div>
                     </Dialog.Content>
                     <Dialog.Actions>
@@ -53,7 +53,7 @@ export function UserPopover({className = '', username, ip}: {className?: string;
                             <Button variant="ghost">사용자 문서 보기</Button>
                         </Link>
                     )}
-                    {(root.user?.siteInfo || root.user?.permissions.map((p) => p.type).includes('admin')) && (
+                    {(root.user?.siteInfo || root.user?.permissions.map((p: {type: string}) => p.type).includes('admin')) && (
                         <Button variant="danger" onClick={() => setIsOpen(true)}>
                             차단
                         </Button>

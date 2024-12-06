@@ -32,7 +32,7 @@ function UserSearch() {
                 options={users}
                 displayValue={(user) => user?.username || ''}
                 setSearchTerm={setSearchTerm}
-                className="w-48"
+                className="w-52"
                 placeholder="Search users..."
             />
 
@@ -52,7 +52,7 @@ function GroupSearch() {
                 options={groups}
                 displayValue={(group) => group?.name || ''}
                 setSearchTerm={setSearchTerm}
-                className="w-48"
+                className="w-52"
                 placeholder="Search groups..."
             />
 
@@ -233,7 +233,7 @@ export default function AclRoute() {
                             <input type="hidden" name="range" value={range} />
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Condition Type</label>
-                                <Select name="conditionType" className="w-48" value={conditionType} onChange={(e) => setConditionType(e.target.value)}>
+                                <Select name="conditionType" className="w-52" value={conditionType} onChange={(e) => setConditionType(e.target.value)}>
                                     <option value="perm">Permission</option>
                                     <option value="member">Member</option>
                                     <option value="ip">IP Address</option>
@@ -244,7 +244,7 @@ export default function AclRoute() {
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Condition</label>
                                 {conditionType === 'perm' ? (
-                                    <Select name="condition" className="w-48">
+                                    <Select name="condition" className="w-52">
                                         <option value="any">아무나</option>
                                         <option value="member">회원</option>
                                         <option value="ip">IP 사용자</option>
@@ -260,12 +260,12 @@ export default function AclRoute() {
                                 ) : conditionType === 'group' ? (
                                     <GroupSearch />
                                 ) : (
-                                    <Input name="condition" placeholder="Condition value..." className="w-48" />
+                                    <Input name="condition" placeholder="Condition value..." className="w-52" />
                                 )}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Action</label>
-                                <Select name="allow" className="w-48">
+                                <Select name="allow" className="w-52">
                                     <option value="true">허용</option>
                                     <option value="false">차단</option>
                                 </Select>

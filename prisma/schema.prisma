@@ -176,6 +176,7 @@ model PermissionHistory {
   targetUserId   Int?
   targetPage     Wiki?      @relation(fields: [targetPageId], references: [id])
   targetPageId   Int?
+  targetIp       String?
   action         String
   type           Int
   log            String?

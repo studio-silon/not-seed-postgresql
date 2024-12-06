@@ -25,6 +25,7 @@ interface PermissionHistoryEntry {
         title: string;
         namespace: string;
     } | null;
+    targetIp: string | null;
     action: string;
     type: number;
     log: string | null;
@@ -61,6 +62,25 @@ function formatHistoryEntry(entry: PermissionHistoryEntry): React.ReactNode {
                 <UserPopover username={actor} ip={'0.0.0.0'} />
                 님이 <UserPopover username={entry.targetUser.username} ip={'0.0.0.0'} />
                 님을 {entry.action} 그룹에 {entry.type === 1 ? '추가' : '제거'}
+            </span>
+        );
+    }
+
+    if (entry.action === 'batchRevert') {
+        if (entry.targetUser) {
+            return (
+                <span>
+                    <UserPopover username={actor} ip={'0.0.0.0'} />
+                    님이 <UserPopover username={entry.targetUser.username} ip={'0.0.0.0'} />
+                    님의 {entry.target !== 'Invalid Date' ? `${entry.target}부터의 ` : ''}모든 행위를 일괄 되돌리기 했습니다.
+                </span>
+            );
+        }
+
+        return (
+            <span>
+                <UserPopover username={actor} ip={'0.0.0.0'} />
+                님이 <UserPopover ip={entry.targetIp || '0.0.0.0'} /> 님의 {entry.target !== 'Invalid Date' ? `${entry.target}부터의 ` : ''}모든 행위를 일괄 되돌리기 했습니다.
             </span>
         );
     }

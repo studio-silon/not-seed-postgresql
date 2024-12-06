@@ -52,6 +52,16 @@ const items: NavItemProps[] = [
                 link: '/group',
             },
             {
+                name: '[ADMIN] 일괄 되돌리기',
+                icon: Wrench,
+                trigger: (permissions) => {
+                    const names = permissions.map((permission) => permission.type);
+
+                    return names.includes('batch_rever');
+                },
+                link: '/batchRevert',
+            },
+            {
                 name: '[ADMIN] 권한 관리',
                 icon: Wrench,
                 trigger: (permissions) => {

@@ -68,7 +68,7 @@ function GroupMembershipForm({groupId}: {groupId: number}) {
                         options={users}
                         displayValue={(user) => user?.username || ''}
                         setSearchTerm={setSearchTerm}
-                        className="w-48"
+                        className="w-52"
                         placeholder="Search users..."
                     />
                     <input type="hidden" name="userId" value={selectedUser?.id || ''} />
@@ -77,18 +77,18 @@ function GroupMembershipForm({groupId}: {groupId: number}) {
                 {!selectedUser && (
                     <div className="space-y-2">
                         <label className="text-sm font-medium">IP Address</label>
-                        <Input type="text" name="ip" className="w-48" placeholder="IP address" />
+                        <Input type="text" name="ip" className="w-52" placeholder="IP address" />
                     </div>
                 )}
 
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Log</label>
-                    <Input name="log" className="w-48" placeholder="Enter reason for adding member..." />
+                    <Input name="log" className="w-52" placeholder="Enter reason for adding member..." />
                 </div>
 
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Expiration</label>
-                    <Input type="datetime-local" name="expiration" className="w-48" />
+                    <Input type="datetime-local" name="expiration" className="w-52" />
                 </div>
 
                 <Button type="submit" className="flex items-center gap-2">
@@ -275,7 +275,7 @@ export default function GroupRoute() {
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Group Name</label>
-                            <Input type="text" name="name" className="w-48" placeholder="Enter group name" required />
+                            <Input type="text" name="name" className="w-52" placeholder="Enter group name" required />
                         </div>
 
                         <div className="space-y-2">

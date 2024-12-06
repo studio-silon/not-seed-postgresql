@@ -803,4 +803,103 @@ export class Wiki {
             where: {id},
         });
     }
+
+    public static async batchRevert({
+        expiration,
+        userData,
+        userId,
+        ipAddress,
+        log = 'Batch revert',
+    }: {
+        expiration?: number;
+        userData: UserData;
+        userId?: number;
+        ipAddress?: string;
+        log?: string;
+    }) {
+        const cutoffDate = expiration ? new Date(+new Date() - expiration) : null;
+
+        const result = {
+            pagesReverted: 0,
+            commentsHidden: 0,
+            revertFailures: 0,
+        };
+
+        const pageVersionsToRevert = await prisma.wikiVersion.findMany({
+            where: {
+                ...(cutoffDate !== null
+                    ? {
+                          createdAt: {
+                              gte: cutoffDate,
+                          },
+                      }
+                    : {}),
+                ...(userId ? {userId: userId} : {}),
+                ...(!userId ? {ipAddress: ipAddress} : {}),
+                type: {
+                    in: [0, 1, 2],
+                },
+            },
+            select: {
+                wikiId: true,
+                rever: true,
+                wiki: {
+                    select: {
+                        namespace: true,
+                        title: true,
+                        rever: true,
+                    },
+                },
+            },
+        });
+
+        const revertedPageIds: number[] = [];
+
+        for (const pageVersion of pageVersionsToRevert) {
+            if (pageVersion.rever === 1) {
+                await this.deletePage(pageVersion.wiki.namespace, pageVersion.wiki.title, log, userData);
+                continue;
+            }
+
+            try {
+                if (pageVersion.wiki.rever === pageVersion.rever) {
+                    const pageWithVersion = await this.getPageWithRever(pageVersion.wiki.namespace, pageVersion.wiki.title, pageVersion.rever);
+
+                    if (pageWithVersion?.version) {
+                        await this.revertPage(pageVersion.wiki.namespace, pageVersion.wiki.title, pageVersion.rever, log, userData);
+
+                        revertedPageIds.push(pageVersion.wikiId);
+                        result.pagesReverted++;
+                    }
+                }
+            } catch (error) {
+                result.revertFailures++;
+                console.error(`Failed to revert page ${pageVersion.wiki.namespace}:${pageVersion.wiki.title}`, error);
+            }
+        }
+
+        const hiddenComments = await prisma.comment.updateMany({
+            where: {
+                ...(cutoffDate !== null
+                    ? {
+                          createdAt: {
+                              gte: cutoffDate,
+                          },
+                      }
+                    : {}),
+                ...(userId ? {userId: userId} : {}),
+                ...(!userId ? {ipAddress: ipAddress} : {}),
+                hidden: false,
+            },
+            data: {
+                hidden: true,
+                hiddenBy: userData.userId ?? null,
+                hiddenAt: new Date(),
+            },
+        });
+
+        result.commentsHidden = hiddenComments.count;
+
+        return result;
+    }
 }

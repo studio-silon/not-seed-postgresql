@@ -54,11 +54,15 @@ export async function requireUser(request: Request) {
     return user;
 }
 
+export function getIP(request: Request) {
+    const ips = request.headers.get('X-Forwarded-For')?.split(', ');
+
+    return (ips && ips[ips?.length - 1]) || '0.0.0.0';
+}
+
 export async function getUserData(request: Request): Promise<UserData> {
     const session = await getUserSession(request);
     const userId = session.get('userId');
 
-    const ips = request.headers.get('X-Forwarded-For')?.split(', ');
-
-    return {userId, ipAddress: (ips && ips[ips?.length - 1]) || '0.0.0.0'};
+    return {userId, ipAddress: getIP(request)};
 }

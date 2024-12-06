@@ -27,7 +27,7 @@ function UserSearch() {
                 options={users}
                 displayValue={(user) => user?.username || ''}
                 setSearchTerm={setSearchTerm}
-                className="w-48"
+                className="w-52"
                 placeholder="Search users..."
             />
             <input type="hidden" name="userId" value={selectedUser?.id || ''} />
@@ -168,7 +168,7 @@ export default function PermissionRoute() {
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Permission Type</label>
-                            <Select name="type" className="w-48">
+                            <Select name="type" className="w-52">
                                 {Object.entries(permissions)
                                     .filter(([type]) => type !== 'admin' || canAdmin)
                                     .map(([key, label]) => (
@@ -181,7 +181,7 @@ export default function PermissionRoute() {
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Log Message</label>
-                            <Input type="text" name="log" className="w-48" placeholder="Reason for permission change..." />
+                            <Input type="text" name="log" className="w-52" placeholder="Reason for permission change..." />
                         </div>
 
                         <Button type="submit" className="flex items-center gap-2">
