@@ -178,15 +178,16 @@ export class Renderer {
             }
 
             case 'HyperLink': {
-                const externalLink = node.link.startsWith('https://') || node.link.startsWith('http://');
+                const link = this.fixParamBug(node.link);
+                const externalLink = link.startsWith('https://') || link.startsWith('http://');
 
-                if (!externalLink) this.backlinks.push({type: 'link', name: node.link.split('#')[0]});
+                if (!externalLink) this.backlinks.push({type: 'link', name: link.split('#')[0]});
 
-                const notExist = !(externalLink ? null : await this.findPage(node.link.split('#')[0]));
+                const notExist = !(externalLink ? null : await this.findPage(link.split('#')[0]));
 
-                return `<a href="${this.disableQuot(externalLink ? decodeURI(node.link).replace(/\r/, '').replace(/\n/, '') : this.getURL('link', node.link))}" class="wiki-link${
+                return `<a href="${this.disableQuot(externalLink ? decodeURI(link).replace(/\r/, '').replace(/\n/, '') : this.getURL('link', link))}" class="wiki-link${
                     externalLink ? ' external-link' : notExist ? ' not-exist' : ''
-                }">${await this.getHTML(node.items)}</a>`;
+                }">${this.fixParamBug(await this.getHTML(node.items))}</a>`;
             }
 
             case 'Category': {

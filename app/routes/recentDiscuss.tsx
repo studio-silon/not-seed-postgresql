@@ -7,6 +7,7 @@ import {Button} from '~/stories/Button';
 import {MessageSquare, Lock} from 'lucide-react';
 import {useEffect} from 'react';
 import {UserPopover} from '~/components/UserPopover';
+import {urlEncoding} from '~/utils/url-encoding';
 
 export async function loader({request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
@@ -81,7 +82,7 @@ export default function RecentDiscussions() {
                         <div key={discussion.id} className="border-b border-gray-100 p-4 hover:bg-gray-50">
                             <div className="flex items-center gap-2">
                                 <div className="flex items-center gap-2">
-                                    <Link to={`/wiki/${JoinName(discussion.wiki.namespace, discussion.wiki.title)}`} className="text-sm text-gray-600 hover:underline">
+                                    <Link to={`/wiki/${urlEncoding(JoinName(discussion.wiki.namespace, discussion.wiki.title))}`} className="text-sm text-gray-600 hover:underline">
                                         {JoinName(discussion.wiki.namespace, discussion.wiki.title)}
                                     </Link>
                                     <span className="text-gray-400">•</span>

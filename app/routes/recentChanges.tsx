@@ -8,6 +8,7 @@ import {Button} from '~/stories/Button';
 import {useEffect} from 'react';
 import {UserPopover} from '~/components/UserPopover';
 import {ReverMiniDiff} from '~/components/ReverMiniDiff';
+import {urlEncoding} from '~/utils/url-encoding';
 
 export async function loader({request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
@@ -83,22 +84,22 @@ export default function RecentChanges() {
                         <div key={change.id} className="border-b border-gray-100 p-4 hover:bg-gray-50">
                             <div className="flex items-center gap-2">
                                 <div className="flex items-center gap-2">
-                                    <Link to={`/wiki/${JoinName(change.namespace, change.title)}`} className="font-medium text-blue-600 hover:underline">
+                                    <Link to={`/wiki/${urlEncoding(JoinName(change.namespace, change.title))}`} className="font-medium text-blue-600 hover:underline">
                                         {JoinName(change.namespace, change.title)}
                                     </Link>
-                                    <Link to={`/wiki/${JoinName(change.namespace, change.title)}?rever=${change.rever}`} className="text-sm text-gray-500">
+                                    <Link to={`/wiki/${urlEncoding(JoinName(change.namespace, change.title))}?rever=${change.rever}`} className="text-sm text-gray-500">
                                         r{change.rever}
                                     </Link>
                                     {change.versions[0].type !== 0 && <span className="text-sm text-gray-500">{ReverTypeToMessage(change.versions[0])}</span>}
                                     <ReverMiniDiff rever={change.versions[0]} />
                                 </div>
                                 <div className="ml-auto flex items-center gap-2 sm:ml-0">
-                                    <Link to={`/history/${JoinName(change.namespace, change.title)}`}>
+                                    <Link to={`/history/${urlEncoding(JoinName(change.namespace, change.title))}`}>
                                         <Button variant="ghost" size="sm">
                                             역사
                                         </Button>
                                     </Link>
-                                    <Link to={`/diff/${JoinName(change.namespace, change.title)}?rever=${change.rever}`}>
+                                    <Link to={`/diff/${urlEncoding(JoinName(change.namespace, change.title))}?rever=${change.rever}`}>
                                         <Button variant="ghost" size="sm">
                                             비교
                                         </Button>

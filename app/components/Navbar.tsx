@@ -1,6 +1,6 @@
 import {Form, Link} from '@remix-run/react';
 import {Button} from '~/stories/Button';
-import {UserIcon, BellIcon, Clock8, MessageSquare, Wrench, Search, Menu, X, Mail, ChevronUpIcon, ChevronDownIcon, LucideProps, Shuffle, Users2Icon} from 'lucide-react';
+import {UserIcon, NotebookPen, Clock8, MessageSquare, Wrench, Search, Menu, X, Mail, ChevronUpIcon, ChevronDownIcon, LucideProps, Shuffle, Users2Icon, Frown} from 'lucide-react';
 import {Dropdown} from '~/stories/Dropdown';
 import {Popover} from '~/stories/Popover';
 import {Input} from '~/stories/Input';
@@ -27,6 +27,8 @@ const items: NavItemProps[] = [
         name: '도구',
         icon: Wrench,
         dropdown: [
+            {name: '작성이 필요한 문서', icon: NotebookPen, link: '/neededPages'},
+            {name: '고립된 문서', icon: Frown, link: '/orphanedPages'},
             {name: '임의 문서', icon: Shuffle, link: '/random'},
             {name: '권한 로그', icon: UserIcon, link: '/permissionHistory'},
             {
