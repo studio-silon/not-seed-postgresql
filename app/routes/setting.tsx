@@ -10,6 +10,7 @@ import {Input} from '~/stories/Input';
 import {Site} from '@/system/site';
 import {User} from '@/system/user';
 import {prisma} from '~/db.server';
+import {Textarea} from '~/stories/Textarea';
 
 export const meta = metaTitle<typeof loader>(() => `Site Settings`);
 
@@ -35,6 +36,8 @@ export async function action({request}: ActionFunctionArgs) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const footer = formData.get('footer') as string;
+    const token = formData.get('token') as string;
+    const termsAndConditions = formData.get('termsAndConditions') as string;
     const frontPage = formData.get('frontPage') as string;
 
     await prisma.siteInfo.update({
@@ -45,6 +48,8 @@ export async function action({request}: ActionFunctionArgs) {
             title,
             description,
             footer,
+            token,
+            termsAndConditions,
             frontPage,
         },
     });
@@ -83,6 +88,16 @@ export default function SettingsRoute() {
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">푸터 내용</label>
                                 <Input type="text" name="footer" defaultValue={siteInfo.footer} placeholder="푸터 내용을 입력하세요" required />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">가입 토큰</label>
+                                <Input type="text" name="token" defaultValue={siteInfo.token} placeholder="가입 토큰을 입력하세요" required />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">약관</label>
+                                <Textarea name="termsAndConditions" className="h-52" defaultValue={siteInfo.termsAndConditions} placeholder="약관을 입력하세요" required />
                             </div>
 
                             <div className="space-y-2">

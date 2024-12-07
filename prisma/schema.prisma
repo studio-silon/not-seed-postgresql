@@ -16,7 +16,8 @@ model SiteInfo {
   footer      String
   owner       User     @relation(name: "SiteInfoToUser", fields: [ownerid], references: [id])
   ownerid     Int      @unique
-  token       String
+  token       String   @default("")
+  termsAndConditions String @default("약관을 입력하세요.")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

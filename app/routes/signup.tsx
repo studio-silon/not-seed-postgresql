@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
-import {Form, useRouteLoaderData} from '@remix-run/react';
-import {Card} from '../stories/Card';
+import {Form, useLoaderData} from '@remix-run/react';
 import {Button} from '../stories/Button';
 import {Input} from '../stories/Input';
-import {Lock, UserIcon, Eye, EyeOff} from 'lucide-react';
+import {Eye, EyeOff} from 'lucide-react';
 import {commitSession, getSession, getUser} from '../utils/sessions.server';
 import {LoaderFunctionArgs, redirect} from '@remix-run/node';
 import {getCookie, setCookie} from '~/utils/cookies.server';
 import metaTitle from '~/utils/meta';
 import {User} from '~/system/.server/user';
-import type {loader as RootLoader} from '../root';
+import {Site} from '~/system/.server/site';
+import {Textarea} from '~/stories/Textarea';
+import Checkbox from '~/stories/Checkbox';
 
 export const meta = metaTitle(() => '회원가입');
 
@@ -18,7 +19,9 @@ export async function loader({request}: LoaderFunctionArgs) {
         return redirect('/');
     }
 
-    return null;
+    const siteInfo = await Site.getInfo();
+
+    return {title: siteInfo.title, needToken: siteInfo.token !== '', termsAndConditions: siteInfo.termsAndConditions};
 }
 
 export async function action({request, params}: {request: Request; params: {'*': string}}) {
@@ -27,50 +30,79 @@ export async function action({request, params}: {request: Request; params: {'*':
     const formData = await request.formData();
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
+    const token = formData.get('token') as string;
 
-    if (request.method === 'POST') {
-        const user = await User.signup(username, password);
-        if (!user) {
-            cookie.toast = {
-                type: 'error',
-                message: '회원가입을 실패했습니다.',
-            };
+    const siteInfo = await Site.getInfo();
 
-            return redirect('/signup', {
-                status: IS_SKIN_MODE ? 400 : 302,
-                headers: [['Set-Cookie', await setCookie(cookie)]],
-            });
-        }
-
-        session.set('userId', user.id);
-
+    if (siteInfo.token !== '' && token !== siteInfo.token) {
         cookie.toast = {
-            type: 'success',
-            message: '회원가입이 성공했습니다!',
+            type: 'error',
+            message: '회원가입을 실패했습니다.',
         };
 
-        return redirect('/', {
-            headers: [
-                ['Set-Cookie', await commitSession(session)],
-                ['Set-Cookie', await setCookie(cookie)],
-            ],
+        return redirect('/signup', {
+            status: IS_SKIN_MODE ? 400 : 302,
+            headers: [['Set-Cookie', await setCookie(cookie)]],
         });
     }
 
-    return null;
+    const user = await User.signup(username, password);
+    if (!user) {
+        cookie.toast = {
+            type: 'error',
+            message: '회원가입을 실패했습니다.',
+        };
+
+        return redirect('/signup', {
+            status: IS_SKIN_MODE ? 400 : 302,
+            headers: [['Set-Cookie', await setCookie(cookie)]],
+        });
+    }
+
+    session.set('userId', user.id);
+
+    cookie.toast = {
+        type: 'success',
+        message: '회원가입이 성공했습니다!',
+    };
+
+    return redirect('/', {
+        headers: [
+            ['Set-Cookie', await commitSession(session)],
+            ['Set-Cookie', await setCookie(cookie)],
+        ],
+    });
 }
 
 export default function Login() {
-    const root = useRouteLoaderData<typeof RootLoader>('root');
+    const {title, needToken, termsAndConditions} = useLoaderData<typeof loader>();
     const [showPassword, setShowPassword] = useState(false);
+
+    const [agree, setAgree] = useState(false);
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4">
             <div className="w-full max-w-sm space-y-8">
-                <h1 className="text-2xl font-medium text-center">Sign up to {root?.site.title}</h1>
+                <h1 className="text-2xl font-medium text-center">Sign up to {title}</h1>
 
                 <Form method="post" className="space-y-4">
                     <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm mb-1">약관</label>
+                            <Textarea value={termsAndConditions} className="h-52" />
+                        </div>
+
+                        <div>
+                            <Checkbox variant="primary" size="sm" label="동의합니다." checked={agree} onChange={() => setAgree(!agree)} />
+                        </div>
+
+                        {needToken && (
+                            <div>
+                                <label className="block text-sm mb-1">토큰</label>
+                                <Input type="text" name="token" placeholder="토큰 입력" required />
+                            </div>
+                        )}
+
                         <div>
                             <label className="block text-sm mb-1">아이디</label>
                             <Input type="text" name="username" placeholder="아이디 입력" required />
@@ -90,7 +122,7 @@ export default function Login() {
                             </div>
                         </div>
 
-                        <Button type="submit" variant="primary" size="md" className="w-full">
+                        <Button type="submit" variant="primary" size="md" className="w-full" disabled={!agree}>
                             가입
                         </Button>
 

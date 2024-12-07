@@ -2,7 +2,7 @@ const colors = require('tailwindcss/colors');
 const ColorConverter = require('./ColorConverter');
 
 const baseColors = {
-    brand: '#ee4546',
+    brand: '#535de8',
     secondary: '#25262b',
     dark: '#343a40',
     light: '#f8f9fa',
