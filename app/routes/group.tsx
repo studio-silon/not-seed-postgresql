@@ -18,7 +18,7 @@ const ITEMS_PER_PAGE = 10;
 export async function loader({request}: LoaderFunctionArgs) {
     const user = await getUser(request);
 
-    if (!(await User.checkPermission('admin', user))) {
+    if (!(await User.checkPermission('group', user))) {
         throw new Response('Forbidden', {status: 403});
     }
 
@@ -139,7 +139,7 @@ export async function action({request}: ActionFunctionArgs) {
     const user = await getUser(request);
     const log = formData.get('log') as string;
 
-    if (!user || !(await User.checkPermission('admin', user))) {
+    if (!user || !(await User.checkPermission('group', user))) {
         throw new Response('Forbidden', {status: 403});
     }
 

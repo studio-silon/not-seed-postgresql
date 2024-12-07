@@ -80,42 +80,44 @@ export default function RecentChanges() {
                     <h1 className="text-2xl font-bold">최근 변경</h1>
                 </div>
                 <div className="rounded-lg bg-white shadow-sm">
-                    {changes.map((change) => (
-                        <div key={change.id} className="border-b border-gray-100 p-4 hover:bg-gray-50">
-                            <div className="flex items-center gap-2">
+                    {changes
+                        .filter((change) => change.versions[0])
+                        .map((change) => (
+                            <div key={change.id} className="border-b border-gray-100 p-4 hover:bg-gray-50">
                                 <div className="flex items-center gap-2">
-                                    <Link to={`/wiki/${urlEncoding(JoinName(change.namespace, change.title))}`} className="font-medium text-blue-600 hover:underline">
-                                        {JoinName(change.namespace, change.title)}
-                                    </Link>
-                                    <Link to={`/wiki/${urlEncoding(JoinName(change.namespace, change.title))}?rever=${change.rever}`} className="text-sm text-gray-500">
-                                        r{change.rever}
-                                    </Link>
-                                    {change.versions[0].type !== 0 && <span className="text-sm text-gray-500">{ReverTypeToMessage(change.versions[0])}</span>}
-                                    <ReverMiniDiff rever={change.versions[0]} />
+                                    <div className="flex items-center gap-2">
+                                        <Link to={`/wiki/${urlEncoding(JoinName(change.namespace, change.title))}`} className="font-medium text-blue-600 hover:underline">
+                                            {JoinName(change.namespace, change.title)}
+                                        </Link>
+                                        <Link to={`/wiki/${urlEncoding(JoinName(change.namespace, change.title))}?rever=${change.rever}`} className="text-sm text-gray-500">
+                                            r{change.rever}
+                                        </Link>
+                                        {change.versions[0].type !== 0 && <span className="text-sm text-gray-500">{ReverTypeToMessage(change.versions[0])}</span>}
+                                        <ReverMiniDiff rever={change.versions[0]} />
+                                    </div>
+                                    <div className="ml-auto flex items-center gap-2 sm:ml-0">
+                                        <Link to={`/history/${urlEncoding(JoinName(change.namespace, change.title))}`}>
+                                            <Button variant="ghost" size="sm">
+                                                역사
+                                            </Button>
+                                        </Link>
+                                        <Link to={`/diff/${urlEncoding(JoinName(change.namespace, change.title))}?rever=${change.rever}`}>
+                                            <Button variant="ghost" size="sm">
+                                                비교
+                                            </Button>
+                                        </Link>
+                                    </div>
                                 </div>
-                                <div className="ml-auto flex items-center gap-2 sm:ml-0">
-                                    <Link to={`/history/${urlEncoding(JoinName(change.namespace, change.title))}`}>
-                                        <Button variant="ghost" size="sm">
-                                            역사
-                                        </Button>
-                                    </Link>
-                                    <Link to={`/diff/${urlEncoding(JoinName(change.namespace, change.title))}?rever=${change.rever}`}>
-                                        <Button variant="ghost" size="sm">
-                                            비교
-                                        </Button>
-                                    </Link>
+
+                                {change.versions[0].log && <p className="mt-1 text-sm text-gray-600">{change.versions[0].log}</p>}
+
+                                <div className="mt-2 flex items-center justify-between text-sm text-gray-500 sm:justify-start">
+                                    <UserPopover username={change.versions[0].user?.username} ip={change.versions[0].ipAddress ?? '0.0.0.0'} />
+                                    <span className="mx-2 hidden sm:inline">•</span>
+                                    <span>{new Date(change.versions[0].createdAt).toLocaleString()}</span>
                                 </div>
                             </div>
-
-                            {change.versions[0].log && <p className="mt-1 text-sm text-gray-600">{change.versions[0].log}</p>}
-
-                            <div className="mt-2 flex items-center justify-between text-sm text-gray-500 sm:justify-start">
-                                <UserPopover username={change.versions[0].user?.username} ip={change.versions[0].ipAddress ?? '0.0.0.0'} />
-                                <span className="mx-2 hidden sm:inline">•</span>
-                                <span>{new Date(change.versions[0].createdAt).toLocaleString()}</span>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
                 </div>
 
                 {totalPages > 1 && (

@@ -67,11 +67,11 @@ model Wiki {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  versions  WikiVersion[]
-  discussions Discussion[]
+  versions  WikiVersion[] 
+  discussions Discussion[] 
   acls Acl[]
   file WikiFile?
-  permissionHistorys PermissionHistory[]
+  permissionHistorys PermissionHistory[] 
   backlinks Backlink[]
   editRequests EditRequest[]
 
@@ -82,7 +82,7 @@ model Wiki {
 
 model Star {
   id        Int      @id @default(autoincrement())
-  wiki Wiki @relation(fields: [wikiId], references: [id])
+  wiki Wiki @relation(fields: [wikiId], references: [id], onDelete: Cascade)
   wikiId Int
   user User @relation(fields: [userId], references: [id])
   userId Int
@@ -103,7 +103,7 @@ model WikiVersion {
   createdAt DateTime @default(now())
   
   wikiId    Int
-  wiki      Wiki     @relation(fields: [wikiId], references: [id])
+  wiki      Wiki     @relation(fields: [wikiId], references: [id], onDelete: Cascade)
   userId    Int?
   user      User?    @relation(fields: [userId], references: [id])
   ipAddress String? 
@@ -118,12 +118,12 @@ model WikiFile {
   url       String
 
   wikiId    Int      @unique
-  wiki      Wiki     @relation(fields: [wikiId], references: [id])
+  wiki      Wiki     @relation(fields: [wikiId], references: [id], onDelete: Cascade)
 }
 
 model Discussion {
   id         Int        @id @default(autoincrement())
-  wiki       Wiki       @relation(fields: [wikiId], references: [id])
+  wiki       Wiki       @relation(fields: [wikiId], references: [id], onDelete: Cascade)
   wikiId     Int
   title      String  
 
@@ -158,7 +158,7 @@ model Comment {
 model Acl {
   id             Int        @id @default(autoincrement())
   namespace      String?
-  wiki           Wiki?      @relation(fields: [wikiId], references: [id])
+  wiki           Wiki?      @relation(fields: [wikiId], references: [id], onDelete: Cascade)
   wikiId         Int?
   condition_type String
   condition      String
@@ -174,7 +174,7 @@ model PermissionHistory {
   range          String?
   targetUser     User?      @relation("TargetUser", fields: [targetUserId], references: [id])
   targetUserId   Int?
-  targetPage     Wiki?      @relation(fields: [targetPageId], references: [id])
+  targetPage     Wiki?      @relation(fields: [targetPageId], references: [id], onDelete: Cascade)
   targetPageId   Int?
   targetIp       String?
   action         String
@@ -189,7 +189,7 @@ model PermissionHistory {
 
 model Backlink {
   id             Int    @id @default(autoincrement())
-  from           Wiki   @relation(fields: [fromId], references: [id])
+  from           Wiki   @relation(fields: [fromId], references: [id], onDelete: Cascade)
   fromId         Int
   to             String
   type           String
@@ -218,7 +218,7 @@ model GroupUsers {
 
 model EditRequest {
   id             Int      @id @default(autoincrement())
-  wiki           Wiki     @relation(fields: [wikiId], references: [id])
+  wiki           Wiki     @relation(fields: [wikiId], references: [id], onDelete: Cascade)
   wikiId         Int
   
   type           Int      // 0: edit, 1: move, 2: delete

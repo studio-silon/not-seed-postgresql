@@ -7,13 +7,14 @@ export type PermissionsType =
     | 'admin'
     | 'revoke_admin'
     | 'update_thread_status'
+    | 'delete_thread'
     | 'nsacl'
+    | 'group'
     | 'hide_thread_comment'
     | 'grant'
     | 'update_thread'
     | 'aclgroup'
-    | 'hide_document'
-    | 'hide_rever'
+    | 'remove_rever'
     | 'batch_rever';
 
 export class User {
@@ -54,25 +55,22 @@ export class User {
         );
     }
 
-    public static async update(
-        userId: number,
-        data: { username?: string; password?: string }
-    ) {
-        const updateData: { username?: string; password?: string } = {};
-    
+    public static async update(userId: number, data: {username?: string; password?: string}) {
+        const updateData: {username?: string; password?: string} = {};
+
         if (data.username) {
             updateData.username = data.username;
         }
-    
+
         if (data.password) {
             updateData.password = await bcrypt.hash(data.password, 10);
         }
-    
+
         return await prisma.user.update({
-            where: { id: userId },
+            where: {id: userId},
             data: updateData,
         });
-    }    
+    }
 
     public static async checkPermission(permission: PermissionsType, user: Prisma.PromiseReturnType<typeof getUser>) {
         if (!user) return false;

@@ -18,8 +18,10 @@ import {prisma} from '~/db.server';
 import backLinkInit from '@/parser/backlink.server';
 import {UserPopover} from '~/components/UserPopover';
 import {ReverMiniDiff} from '~/components/ReverMiniDiff';
+import {User} from '~/system/.server/user';
+import {urlEncoding} from '~/utils/url-encoding';
 
-export const meta = metaTitle<typeof loader>((data) => (data.wiki ? '역사: ' + JoinName(data.wiki.namespace, data.wiki.title) : ''));
+export const meta = metaTitle<typeof loader>(({data}) => (data.wiki ? '역사: ' + JoinName(data.wiki.namespace, data.wiki.title) : ''));
 
 export async function loader({params, request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
@@ -37,7 +39,7 @@ export async function loader({params, request}: LoaderFunctionArgs) {
         throw new Response('Forbidden', {status: 403});
     }
 
-    return json(historyData);
+    return json({data: historyData, canRemoveRever: await User.checkPermission('remove_rever', user)});
 }
 
 export async function action({request, params}: {request: Request; params: {'*': string}}) {
@@ -45,6 +47,7 @@ export async function action({request, params}: {request: Request; params: {'*':
     const [namespace, title] = Wiki.splitName(params['*']);
     const rever = formData.get('rever') as string;
     const log = formData.get('log') as string;
+    const actionType = formData.get('actionType') as string;
     const userData = await getUserData(request);
     const user = await getUser(request);
     const cookie = await getCookie(request);
@@ -64,10 +67,27 @@ export async function action({request, params}: {request: Request; params: {'*':
     }
 
     if (rever && !isNaN(+rever)) {
+        if (actionType === 'removeRever') {
+            if (!user || !(await User.checkPermission('remove_rever', user))) {
+                throw new Response('Forbidden', {status: 403});
+            }
+
+            await Wiki.removeRever(namespace, title, +rever);
+
+            cookie.toast = {
+                type: 'success',
+                message: '리버전 삭제를 성공했습니다.',
+            };
+
+            return redirect('/recentChanges/' + urlEncoding(params['*']), {
+                headers: [['Set-Cookie', await setCookie(cookie)]],
+            });
+        }
+
         if (await Wiki.revertPage(namespace, title, +rever, log || '', userData)) {
             backLinkInit(wiki);
 
-            return redirect(`/wiki/${params['*']}`);
+            return redirect(`/wiki/${urlEncoding(params['*'])}`);
         }
     }
 
@@ -76,23 +96,27 @@ export async function action({request, params}: {request: Request; params: {'*':
         message: '되돌리기를 실패했습니다.',
     };
 
-    return redirect('/history/' + params['*'], {
+    return redirect('/history/' + urlEncoding(params['*']), {
         headers: [['Set-Cookie', await setCookie(cookie)]],
     });
 }
 
 export default function HistoryPage() {
-    const {wiki, totalPages} = useLoaderData<typeof loader>();
+    const {
+        data: {wiki, totalPages},
+        canRemoveRever,
+    } = useLoaderData<typeof loader>();
     const params = useParams();
     const [currentPage, setCurrentPage] = useState(1);
     const [isOpen, setIsOpen] = useState(false);
+    const [isRemoveReverOpen, setIsRemoveReverOpen] = useState(false);
     const [rever, setRever] = useState(0);
 
     return (
         <Frame>
             <div className="flex flex-col">
                 <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
-                    <Form method="post" action={'/history/' + params['*']}>
+                    <Form method="post" onSubmit={() => setIsOpen(false)}>
                         <Dialog.Title>
                             <b>r{rever}</b> 버전으로 되돌리기
                         </Dialog.Title>
@@ -110,6 +134,30 @@ export default function HistoryPage() {
                         </Dialog.Actions>
                     </Form>
                 </Dialog>
+
+                {canRemoveRever && (
+                    <Dialog isOpen={isRemoveReverOpen} onClose={() => setIsRemoveReverOpen(false)}>
+                        <Form method="post" onSubmit={() => setIsRemoveReverOpen(false)}>
+                            <Dialog.Title>
+                                <b>r{rever}</b> 영구 삭제
+                            </Dialog.Title>
+                            <Dialog.Content>
+                                <input type="hidden" name="actionType" value="removeRever" />
+                                <input type="hidden" name="rever" value={rever} />
+                                <p className="text-sm text-gray-500">이 작업은 이 위키에서 영구적으로 해당 리버전을 삭제하며, 되돌릴 수 없습니다. 신중하게 선택하세요.</p>
+                                <p className="text-sm text-gray-500">많은 경우, ACL이나 되돌리기 기능이 더 효과적일 수 있습니다.</p>
+                            </Dialog.Content>
+                            <Dialog.Actions>
+                                <Button onClick={() => setIsOpen(false)} variant="ghost">
+                                    취소
+                                </Button>
+                                <Button type="submit" variant="danger" onClick={() => setIsOpen(false)}>
+                                    영구 삭제
+                                </Button>
+                            </Dialog.Actions>
+                        </Form>
+                    </Dialog>
+                )}
 
                 <div className="flex items-center justify-between mb-6 bg-white rounded-lg p-4 shadow-sm">
                     <h1 className="text-2xl font-bold">{params['*']}의 역사</h1>
@@ -149,6 +197,18 @@ export default function HistoryPage() {
                                     >
                                         되돌리기
                                     </Button>
+                                    {canRemoveRever && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => {
+                                                setRever(version.rever);
+                                                setIsRemoveReverOpen(true);
+                                            }}
+                                        >
+                                            영구 삭제
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
 

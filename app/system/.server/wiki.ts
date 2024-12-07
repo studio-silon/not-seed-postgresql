@@ -478,6 +478,64 @@ export class Wiki {
         return updatedWiki;
     }
 
+    public static async removeRever(namespace: string, title: string, rever: number) {
+        const wiki = await prisma.wiki.findUnique({
+            where: {
+                title_namespace: {namespace, title},
+            },
+            select: {
+                id: true,
+                rever: true,
+                versions: {
+                    select: {
+                        id: true,
+                    },
+                },
+            },
+        });
+
+        if (!wiki) return;
+
+        if (wiki.versions.length <= 1) {
+            await prisma.wiki.delete({
+                where: {
+                    id: wiki.id,
+                },
+            });
+
+            return;
+        }
+
+        if (wiki.rever === rever) {
+            await prisma.wiki.update({
+                where: {
+                    id: wiki.id,
+                },
+                data: {
+                    rever: {decrement: 1},
+                },
+            });
+        }
+
+        const version = await prisma.wikiVersion.findFirst({
+            where: {
+                wikiId: wiki.id,
+                rever,
+            },
+            select: {id: true},
+        });
+
+        if (!version) return;
+
+        const deletedVersion = await prisma.wikiVersion.delete({
+            where: {
+                id: version.id,
+            },
+        });
+
+        return deletedVersion;
+    }
+
     public static async createEditRequest(
         namespace: string,
         title: string,
