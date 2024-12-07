@@ -9,7 +9,7 @@
         "module": "ESNext",
         "moduleResolution": "Bundler",
         "resolveJsonModule": true,
-        "target": "ES2024",
+        "target": "ES2023",
         "strict": true,
         "allowJs": true,
         "skipLibCheck": true,
