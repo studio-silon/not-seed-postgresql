@@ -30,6 +30,7 @@ export default defineConfig({
         rollupOptions: {
             external: ['pg-hstore'],
         },
+        target: 'ES2024',
     },
     define: {
         IS_SKIN_MODE: process.env.MODE === 'skin',
