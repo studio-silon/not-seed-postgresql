@@ -21,7 +21,7 @@ export class Renderer {
     public findPage: findPageFn = () => null;
     public findImage: findImageFn = () => null;
     public getThreads: getThreadsFn = async () => [];
-    public getURL: getURLFn = (type: 'link' | 'image', name: string) => (type === 'link' ? '/wiki/' : '') + name;
+    public getURL: getURLFn = (type: 'link' | 'image', name: string) => (type === 'link' ? (IS_SKIN_MODE ? '/w/' : '/wiki/') : '') + name;
     public pageCount: pageCountFn = async () => 0;
 
     public categories: string[] = [];
