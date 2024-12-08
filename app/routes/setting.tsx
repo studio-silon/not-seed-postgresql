@@ -40,10 +40,7 @@ export async function action({request}: ActionFunctionArgs) {
     const termsAndConditions = formData.get('termsAndConditions') as string;
     const frontPage = formData.get('frontPage') as string;
 
-    await prisma.siteInfo.update({
-        where: {
-            ownerid: user.id,
-        },
+    await prisma.siteInfo.updateMany({
         data: {
             title,
             description,
