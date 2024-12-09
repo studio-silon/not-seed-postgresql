@@ -59,24 +59,25 @@ model Permission {
 }
 
 model Wiki {
-  id        Int      @id @default(autoincrement())
-  title     String 
-  namespace String
-  content   String
-  deleted   Boolean  @default(false)
-  rever     Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  title       String 
+  namespace   String
+  content     String
+  deleted     Boolean  @default(false)
+  rever       Int      @default(1)
+  isRedirect  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  versions  WikiVersion[] 
+  versions    WikiVersion[] 
   discussions Discussion[] 
-  acls Acl[]
-  file WikiFile?
+  acls        Acl[]
+  file        WikiFile?
   permissionHistorys PermissionHistory[] 
-  backlinks Backlink[]
+  backlinks   Backlink[]
   editRequests EditRequest[]
 
-  stars Star[]
+  stars       Star[]
 
   @@unique([title, namespace])
 }
@@ -101,6 +102,7 @@ model WikiVersion {
   added     Int      @default(0)
   removed   Int      @default(0)
   content   String 
+  isRedirect Boolean  @default(false)
   createdAt DateTime @default(now())
   
   wikiId    Int

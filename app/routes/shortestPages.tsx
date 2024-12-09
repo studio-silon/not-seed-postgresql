@@ -3,12 +3,8 @@ import {useLoaderData, Link} from '@remix-run/react';
 import {prisma} from '~/db.server';
 import {Frame} from '~/components/Frame';
 import {JoinName} from '~/utils/wiki';
-import {ReverTypeToMessage} from '~/utils/wiki';
 import {Button} from '~/stories/Button';
-import {UserPopover} from '~/components/UserPopover';
-import {ReverMiniDiff} from '~/components/ReverMiniDiff';
 import {urlEncoding} from '~/utils/url-encoding';
-import {Prisma} from '@prisma/client';
 
 export async function loader({request}: LoaderFunctionArgs) {
     const url = new URL(request.url);
@@ -17,22 +13,25 @@ export async function loader({request}: LoaderFunctionArgs) {
 
     const changes = await prisma.wiki.findMany({
         where: {
-            backlinks: {
-                none: {
-                    type: 'category',
-                },
-            },
+            isRedirect: false,
         },
         take: pageSize,
         skip: (page - 1) * pageSize,
         orderBy: {
-            updatedAt: 'desc',
+            content: 'asc',
         },
         select: {
             id: true,
             rever: true,
             namespace: true,
             title: true,
+            /*char_count: {
+                select: {
+                    _count: {
+                        content: true,
+                    },
+                },
+            },*/
         },
     });
 
@@ -50,14 +49,14 @@ export async function loader({request}: LoaderFunctionArgs) {
     });
 }
 
-export default function UncategorizedPages() {
+export default function ShortestPages() {
     const {changes, page, totalPages} = useLoaderData<typeof loader>();
 
     return (
         <Frame>
             <div className="flex flex-col">
                 <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
-                    <h1 className="text-2xl font-bold">분류가 되지 않은 문서</h1>
+                    <h1 className="text-2xl font-bold">내용이 짧은 문서</h1>
                 </div>
                 <div className="rounded-lg bg-white shadow-sm">
                     {changes.map((change) => {
@@ -69,9 +68,6 @@ export default function UncategorizedPages() {
                                     <div className="flex items-center gap-2 justify-between">
                                         <Link to={`/wiki/${url}`} className="font-medium text-blue-600 hover:underline">
                                             {JoinName(change.namespace, change.title)}
-                                        </Link>
-                                        <Link to={`/backlink/${url}`} className="font-medium text-blue-600 hover:underline">
-                                            <Button variant="ghost">역링크</Button>
                                         </Link>
                                     </div>
                                 </div>

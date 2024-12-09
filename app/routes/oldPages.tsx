@@ -16,10 +16,11 @@ export async function loader({request}: LoaderFunctionArgs) {
     const pageSize = 50;
 
     const changes = await prisma.wiki.findMany({
+        where: {isRedirect: false},
         take: pageSize,
         skip: (page - 1) * pageSize,
         orderBy: {
-            updatedAt: 'desc',
+            updatedAt: 'asc',
         },
         select: {
             id: true,
@@ -63,25 +64,14 @@ export async function loader({request}: LoaderFunctionArgs) {
     });
 }
 
-export default function RecentChanges() {
+export default function OldPages() {
     const {changes, page, totalPages} = useLoaderData<typeof loader>();
-    const revalidator = useRevalidator();
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            revalidator.revalidate();
-        }, 10000);
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, [revalidator]);
 
     return (
         <Frame>
             <div className="flex flex-col">
                 <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
-                    <h1 className="text-2xl font-bold">최근 변경</h1>
+                    <h1 className="text-2xl font-bold">오래된 문서들</h1>
                 </div>
                 <div className="rounded-lg bg-white shadow-sm">
                     {changes

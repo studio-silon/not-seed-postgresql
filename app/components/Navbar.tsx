@@ -1,6 +1,25 @@
 import {Form, Link} from '@remix-run/react';
 import {Button} from '~/stories/Button';
-import {UserIcon, NotebookPen, Clock8, MessageSquare, Wrench, Search, Menu, X, Mail, ChevronUpIcon, ChevronDownIcon, LucideProps, Shuffle, Users2Icon, Frown} from 'lucide-react';
+import {
+    UserIcon,
+    NotebookPen,
+    Clock8,
+    MessageSquare,
+    Wrench,
+    Search,
+    Menu,
+    X,
+    Mail,
+    ChevronUpIcon,
+    ChevronDownIcon,
+    LucideProps,
+    Shuffle,
+    Users2Icon,
+    Frown,
+    FilterX,
+    ArrowDown01,
+    ArrowDown10,
+} from 'lucide-react';
 import {Dropdown} from '~/stories/Dropdown';
 import {Popover} from '~/stories/Popover';
 import {Input} from '~/stories/Input';
@@ -29,6 +48,9 @@ const items: NavItemProps[] = [
         dropdown: [
             {name: '작성이 필요한 문서', icon: NotebookPen, link: '/neededPages'},
             {name: '고립된 문서', icon: Frown, link: '/orphanedPages'},
+            {name: '분류가 되지 않은 문서', icon: FilterX, link: '/uncategorizedPages'},
+            {name: '내용이 짧은 문서', icon: ArrowDown01, link: '/shortestPages'},
+            {name: '내용이 긴 문서', icon: ArrowDown10, link: '/longestPages'},
             {name: '임의 문서', icon: Shuffle, link: '/random'},
             {name: '권한 로그', icon: UserIcon, link: '/permissionHistory'},
             {

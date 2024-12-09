@@ -19,6 +19,10 @@ export class Wiki {
         return JoinName(namespace, title);
     }
 
+    public static isRedirect(content: string) {
+        return !!/^(#(redirect|넘겨주기)|### 리다이렉션) (.*)$/gm.exec(content);
+    }
+
     public static async getPage(namespace: string, title: string) {
         return await prisma.wiki.findUnique({
             where: {
@@ -124,7 +128,18 @@ export class Wiki {
                 wikiId: page.id,
                 rever: rever || page.rever,
             },
-            include: {
+            select: {
+                id: true,
+                rever: true,
+                log: true,
+                type: true,
+                data: true,
+                added: true,
+                removed: true,
+                content: true,
+                isRedirect: true,
+                createdAt: true,
+                ipAddress: true,
                 user: {
                     select: {
                         username: true,
@@ -153,6 +168,8 @@ export class Wiki {
             removed = diff.removed;
         }
 
+        const isRedirect = this.isRedirect(content);
+
         const wiki = await prisma.wiki.upsert({
             where: {
                 title_namespace: {namespace, title},
@@ -164,6 +181,7 @@ export class Wiki {
                 },
                 updatedAt: new Date(),
                 deleted: false,
+                isRedirect,
             },
             create: {
                 title,
@@ -172,6 +190,7 @@ export class Wiki {
                 deleted: false,
                 rever: 1,
                 createdAt: new Date(),
+                isRedirect,
             },
             select: {id: true, content: true, rever: true, updatedAt: true},
         });
@@ -199,7 +218,8 @@ export class Wiki {
                 added,
                 removed,
                 content,
-                log: log,
+                isRedirect,
+                log,
                 createdAt: new Date(),
             },
         });
@@ -262,7 +282,8 @@ export class Wiki {
                 type: 1,
                 data: JSON.stringify([this.joinName(namespace, title), this.joinName(newNamespace, newTitle)]),
                 content,
-                log: log,
+                log,
+                isRedirect: wiki.isRedirect,
                 createdAt: new Date(),
             },
         });
@@ -302,7 +323,8 @@ export class Wiki {
                     type: 1,
                     data: JSON.stringify([this.joinName(newNamespace, newTitle), this.joinName(namespace, title)]),
                     content: existingWiki.content,
-                    log: log,
+                    log,
+                    isRedirect: existingWiki.isRedirect,
                     createdAt: new Date(),
                 },
             });
@@ -354,7 +376,7 @@ export class Wiki {
                 type: 2,
                 data: '',
                 content: '',
-                log: log,
+                log,
                 createdAt: new Date(),
             },
         });
@@ -438,6 +460,7 @@ export class Wiki {
                 },
                 updatedAt: new Date(),
                 deleted: false,
+                isRedirect: pageWithVersion.version.isRedirect,
             },
             select: {
                 id: true,
@@ -470,7 +493,8 @@ export class Wiki {
                 removed: diff.removed,
                 data: JSON.stringify([rever]),
                 content: version.content,
-                log: log,
+                log,
+                isRedirect: pageWithVersion.version.isRedirect,
                 createdAt: new Date(),
             },
         });
