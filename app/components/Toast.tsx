@@ -1,19 +1,29 @@
-import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import {Toast as ToastUI} from '~/stories/Toast';
-import {removeToast, ToastMessage} from '~/redux/toastSlice';
 import {AnimatePresence, motion} from 'framer-motion';
-import {RootState} from '~/store';
+import {Atom, atom, useAtom, useAtomValue} from 'jotai';
+
+export interface ToastMessage {
+    id: number;
+    type: 'success' | 'error' | 'info';
+    message: string;
+}
+
+let toastId = 0;
+
+export const makeToastId = () => ++toastId;
+
+export const toastsAtom = atom<ToastMessage[]>([]);
 
 export const Toast = ({id, type, message}: ToastMessage) => {
-    const dispatch = useDispatch();
     const [isVisible, setIsVisible] = useState(true);
+    const [toasts, setToast] = useAtom(toastsAtom);
 
     useEffect(() => {
         if (!isVisible) {
-            dispatch(removeToast(id));
+            setToast(toasts.filter((toast) => toast.id !== id));
         }
-    }, [isVisible, id, dispatch]);
+    }, [isVisible, id]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -37,7 +47,7 @@ export const Toast = ({id, type, message}: ToastMessage) => {
 };
 
 export const ToastContainer = () => {
-    const toasts = useSelector((state: RootState) => state.toasts.toasts);
+    const toasts = useAtomValue(toastsAtom);
 
     return (
         <div className="fixed top-4 right-4 gap-2 flex flex-col z-50">

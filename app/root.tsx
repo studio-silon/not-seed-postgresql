@@ -5,15 +5,12 @@ import {getSession, commitSession} from '~/utils/sessions.server';
 import {getCookie, setCookie} from '~/utils/cookies.server';
 import {prisma} from './db.server';
 
-import {Provider, useDispatch} from 'react-redux';
-import {store} from './store';
-
 import './tailwind.css';
 import {Navbar} from './components/Navbar';
 import {useEffect} from 'react';
 import {Site} from './system/.server/site';
-import {addToast, makeToastId} from './redux/toastSlice';
-import {ToastContainer} from './components/Toast';
+import {makeToastId, toastsAtom, ToastContainer} from './components/Toast';
+import {useAtom} from 'jotai';
 
 export const links: LinksFunction = () => [
     {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
@@ -85,34 +82,31 @@ export async function loader({request}: LoaderFunctionArgs) {
 
 export function Layout({children}: {children: React.ReactNode}) {
     return (
-        <Provider store={store}>
-            <html lang="en">
-                <head>
-                    <meta charSet="utf-8" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
-                    <Meta />
-                    <Links />
-                </head>
-                <body>
-                    {children}
-                    <ScrollRestoration />
-                    <Scripts />
-                </body>
-            </html>
-        </Provider>
+        <html lang="en">
+            <head>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <Meta />
+                <Links />
+            </head>
+            <body>
+                {children}
+                <ScrollRestoration />
+                <Scripts />
+            </body>
+        </html>
     );
 }
 
 export default function App() {
     const data = useLoaderData<typeof loader>();
-
-    const dispatch = useDispatch();
+    const [toasts, setToasts] = useAtom(toastsAtom);
 
     useEffect(() => {
         if (data.toast) {
-            dispatch(addToast({...data.toast, id: makeToastId()}));
+            setToasts([...toasts, {...data.toast, id: makeToastId()}]);
         }
-    }, [data.toast, dispatch]);
+    }, [data.toast]);
 
     return (
         <div className="min-h-screen bg-gray-50">
