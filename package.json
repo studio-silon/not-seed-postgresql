@@ -60,7 +60,6 @@
 		"react": "^19.0.0-beta-26f2496093-20240514",
 		"react-dom": "^19.0.0-beta-26f2496093-20240514",
 		"react-intersection-observer": "^9.13.1",
-		"sqlite3": "^5.1.7",
 		"storybook": "^8.4.4",
 		"tailwind-merge": "^2.5.4",
 		"tailwindcss-animate": "^1.0.7",

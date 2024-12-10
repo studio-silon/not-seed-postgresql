@@ -89,7 +89,7 @@ export default function SettingsRoute() {
 
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">가입 토큰</label>
-                                <Input type="text" name="token" defaultValue={siteInfo.token} placeholder="가입 토큰을 입력하세요" required />
+                                <Input type="text" name="token" defaultValue={siteInfo.token} placeholder="가입 토큰을 입력하세요" />
                             </div>
 
                             <div className="space-y-2">
