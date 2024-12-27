@@ -4,13 +4,13 @@ import {defer, json} from '@remix-run/node';
 import {getSession, commitSession} from '~/utils/sessions.server';
 import {getCookie, setCookie} from '~/utils/cookies.server';
 import {prisma} from './db.server';
+import {Toaster} from '~/components/ui/sonner';
 
 import './tailwind.css';
-import {Navbar} from './components/Navbar';
 import {useEffect} from 'react';
 import {Site} from './system/.server/site';
-import {makeToastId, toastsAtom, ToastContainer} from './components/Toast';
 import {useAtom} from 'jotai';
+import {toast} from 'sonner';
 
 export const links: LinksFunction = () => [
     {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
@@ -100,19 +100,17 @@ export function Layout({children}: {children: React.ReactNode}) {
 
 export default function App() {
     const data = useLoaderData<typeof loader>();
-    const [toasts, setToasts] = useAtom(toastsAtom);
 
     useEffect(() => {
         if (data.toast) {
-            setToasts([...toasts, {...data.toast, id: makeToastId()}]);
+            toast(data.toast.message, {});
         }
     }, [data.toast]);
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Navbar />
-            <ToastContainer />
+        <>
+            <Toaster />
             <Outlet />
-        </div>
+        </>
     );
 }

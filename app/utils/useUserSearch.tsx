@@ -1,7 +1,7 @@
 import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import {useDebounce} from '~/utils/useDebounce';
-import type {loader} from '~/routes/api.users.search';
+import type {loader} from '~/routes/api+/users.search';
 
 interface User {
     id: number;
