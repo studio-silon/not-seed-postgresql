@@ -11,7 +11,7 @@ export default function App() {
                     <div className="flex-1">
                         <Outlet />
                     </div>
-                    <div className="flex h-fit w-aull md:min-w-58">
+                    <div className="flex h-fit w-full md:min-w-58">
                         <RecentCard />
                     </div>
                 </div>
