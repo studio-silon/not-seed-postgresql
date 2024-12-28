@@ -221,44 +221,43 @@
         margin-left: 1.5rem;
     }
 
-    @media (prefers-color-scheme: dark) {
-        .wiki {
-            color: #d1d5db;
-        }
+    .dark .wiki {
+        color: #d1d5db;
+    }
 
-        .wiki .wiki-error {
-            color: #f87171;
-        }
+    .dark .wiki .wiki-error {
+        color: #f87171;
+    }
 
-        .wiki a {
-            color: #93c5fd;
-        }
+    .dark .wiki a {
+        color: #93c5fd;
+    }
 
-        .wiki a:hover {
-            color: #bfdbfe;
-        }
+    .dark .wiki a:hover {
+        color: #bfdbfe;
+    }
 
-        .wiki del {
-            color: #6b7280;
-        }
+    .dark .wiki del {
+        color: #6b7280;
+    }
 
-        .wiki .wiki-code {
-            background-color: #1f2937;
-            color: #e5e7eb;
-        }
+    .dark .wiki .wiki-code {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
 
-        .wiki .wiki-quote {
-            border-left-color: #374151;
-            background-color: #1f2937;
-            color: #e5e7eb;
-        }
+    .dark .wiki .wiki-quote {
+        border-left-color: #374151;
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
 
-        .wiki .wiki-toc {
-            border-color: #374151;
-            background-color: #1f2937;
-        }
+    .dark .wiki .wiki-toc {
+        border-color: #374151;
+        background-color: #1f2937;
+    }
 
-        /*.wiki .wiki-table,
+    /*.wiki .wiki-table,
         .wiki .wiki-table td {
             border-color: #374151;
             background-color: #1f2937;
@@ -268,18 +267,17 @@
             border-radius: 7px;
         }*/
 
-        .wiki-table {
-            border-color: #374151;
-            background-color: #1f2937;
-        }
+    .dark .wiki-table {
+        border-color: #374151;
+        background-color: #1f2937;
+    }
 
-        .wiki .wiki-macro-toc {
-            border-color: #374151;
-            background-color: #1f2937;
-        }
+    .dark .wiki .wiki-macro-toc {
+        border-color: #374151;
+        background-color: #1f2937;
+    }
 
-        .wiki .wiki-macro-footnote {
-            border-top-color: #374151;
-        }
+    .dark .wiki .wiki-macro-footnote {
+        border-top-color: #374151;
     }
 }

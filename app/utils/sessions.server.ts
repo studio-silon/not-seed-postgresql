@@ -16,10 +16,12 @@ const sessionCookie = createCookie('PHPSESSID', {
     httpOnly: true,
 });
 
-export const {getSession, commitSession, destroySession} = createFileSessionStorage<SessionData, SessionFlashData>({
+export const sessionStorage = createFileSessionStorage<SessionData, SessionFlashData>({
     dir: './session',
     cookie: sessionCookie,
 });
+
+export const {getSession, commitSession, destroySession} = sessionStorage;
 
 export type SessionType = Session<SessionData, SessionFlashData>;
 

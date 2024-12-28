@@ -4,8 +4,16 @@ import {Wiki} from '@/system/wiki';
 import {Button} from '~/components/ui/button';
 import {ArrowLeft} from 'lucide-react';
 import {useState} from 'react';
-import Popover from '~/stories/Popover';
-import Dialog from '~/stories/Dialog';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '~/components/ui/alert-dialog';
 import {Input} from '~/components/ui/input';
 import {getUser, getUserData} from '~/utils/sessions.server';
 import {getCookie, setCookie} from '~/utils/cookies.server';
@@ -115,48 +123,51 @@ export default function HistoryPage() {
     return (
         <Frame>
             <div className="flex flex-col">
-                <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
-                    <Form method="post" onSubmit={() => setIsOpen(false)}>
-                        <Dialog.Title>
-                            <b>r{rever}</b> 버전으로 되돌리기
-                        </Dialog.Title>
-                        <Dialog.Content>
-                            <input type="hidden" name="rever" value={rever} />
-                            <Input name="log" className="mt-2" placeholder="편집 로그 작성..." />
-                        </Dialog.Content>
-                        <Dialog.Actions>
-                            <Button onClick={() => setIsOpen(false)} variant="ghost">
-                                취소
-                            </Button>
-                            <Button type="submit" onClick={() => setIsOpen(false)}>
-                                되돌리기
-                            </Button>
-                        </Dialog.Actions>
-                    </Form>
-                </Dialog>
+                <AlertDialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
+                    <AlertDialogContent>
+                        <Form method="post" onSubmit={() => setIsOpen(false)}>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    <b>r{rever}</b> 버전으로 되돌리기
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    <input type="hidden" name="rever" value={rever} />
+                                    <Input name="log" className="mt-2 mb-4" placeholder="편집 로그 작성..." />
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>취소</AlertDialogCancel>
+                                <AlertDialogAction type="submit">되돌리기</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </Form>
+                    </AlertDialogContent>
+                </AlertDialog>
 
                 {canRemoveRever && (
-                    <Dialog isOpen={isRemoveReverOpen} onClose={() => setIsRemoveReverOpen(false)}>
-                        <Form method="post" onSubmit={() => setIsRemoveReverOpen(false)}>
-                            <Dialog.Title>
-                                <b>r{rever}</b> 영구 삭제
-                            </Dialog.Title>
-                            <Dialog.Content>
-                                <input type="hidden" name="actionType" value="removeRever" />
-                                <input type="hidden" name="rever" value={rever} />
-                                <p className="text-sm text-gray-500">이 작업은 이 위키에서 영구적으로 해당 리버전을 삭제하며, 되돌릴 수 없습니다. 신중하게 선택하세요.</p>
-                                <p className="text-sm text-gray-500">많은 경우, ACL이나 되돌리기 기능이 더 효과적일 수 있습니다.</p>
-                            </Dialog.Content>
-                            <Dialog.Actions>
-                                <Button onClick={() => setIsOpen(false)} variant="ghost">
-                                    취소
-                                </Button>
-                                <Button type="submit" variant="destructive" onClick={() => setIsOpen(false)}>
-                                    영구 삭제
-                                </Button>
-                            </Dialog.Actions>
-                        </Form>
-                    </Dialog>
+                    <AlertDialog open={isRemoveReverOpen} onOpenChange={(open) => setIsRemoveReverOpen(open)}>
+                        <AlertDialogContent>
+                            {' '}
+                            <Form method="post" onSubmit={() => setIsRemoveReverOpen(false)}>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        <b>r{rever}</b> 영구 삭제
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        <input type="hidden" name="actionType" value="removeRever" />
+                                        <input type="hidden" name="rever" value={rever} />
+                                        <p className="text-sm text-muted-foreground">
+                                            이 작업은 이 위키에서 영구적으로 해당 리버전을 삭제하며, 되돌릴 수 없습니다. 신중하게 선택하세요.
+                                        </p>
+                                        <p className="text-sm text-muted-foreground mb-4">많은 경우, ACL이나 되돌리기 기능이 더 효과적일 수 있습니다.</p>
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>취소</AlertDialogCancel>
+                                    <AlertDialogAction type="submit">영구 삭제</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </Form>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 )}
 
                 <div className="flex items-center justify-between mb-6">

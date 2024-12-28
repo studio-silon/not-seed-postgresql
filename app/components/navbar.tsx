@@ -97,7 +97,7 @@ export function Navbar() {
                                 <DropdownMenu key={index}>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="text-base" size={isMobile ? 'icon' : 'default'}>
-                                            <item.icon strokeWidth={1.5} className="m-auto md:mx-0 md:me-1" size={22} />
+                                            <item.icon strokeWidth={2} className="m-auto md:mx-0 md:me-1" size={22} />
                                             <span className="hidden md:flex"> {item.name}</span>
                                         </Button>
                                     </DropdownMenuTrigger>
@@ -118,7 +118,7 @@ export function Navbar() {
                             ) : (
                                 <Link to={item.link || '#'} key={index}>
                                     <Button variant="ghost" className="text-base" size={isMobile ? 'icon' : 'default'}>
-                                        <item.icon strokeWidth={1.5} className="m-auto md:mx-0 md:me-1" size={22} />
+                                        <item.icon strokeWidth={2} className="m-auto md:mx-0 md:me-1" size={22} />
                                         <span className="hidden md:flex"> {item.name}</span>
                                     </Button>
                                 </Link>

@@ -48,6 +48,18 @@ model User {
   reviewedEditRequests EditRequest[] @relation("ReviewedEditRequests")
 
   stars Star[]
+
+  socialAccounts SocialAccount[]
+}
+
+model SocialAccount {
+  id           Int      @id @default(autoincrement())
+  provider     String   // 'google', 'github', 'discord'
+  providerId   String   @unique 
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Permission {

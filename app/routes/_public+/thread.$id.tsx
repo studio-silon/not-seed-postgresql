@@ -13,7 +13,16 @@ import {Acl} from '~/system/.server/acl';
 import {prisma} from '~/db.server';
 import {Input} from '~/components/ui/input';
 import {Toggle} from '~/components/ui/toggle';
-import Dialog from '~/stories/Dialog';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '~/components/ui/alert-dialog';
 import {UserPopover} from '~/components/user-popover';
 
 export const meta = metaTitle<typeof loader>((data) => (data.thread ? data.thread.title : ''));
@@ -197,7 +206,7 @@ export default function DiscussionRoute() {
                                     name="title"
                                     value={editTitle}
                                     onChange={(e) => setEditTitle(e.target.value)}
-                                    className="text-2xl font-bold text-gray-700 border-b border-gray-300 focus:border-gray-600 focus:outline-none"
+                                    className="text-2xl font-bold text-foreground border-b border-gray-300 focus:border-gray-600 focus:outline-none"
                                 />
                                 <Button type="submit" className="size-8 p-0">
                                     <Send className="h-4 w-4 m-auto" />
@@ -292,30 +301,30 @@ export default function DiscussionRoute() {
                 </Form>
             ) : null}
 
-            <Dialog isOpen={isMoving} onClose={() => setIsMoving(false)}>
-                <Form method="post">
-                    <Dialog.Title>토론 이동하기</Dialog.Title>
-                    <Dialog.Content>
-                        <input type="hidden" name="action" value="move" />
-                        <input type="hidden" name="wikiId" value={thread.wiki.id} />
-                        <input type="hidden" name="discussionId" value={thread.id} />
+            <AlertDialog open={isMoving} onOpenChange={(open) => setIsMoving(open)}>
+                <AlertDialogContent>
+                    <Form method="post">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>토론 이동하기</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                <input type="hidden" name="action" value="move" />
+                                <input type="hidden" name="wikiId" value={thread.wiki.id} />
+                                <input type="hidden" name="discussionId" value={thread.id} />
 
-                        <div className="space-y-4">
-                            <Input type="text" name="targetWiki" placeholder="문서 선택..." className="w-full" />
+                                <div className="space-y-4">
+                                    <Input type="text" name="targetWiki" placeholder="문서 선택..." className="w-full" />
 
-                            <Input name="log" className="mt-2" placeholder="이동 로그 작성..." />
-                        </div>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onClick={() => setIsMoving(false)} variant="ghost">
-                            취소
-                        </Button>
-                        <Button type="submit" onClick={() => setIsMoving(false)}>
-                            이동
-                        </Button>
-                    </Dialog.Actions>
-                </Form>
-            </Dialog>
+                                    <Input name="log" className="mt-2 mb-4" placeholder="이동 로그 작성..." />
+                                </div>
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>취소</AlertDialogCancel>
+                            <AlertDialogAction type="submit">이동</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </Form>
+                </AlertDialogContent>
+            </AlertDialog>
         </Frame>
     );
 }

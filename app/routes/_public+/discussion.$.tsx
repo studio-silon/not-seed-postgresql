@@ -148,9 +148,8 @@ export default function DiscussionRoute() {
             <div className="mb-6">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between my-auto gap-2">
                     <div className="flex flex-1 mb-2 sm:mb-0">
-                        <h1 className="text-2xl font-bold text-gray-800 flex-1">{JoinName(wiki.namespace, wiki.title)}의 토론</h1>
-
-                        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="p-0 size-8 hover:bg-gray-100 text-gray-600">
+                        <h1 className="text-2xl font-bold text-foreground flex-1">{JoinName(wiki.namespace, wiki.title)}의 토론</h1>
+                        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="p-0 size-8">
                             <ArrowLeft className="h-4 w-4 m-auto" />
                         </Button>
                     </div>
@@ -162,12 +161,12 @@ export default function DiscussionRoute() {
                 </div>
 
                 {isCreating && (
-                    <Form ref={createFormRef} method="post" className="mt-4 space-y-4 bg-gray-50 rounded-lg p-4">
+                    <Form ref={createFormRef} method="post" className="mt-4 space-y-4 bg-muted/30 rounded-lg p-4">
                         <input type="hidden" name="action" value="create" />
                         <input type="hidden" name="wikiId" value={wiki.id} />
                         <Input name="title" placeholder="토론 제목을 입력하세요..." required className="w-full focus:ring-2 focus:ring-blue-500" />
                         <div className="flex justify-end gap-2">
-                            <Button type="button" variant="ghost" onClick={() => setIsCreating(false)} className="text-gray-600 hover:text-gray-900 hover:bg-gray-100">
+                            <Button type="button" variant="ghost" onClick={() => setIsCreating(false)}>
                                 취소
                             </Button>
                             <Button type="submit">생성</Button>

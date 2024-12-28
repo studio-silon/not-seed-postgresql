@@ -32,9 +32,19 @@ import path from 'path';
 import {prisma} from '~/db.server';
 import parser from '@/parser/markup.server';
 import backLinkInit from '@/parser/backlink.server';
-import {Badge} from '~/stories/Badge';
+import {Badge} from '~/components/ui/badge';
 import {UserPopover} from '~/components/user-popover';
-import Dialog from '~/stories/Dialog';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '~/components/ui/alert-dialog';
 
 const getImageSize = promisify(sizeOf);
 
@@ -408,13 +418,13 @@ export default function WikiRoute() {
                 )}
             </div>
             {!isEditing && canEdit && editRequests && editRequests.length > 0 && (
-                <div className="mt-4">
+                <div className="mt-4 mb-4">
                     <h2 className="text-lg font-semibold mb-3">편집 요청</h2>
                     <ul className="space-y-2">
                         {editRequests.map(
                             (request) =>
                                 request && (
-                                    <li key={request.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
+                                    <li key={request.id} className="flex items-center justify-between p-2 bg-muted/30 rounded-md">
                                         <div>
                                             <span className="font-medium">
                                                 <UserPopover username={request.user?.username} ip={request.ipAddress || '0.0.0.0'} />가 이 문서를 {request.type === 0 && '편집'}
@@ -422,7 +432,7 @@ export default function WikiRoute() {
                                                 {request.type === 2 && '삭제'}
                                                 하려고 합니다.
                                             </span>
-                                            {request.log && <p className="text-sm text-gray-600">{request.log}</p>}
+                                            {request.log && <p className="text-sm text-muted-foreground">{request.log}</p>}
                                         </div>
                                         <Button onClick={() => setSelectedEditRequest(request)} variant="outline" size="sm">
                                             리뷰
@@ -435,37 +445,41 @@ export default function WikiRoute() {
             )}
 
             {selectedEditRequest && (
-                <Dialog isOpen={selectedEditRequest} onClose={() => setSelectedEditRequest(null)}>
-                    <Form method="post" onSubmit={() => setSelectedEditRequest(null)}>
-                        <input type="hidden" name="actionType" value="handle_edit_request" />
-                        <input type="hidden" name="requestId" value={selectedEditRequest.id} />
-                        <Dialog.Title>편집 요청 리뷰</Dialog.Title>
-                        <Dialog.Content>
-                            <div className="mb-4">
-                                <p>
-                                    <UserPopover username={selectedEditRequest.user?.username} ip={selectedEditRequest.ipAddress || '0.0.0.0'} />가 이 문서를{' '}
-                                    {selectedEditRequest.type === 0 && '편집'}
-                                    {selectedEditRequest.type === 1 && '이동'}
-                                    {selectedEditRequest.type === 2 && '삭제'}
-                                    하려고 합니다.
-                                </p>
-                                {selectedEditRequest.log && <p className="mt-2 text-gray-600">로그: {selectedEditRequest.log}</p>}
-                                {selectedEditRequest.type === 0 && (
-                                    <pre className="mt-2 p-2 bg-gray-100 rounded w-full break-words whitespace-normal">{selectedEditRequest.content}</pre>
-                                )}
-                            </div>
-                            <Input name="reviewLog" placeholder="편집 로그 작성..." className="w-full" />
-                        </Dialog.Content>
-                        <Dialog.Actions>
-                            <Button type="submit" name="action" value="reject" variant="ghost">
-                                거절
-                            </Button>
-                            <Button type="submit" name="action" value="accept">
-                                승락
-                            </Button>
-                        </Dialog.Actions>
-                    </Form>
-                </Dialog>
+                <AlertDialog open={selectedEditRequest} onOpenChange={() => setSelectedEditRequest(null)}>
+                    <AlertDialogContent>
+                        <Form method="post" onSubmit={() => setSelectedEditRequest(null)}>
+                            <input type="hidden" name="actionType" value="handle_edit_request" />
+                            <input type="hidden" name="requestId" value={selectedEditRequest.id} />
+
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>편집 요청 리뷰</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    <p>
+                                        <UserPopover username={selectedEditRequest.user?.username} ip={selectedEditRequest.ipAddress || '0.0.0.0'} />가 이 문서를{' '}
+                                        {selectedEditRequest.type === 0 && '편집'}
+                                        {selectedEditRequest.type === 1 && '이동'}
+                                        {selectedEditRequest.type === 2 && '삭제'}
+                                        하려고 합니다.
+                                    </p>
+                                    {selectedEditRequest.log && <p className="mt-2 text-gray-600">로그: {selectedEditRequest.log}</p>}
+                                    {selectedEditRequest.type === 0 && (
+                                        <pre className="mt-2 mb-2 p-2 bg-muted rounded w-full break-words whitespace-normal">{selectedEditRequest.content}</pre>
+                                    )}
+                                    <Input name="reviewLog" placeholder="편집 로그 작성..." className="w-full mb-4" />
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+
+                            <AlertDialogFooter>
+                                <AlertDialogCancel type="submit" name="action" value="reject">
+                                    거절
+                                </AlertDialogCancel>
+                                <AlertDialogAction type="submit" name="action">
+                                    승락
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </Form>
+                    </AlertDialogContent>
+                </AlertDialog>
             )}
             {isEditing ? (
                 <Form
@@ -476,7 +490,7 @@ export default function WikiRoute() {
                     }}
                     encType={isFilePage ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}
                 >
-                    <div className="space-y-4">
+                    <div className="space-y-4 text-foreground">
                         <input
                             type="hidden"
                             name="actionType"

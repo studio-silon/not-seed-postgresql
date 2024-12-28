@@ -88,7 +88,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
                     variants[variant],
                     sizes[size],
                     'relative flex flex-col items-center justify-center cursor-pointer',
-                    isDragging && 'border-black/30 bg-secondary-200/30',
+                    isDragging && 'border-black/30 bg-secondary/30',
                     className,
                 )}
                 onDragOver={handleDragOver}
@@ -121,7 +121,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
                                 e.stopPropagation();
                                 clearFile();
                             }}
-                            className="p-1 hover:bg-secondary-300/20 rounded-full"
+                            className="p-1 hover:bg-secondary/20 rounded-full"
                             disabled={disabled}
                         >
                             <X className="w-4 h-4" />
@@ -129,11 +129,11 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
                     </div>
                 ) : (
                     <>
-                        <Upload className="w-6 h-6 mb-2 text-secondary-500" />
+                        <Upload className="w-6 h-6 mb-2 text-secondary/50" />
                         <div className="text-center">
                             <p className="font-medium">Click to upload or drag and drop</p>
-                            <p className="text-sm text-secondary-500">{accept ? `Supported formats: ${accept}` : 'Any file format'}</p>
-                            {maxSize && <p className="text-sm text-secondary-500">Max size: {(maxSize / (1024 * 1024)).toFixed(2)}MB</p>}
+                            <p className="text-sm text-muted-foreground">{accept ? `Supported formats: ${accept}` : 'Any file format'}</p>
+                            {maxSize && <p className="text-sm text-muted-foreground">Max size: {(maxSize / (1024 * 1024)).toFixed(2)}MB</p>}
                         </div>
                     </>
                 )}

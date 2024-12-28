@@ -6,7 +6,16 @@ import {Input} from '~/components/ui/input';
 import {Frame} from '~/components/frame';
 import {getUser, getUserData} from '~/utils/sessions.server';
 import {ArrowLeft, Plus, Trash2, UserPlus, UserMinus, Users} from 'lucide-react';
-import {Dialog} from '~/stories/Dialog';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '~/components/ui/alert-dialog';
 import metaTitle from '~/utils/meta';
 import {Combobox} from '~/components/combobox';
 import {useUserSearch} from '~/utils/useUserSearch';
@@ -108,27 +117,27 @@ function RemoveMemberForm({membership}: {membership: {id: number; user?: {userna
                 <UserMinus className="w-4 h-4 m-auto" />
             </Button>
 
-            <Dialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-                <Form method="post">
-                    <Dialog.Title>그룹 사용자 제거</Dialog.Title>
-                    <Dialog.Content>
-                        <input type="hidden" name="_action" value="remove_member" />
-                        <input type="hidden" name="membershipId" value={membership.id} />
+            <AlertDialog open={isDialogOpen} onOpenChange={(open) => setIsDialogOpen(open)}>
+                <AlertDialogContent>
+                    <Form method="post">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>그룹 사용자 제거</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                <input type="hidden" name="_action" value="remove_member" />
+                                <input type="hidden" name="membershipId" value={membership.id} />
 
-                        <div className="space-y-4">
-                            <Input name="log" className="w-full" placeholder="Enter reason for removing member..." />
-                        </div>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onClick={() => setIsDialogOpen(false)} variant="ghost">
-                            취소
-                        </Button>
-                        <Button type="submit" onClick={() => setIsDialogOpen(false)}>
-                            제거
-                        </Button>
-                    </Dialog.Actions>
-                </Form>
-            </Dialog>
+                                <div className="space-y-4 mb-4">
+                                    <Input name="log" className="w-full" placeholder="Enter reason for removing member..." />
+                                </div>
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>취소</AlertDialogCancel>
+                            <AlertDialogAction type="submit">제거</AlertDialogAction>
+                        </AlertDialogFooter>{' '}
+                    </Form>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 }
