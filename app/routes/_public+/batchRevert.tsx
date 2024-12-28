@@ -124,7 +124,7 @@ export default function BatchRevertRoute() {
                     </Link>
                 </div>
 
-                <div className="space-y-6 bg-background p-6 rounded-lg shadow-sm">
+                <div className="space-y-6 bg-background p-6 rounded-lg shadow-xs">
                     <Form method="post" className="space-y-6">
                         <div className="space-y-4">
                             <div className="space-y-2">

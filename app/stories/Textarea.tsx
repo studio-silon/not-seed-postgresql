@@ -12,7 +12,7 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     ({className = '', variant = 'default', size = 'md', leftIcon, rightIcon, error, disabled, ...props}, ref) => {
         const baseStyles =
-            'flex w-full rounded-md outline-none focus-visible:ring-2 enabled:hover:border enabled:focus:border bg-secondary-200/20 transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+            'flex w-full rounded-md outline-hidden focus-visible:ring-2 enabled:hover:border enabled:focus:border bg-secondary-200/20 transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-500 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50';
 
         const variants = {
             default: 'enabled:focus:border-black/10 enabled:focus:ring-black/10',

@@ -63,7 +63,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastProps>(({variant = 'info', 
                         repeat: Infinity,
                     }}
                 >
-                    <IconComponent className="h-5 w-5 flex-shrink-0" />
+                    <IconComponent className="h-5 w-5 shrink-0" />
                 </motion.div>
 
                 <div className="flex-1 min-w-0">

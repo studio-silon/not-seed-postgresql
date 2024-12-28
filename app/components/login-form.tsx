@@ -37,7 +37,7 @@ export function LoginForm({type, className, initialData, ...props}: LoginFormPro
 
     return (
         <div className={cn('flex flex-col gap-6', className)} {...props}>
-            <Card className="overflow-hidden border-none md:border shadow-none md:shadow">
+            <Card className="overflow-hidden border-none md:border shadow-none md:shadow-sm">
                 <CardContent className="p-0">
                     <Form method="post" className="p-0 md:p-6 sm:p-8">
                         <div className="flex flex-col gap-6">
@@ -180,7 +180,7 @@ export function LoginForm({type, className, initialData, ...props}: LoginFormPro
                 </CardContent>
             </Card>
             {!isLogin && !isEdit && (
-                <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
+                <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
                     By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
                 </div>
             )}

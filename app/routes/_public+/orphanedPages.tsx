@@ -30,7 +30,7 @@ export default function NeededPages() {
                 <div className="mb-6 flex items-center justify-between rounded-lg">
                     <h1 className="text-2xl font-bold">고립된 문서</h1>
                 </div>
-                <div className="rounded-lg bg-background shadow-sm">
+                <div className="rounded-lg bg-background shadow-xs">
                     {changes.map((change) => (
                         <div key={change.fullName} className="border-b border-border p-4 hover:bg-muted">
                             <div className="flex items-center gap-2">

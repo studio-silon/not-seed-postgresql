@@ -31,7 +31,7 @@ const Trigger = ({children, asChild, className}: TriggerProps) => {
         <Vaul.Trigger
             asChild={asChild}
             className={cn(
-                'inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary-400 focus-visible:ring-offset-2',
+                'inline-flex items-center justify-center focus:outline-hidden focus-visible:ring-2 focus-visible:ring-secondary-400 focus-visible:ring-offset-2',
                 className,
             )}
         >

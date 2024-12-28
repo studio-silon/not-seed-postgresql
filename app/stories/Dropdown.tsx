@@ -41,7 +41,7 @@ const Content = ({children, align = 'left', className}: ContentProps) => {
     return (
         <Menu.Items
             className={cn(
-                'absolute z-10 mt-2 min-w-[8rem] bg-white origin-top-right rounded-md p-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none',
+                'absolute z-10 mt-2 min-w-[8rem] bg-white origin-top-right rounded-md p-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden',
                 {
                     'right-0': align === 'right',
                     'left-0': align === 'left',
@@ -78,7 +78,7 @@ const Item = ({children, onClick, disabled, className, variant = 'default'}: Ite
                 <button
                     onClick={onClick}
                     className={cn(
-                        'flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors',
+                        'flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-hidden transition-colors',
                         {
                             'bg-secondary-100': active,
                             'text-gray-900': variant === 'default',

@@ -82,7 +82,7 @@ export default function DiffPage() {
                         .join('\n')}
                 </pre>
 
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 rounded-lg shadow-sm overflow-auto">
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 rounded-lg shadow-xs overflow-auto">
                     <div className="bg-red-50 p-4">
                         <h2 className="font-bold text-red-600 mb-2">Original</h2>
                         <pre>

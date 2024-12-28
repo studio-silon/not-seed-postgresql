@@ -77,7 +77,7 @@ export default function RecentDiscussions() {
                     <h1 className="text-2xl font-bold">최근 토론</h1>
                 </div>
 
-                <div className="bg-background rounded-lg shadow-sm">
+                <div className="bg-background rounded-lg shadow-xs">
                     {discussions.map((discussion) => (
                         <div key={discussion.id} className="border-b border-border p-4 hover:bg-muted">
                             <div className="flex items-center gap-2">

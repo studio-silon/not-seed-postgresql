@@ -206,7 +206,7 @@ export default function DiscussionRoute() {
                                     name="title"
                                     value={editTitle}
                                     onChange={(e) => setEditTitle(e.target.value)}
-                                    className="text-2xl font-bold text-foreground border-b border-gray-300 focus:border-gray-600 focus:outline-none"
+                                    className="text-2xl font-bold text-foreground border-b border-gray-300 focus:border-gray-600 focus:outline-hidden"
                                 />
                                 <Button type="submit" className="size-8 p-0">
                                     <Send className="h-4 w-4 m-auto" />

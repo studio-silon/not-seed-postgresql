@@ -331,7 +331,7 @@ export default function WikiRoute() {
                                 name="title"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="bg-background text-2xl lg:text-3xl font-bold text-foreground border-b border-gray-300 focus:border-gray-600 focus:outline-none w-full"
+                                className="bg-background text-2xl lg:text-3xl font-bold text-foreground border-b border-gray-300 focus:border-gray-600 focus:outline-hidden w-full"
                             />
                         ) : (
                             <h1 className="text-2xl lg:text-3xl font-bold text-foreground">{title}</h1>

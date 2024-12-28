@@ -43,11 +43,11 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(({classNam
       after:-translate-y-1/2
       after:rounded-full 
       after:bg-white 
-      after:shadow-sm 
+      after:shadow-xs 
       after:transition-all
     `;
 
-    const focusStyles = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
+    const focusStyles = 'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2';
 
     return (
         <label className={cn(labelStyles, className)}>

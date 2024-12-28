@@ -179,7 +179,7 @@ export default function HistoryPage() {
                     </Link>
                 </div>
 
-                <div className="bg-background rounded-lg shadow-sm">
+                <div className="bg-background rounded-lg shadow-xs">
                     {wiki.versions.map((version) => (
                         <div key={version.id} className="border-b border-border p-4 hover:bg-muted">
                             <div className="flex items-center gap-2">

@@ -46,7 +46,7 @@ export default function Search() {
                 <div className="flex items-center justify-between mb-6">
                     <h1 className="text-2xl font-bold">검색{keyword ? ` '${keyword}'` : ''}</h1>
                 </div>
-                <div className="bg-background rounded-lg shadow-sm">
+                <div className="bg-background rounded-lg shadow-xs">
                     {searchResults.map((result) => (
                         <div key={result.id} className="border-b border-border p-4 hover:bg-muted">
                             <div className="flex items-center gap-2">

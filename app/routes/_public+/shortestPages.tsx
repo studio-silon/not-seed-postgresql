@@ -58,7 +58,7 @@ export default function ShortestPages() {
                 <div className="mb-6 flex items-center justify-between rounded-lg">
                     <h1 className="text-2xl font-bold">내용이 짧은 문서</h1>
                 </div>
-                <div className="rounded-lg bg-background shadow-sm">
+                <div className="rounded-lg bg-background shadow-xs">
                     {changes.map((change) => {
                         const url = urlEncoding(JoinName(change.namespace, change.title));
 

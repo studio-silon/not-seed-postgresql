@@ -101,13 +101,13 @@ export default function ContributionPage() {
     return (
         <Frame>
             <div className="flex flex-col">
-                <div className="bg-background rounded-lg shadow-sm mb-6 p-4">
+                <div className="bg-background rounded-lg shadow-xs mb-6 p-4">
                     <h1 className="text-2xl font-bold">
                         {type === 'user' ? `사용자 기여` : `IP 기여`}: {identifier}
                     </h1>
                 </div>
 
-                <div className="bg-background rounded-lg shadow-sm">
+                <div className="bg-background rounded-lg shadow-xs">
                     {contributions.map((contribution, index) => (
                         <div key={index} className="border-b border-border p-4 hover:bg-muted">
                             <div className="flex items-center gap-2">

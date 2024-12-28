@@ -102,13 +102,13 @@ export default function MyStarsPage() {
     return (
         <Frame>
             <div className="flex flex-col">
-                <div className="bg-background rounded-lg shadow-sm mb-6 p-4">
+                <div className="bg-background rounded-lg shadow-xs mb-6 p-4">
                     <h1 className="text-2xl font-bold">내 문서함</h1>
                     {stars.length === 0 && <p className="text-gray-500 mt-4">내 문서함이 비어있습니다.</p>}
                 </div>
 
                 {stars.length > 0 && (
-                    <div className="bg-background rounded-lg shadow-sm">
+                    <div className="bg-background rounded-lg shadow-xs">
                         {selectedStars.length > 0 && (
                             <div className="p-4 bg-gray-50 flex justify-between items-center">
                                 <span className="text-gray-700">{selectedStars.length}개의 문서 선택됨</span>

@@ -44,7 +44,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(({clas
         },
     };
 
-    const focusStyles = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
+    const focusStyles = 'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2';
 
     const checkboxStyles = cn(
         `

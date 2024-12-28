@@ -181,7 +181,7 @@ export default function PermissionHistoryRoute() {
 
                 <div className="space-y-4">
                     {history.map((entry) => (
-                        <div key={entry.id} className="p-4 bg-background rounded-lg shadow-sm hover:bg-muted/50 transition-colors">
+                        <div key={entry.id} className="p-4 bg-background rounded-lg shadow-xs hover:bg-muted/50 transition-colors">
                             <p className="text-foreground">{formatHistoryEntry(entry)}</p>
                             {entry.log && <p className="text-foreground text-sm mt-1">사유: {entry.log}</p>}
                             <div className="mt-2 flex justify-between items-center">

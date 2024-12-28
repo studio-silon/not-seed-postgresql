@@ -73,7 +73,7 @@ export default function OldPages() {
                 <div className="mb-6 flex items-center justify-between rounded-lg">
                     <h1 className="text-2xl font-bold">오래된 문서들</h1>
                 </div>
-                <div className="rounded-lg bg-background shadow-sm">
+                <div className="rounded-lg bg-background shadow-xs">
                     {changes
                         .filter((change) => change.versions[0])
                         .map((change) => (

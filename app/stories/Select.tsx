@@ -12,7 +12,7 @@ interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>
 
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({className = '', children, variant = 'default', size = 'md', leftIcon, error, disabled, ...props}, ref) => {
     const baseStyles =
-        'flex w-full rounded-md outline-none focus-visible:ring-2 enabled:hover:border enabled:focus:border border-secondary-200 enabled:hover:border-secondary-300/20 bg-secondary-200/20 transition-colors placeholder:text-secondary-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 appearance-none';
+        'flex w-full rounded-md outline-hidden focus-visible:ring-2 enabled:hover:border enabled:focus:border border-secondary-200 enabled:hover:border-secondary-300/20 bg-secondary-200/20 transition-colors placeholder:text-secondary-500 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 appearance-none';
 
     const variants = {
         default: 'enabled:focus:border-black/10 enabled:focus:ring-black/10',

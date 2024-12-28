@@ -107,7 +107,7 @@ export const WithForm: Story = {
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Bio</label>
                             <textarea
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-primary-500 focus:ring-primary-500"
                                 rows={3}
                                 placeholder="Tell us about yourself"
                             />

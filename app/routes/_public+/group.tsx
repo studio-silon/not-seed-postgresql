@@ -299,7 +299,7 @@ export default function GroupRoute() {
 
                     <div className="space-y-6">
                         {groups.map((group) => (
-                            <div key={group.id} className="bg-background rounded-lg shadow-sm p-4">
+                            <div key={group.id} className="bg-background rounded-lg shadow-xs p-4">
                                 <div className="flex items-center justify-between mb-4">
                                     <div>
                                         <h3 className="text-lg font-semibold">{group.name}</h3>

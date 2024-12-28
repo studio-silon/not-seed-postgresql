@@ -18,7 +18,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
         const inputRef = useRef<HTMLInputElement | undefined>();
 
         const baseStyles =
-            'flex w-full rounded-md outline-none focus-visible:ring-2 enabled:hover:border enabled:focus:border border-secondary-200 enabled:hover:border-secondary-300/20 bg-secondary-200/20 transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+            'flex w-full rounded-md outline-hidden focus-visible:ring-2 enabled:hover:border enabled:focus:border border-secondary-200 enabled:hover:border-secondary-300/20 bg-secondary-200/20 transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-500 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50';
 
         const variants = {
             default: 'enabled:focus:border-black/10 enabled:focus:ring-black/10',
