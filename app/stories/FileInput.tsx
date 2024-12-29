@@ -1,6 +1,8 @@
 import React, {useRef, useState} from 'react';
-import {cn} from '../utils/classMerge';
+
 import {Upload, X} from 'lucide-react';
+
+import {cn} from '../utils/classMerge';
 
 interface FileInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
     variant?: 'default' | 'error';

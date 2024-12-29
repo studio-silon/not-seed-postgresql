@@ -1,11 +1,15 @@
-import {json, LoaderFunction, LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, useParams} from '@remix-run/react';
-import {diffLines} from 'diff';
-import {Frame} from '~/components/frame';
-import {Button} from '~/components/ui/button';
-import {ArrowLeft} from 'lucide-react';
 import {Link} from 'react-router-dom';
-import {Wiki} from '~/system/.server/wiki';
+import {json, LoaderFunctionArgs} from '@remix-run/node';
+import {useLoaderData, useParams} from '@remix-run/react';
+
+import {diffLines} from 'diff';
+import {ArrowLeft} from 'lucide-react';
+
+import {Button} from '~/components/ui/button';
+
+import {Frame} from '~/components/frame';
+
+import {Wiki} from '@/system/wiki';
 
 export async function loader({request, params}: LoaderFunctionArgs) {
     const [namespace, title] = Wiki.splitName(params['*'] || '');

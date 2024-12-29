@@ -1,7 +1,8 @@
-import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
-import {useDebounce} from '~/utils/useDebounce';
+import {useFetcher} from '@remix-run/react';
+
 import type {loader} from '~/routes/api+/groups.search';
+import {useDebounce} from '~/utils/useDebounce';
 
 interface Group {
     id: number;

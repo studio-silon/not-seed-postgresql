@@ -1,10 +1,10 @@
-import {json, type ActionFunctionArgs} from '@remix-run/node';
-import {getSession, commitSession, getUserData} from '~/utils/sessions.server';
+import {type ActionFunctionArgs,json} from '@remix-run/node';
+
 import parser from '@/parser/markup.server';
 
-export async function action({request}: ActionFunctionArgs) {
-    const session = await getSession(request.headers.get('Cookie'));
+import {getUserData} from '~/utils/sessions.server';
 
+export async function action({request}: ActionFunctionArgs) {
     const form = await request.formData();
     const content = String(form.get('content') || '');
     let data: {value: string};

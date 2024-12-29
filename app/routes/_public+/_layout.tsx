@@ -1,4 +1,5 @@
 import {Outlet} from '@remix-run/react';
+
 import {Navbar} from '~/components/navbar';
 import {RecentCard} from '~/components/recent-card';
 

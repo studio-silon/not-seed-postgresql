@@ -1,3 +1,4 @@
+import {Suspense, useEffect, useState} from 'react';
 import {
     defer,
     json,
@@ -8,32 +9,13 @@ import {
     unstable_createFileUploadHandler,
     unstable_parseMultipartFormData,
 } from '@remix-run/node';
-import {Await, useLoaderData, useParams, Form, Link} from '@remix-run/react';
-import {Wiki} from '@/system/wiki';
-import {Button} from '~/components/ui/button';
-import {History, Edit2, Star, Wrench, Anchor, Tag, X, Trash2, MessageSquare, ArrowUpRight} from 'lucide-react';
-import {useState, Suspense, useEffect} from 'react';
-import {Textarea} from '~/components/ui/textarea';
-import {getUser, getUserData} from '~/utils/sessions.server';
-import {urlEncoding} from '~/utils/url-encoding';
-import {Input} from '~/components/ui/input';
-import {Site} from '@/system/site';
-import {Frame} from '~/components/frame';
-import metaTitle from '~/utils/meta';
-import {JoinName} from '~/utils/wiki';
-import Popover from '~/stories/Popover';
-import {Toggle} from '~/components/ui/toggle';
-import {cn} from '~/utils/classMerge';
-import {Acl} from '~/system/.server/acl';
-import FileInput from '~/stories/FileInput';
-import {promisify} from 'util';
+import {Await, Form, Link, useLoaderData} from '@remix-run/react';
+
 import sizeOf from 'image-size';
+import {Anchor, ArrowUpRight, Edit2, History, MessageSquare, Star, Tag, Trash2, Wrench} from 'lucide-react';
 import path from 'path';
-import {prisma} from '~/db.server';
-import parser from '@/parser/markup.server';
-import backLinkInit from '@/parser/backlink.server';
-import {Badge} from '~/components/ui/badge';
-import {UserPopover} from '~/components/user-popover';
+import {promisify} from 'util';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -43,8 +25,30 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from '~/components/ui/alert-dialog';
+import {Badge} from '~/components/ui/badge';
+import {Button} from '~/components/ui/button';
+import {Input} from '~/components/ui/input';
+import {Textarea} from '~/components/ui/textarea';
+import {Toggle} from '~/components/ui/toggle';
+
+import {Frame} from '~/components/frame';
+import {UserPopover} from '~/components/user-popover';
+
+import backLinkInit from '@/parser/backlink.server';
+import parser from '@/parser/markup.server';
+import {Site} from '@/system/site';
+import {Wiki} from '@/system/wiki';
+
+import {prisma} from '~/db.server';
+import FileInput from '~/stories/FileInput';
+import Popover from '~/stories/Popover';
+import {Acl} from '~/system/.server/acl';
+import {cn} from '~/utils/classMerge';
+import metaTitle from '~/utils/meta';
+import {getUser, getUserData} from '~/utils/sessions.server';
+import {urlEncoding} from '~/utils/url-encoding';
+import {JoinName} from '~/utils/wiki';
 
 const getImageSize = promisify(sizeOf);
 
@@ -183,16 +187,7 @@ export async function action({request, params}: {request: Request; params: {'*':
 
         const [newNamespace, newTitle] = Wiki.splitName(newName);
 
-        const editRequest = await Wiki.createEditRequest(
-            namespace,
-            oldTitle,
-            requestType,
-            content,
-            requestType === 1 ? newNamespace : null,
-            requestType === 1 ? newTitle : null,
-            log,
-            userData,
-        );
+        await Wiki.createEditRequest(namespace, oldTitle, requestType, content, requestType === 1 ? newNamespace : null, requestType === 1 ? newTitle : null, log, userData);
 
         return redirect(`/wiki/${urlEncoding(params['*'])}`);
     }
@@ -243,7 +238,7 @@ export async function action({request, params}: {request: Request; params: {'*':
     })();
 
     if (newName.startsWith('파일:')) {
-        let fileData = await unstable_parseMultipartFormData(
+        const fileData = await unstable_parseMultipartFormData(
             request,
             unstable_composeUploadHandlers(
                 unstable_createFileUploadHandler({
@@ -297,7 +292,14 @@ export default function WikiRoute() {
     const {wiki, user, backlinks, canEdit, canMove, canDelete, isStared, editRequests, name, parse, forbidden} = useLoaderData<typeof loader>();
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [selectedEditRequest, setSelectedEditRequest] = useState<any>(null);
+    const [selectedEditRequest, setSelectedEditRequest] = useState<{
+        id: number;
+        user: {username: string} | null;
+        ipAddress: string | null;
+        type: number;
+        log: string | null;
+        content: string | null;
+    } | null>(null);
     const [isRAW, setIsRAW] = useState(false);
     const [title, setTitle] = useState(name);
 
@@ -445,7 +447,7 @@ export default function WikiRoute() {
             )}
 
             {selectedEditRequest && (
-                <AlertDialog open={selectedEditRequest} onOpenChange={() => setSelectedEditRequest(null)}>
+                <AlertDialog open={!!selectedEditRequest} onOpenChange={() => setSelectedEditRequest(null)}>
                     <AlertDialogContent>
                         <Form method="post" onSubmit={() => setSelectedEditRequest(null)}>
                             <input type="hidden" name="actionType" value="handle_edit_request" />

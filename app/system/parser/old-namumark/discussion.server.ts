@@ -1,5 +1,6 @@
-import parse from './src';
 import renderer from './namumark.server';
+import parse from './src';
+
 import {JoinName} from '~/utils/wiki';
 
 export default async function markup(title: string, namespace: string, content: string): Promise<string> {

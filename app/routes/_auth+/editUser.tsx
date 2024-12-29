@@ -1,9 +1,13 @@
 import {LoaderFunctionArgs, redirect} from '@remix-run/node';
-import {getUser, getSession} from '../../utils/sessions.server';
-import {User} from '~/system/.server/user';
+
+import {LoginForm} from '~/components/login-form';
+
+import {User} from '@/system/user';
+
+import {getSession, getUser} from '../../utils/sessions.server';
+
 import {getCookie, setCookie} from '~/utils/cookies.server';
 import metaTitle from '~/utils/meta';
-import {LoginForm} from '~/components/login-form';
 
 export const meta = metaTitle(() => 'Edit Profile');
 
@@ -28,7 +32,6 @@ export async function loader({request}: LoaderFunctionArgs) {
 export async function action({request}: LoaderFunctionArgs) {
     const formData = await request.formData();
     const username = formData.get('username') as string;
-    const currentPassword = formData.get('currentPassword') as string;
     const password = formData.get('password') as string;
 
     const session = await getSession(request.headers.get('Cookie'));

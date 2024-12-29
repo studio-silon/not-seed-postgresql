@@ -1,7 +1,10 @@
-import {diffLines} from 'diff';
 import {useState} from 'react';
-import {Frame} from '~/components/frame';
+
+import {diffLines} from 'diff';
+
 import {Textarea} from '~/components/ui/textarea';
+
+import {Frame} from '~/components/frame';
 
 export default function DiffPage() {
     const [original, setOriginal] = useState('');

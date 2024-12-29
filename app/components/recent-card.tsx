@@ -1,7 +1,10 @@
-import {Link, useFetcher} from '@remix-run/react';
-import {loader} from '../routes/api+/sidebar';
 import {useEffect} from 'react';
+import {Link, useFetcher} from '@remix-run/react';
+
+import {loader} from '../routes/api+/sidebar';
+
 import {Frame} from './frame';
+
 import {urlEncoding} from '~/utils/url-encoding';
 import {JoinName} from '~/utils/wiki';
 

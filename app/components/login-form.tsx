@@ -1,14 +1,19 @@
 import React, {useState} from 'react';
 import {Form, useLoaderData, useRouteLoaderData} from '@remix-run/react';
-import {cn} from '~/lib/utils';
+
+import {Eye, EyeOff} from 'lucide-react';
+
 import {Button} from '~/components/ui/button';
 import {Card, CardContent} from '~/components/ui/card';
 import {Input} from '~/components/ui/input';
 import {Label} from '~/components/ui/label';
-import {Eye, EyeOff} from 'lucide-react';
+
 import type {loader as RootLoader} from '../root';
+
 import {Checkbox} from './ui/checkbox';
 import {Textarea} from './ui/textarea';
+
+import {cn} from '~/lib/utils';
 
 interface LoginFormProps extends React.ComponentProps<'div'> {
     type: 'login' | 'signup' | 'edit';

@@ -1,14 +1,19 @@
 import {json, LoaderFunction} from '@remix-run/node';
-import {useLoaderData, useParams, Link} from '@remix-run/react';
-import {Wiki} from '@/system/wiki';
-import {Button} from '~/components/ui/button';
+import {Link, useLoaderData, useParams} from '@remix-run/react';
+
 import {ArrowLeft} from 'lucide-react';
+
+import {Button} from '~/components/ui/button';
+
 import {Frame} from '~/components/frame';
-import {getUser, getUserData} from '~/utils/sessions.server';
+
+import {Acl} from '@/system/acl';
+import {Wiki} from '@/system/wiki';
+
 import {prisma} from '~/db.server';
-import {JoinName} from '~/utils/wiki';
 import metaTitle from '~/utils/meta';
-import {Acl} from '~/system/.server/acl';
+import {getUser, getUserData} from '~/utils/sessions.server';
+import {JoinName} from '~/utils/wiki';
 
 interface BacklinkData {
     wiki: {
@@ -70,7 +75,7 @@ const TypeToKorean = {
 };
 
 export default function BacklinkPage() {
-    const {wiki, backlinks} = useLoaderData<BacklinkData>();
+    const {backlinks} = useLoaderData<BacklinkData>();
     const params = useParams();
 
     const groupedBacklinks = backlinks.reduce(

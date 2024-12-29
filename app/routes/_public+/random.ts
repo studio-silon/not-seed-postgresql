@@ -1,9 +1,10 @@
-import {LoaderFunctionArgs, redirect} from '@remix-run/node';
+import {redirect} from '@remix-run/node';
+
 import {prisma} from '~/db.server';
 import {urlEncoding} from '~/utils/url-encoding';
 import {JoinName} from '~/utils/wiki';
 
-export async function loader({request, params}: LoaderFunctionArgs) {
+export async function loader() {
     const totalRecords = await prisma.wiki.count();
 
     const randomOffset = Math.floor(Math.random() * totalRecords);

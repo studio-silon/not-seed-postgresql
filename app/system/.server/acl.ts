@@ -1,9 +1,11 @@
 import {Prisma} from '@prisma/client';
-import {UserData, Wiki} from './wiki';
-import {PermissionsType, User} from './user';
-import {getUser} from '~/utils/sessions.server';
 import geoip from 'geoip-lite';
+
 import {Group} from './group';
+import {PermissionsType, User} from './user';
+import {UserData, Wiki} from './wiki';
+
+import {getUser} from '~/utils/sessions.server';
 
 export type AclType = 'read' | 'edit' | 'move' | 'delete' | 'thread_create' | 'comment_create' | 'acl';
 
@@ -34,7 +36,7 @@ export class Acl {
                         case 'member':
                             if (user) allowed = acl.action;
                             break;
-                        case 'match_username_and_document_title':
+                        case 'match_username_and_document_title': {
                             if (typeof page === 'string' || page === null) {
                                 allowed = acl.action;
 
@@ -48,6 +50,7 @@ export class Acl {
                                 if (title === userData.ipAddress) allowed = acl.action;
                             }
                             break;
+                        }
                         default:
                             if (user && (await User.checkPermission(acl.condition as PermissionsType, user))) allowed = acl.action;
                     }
@@ -61,12 +64,13 @@ export class Acl {
                 case 'geoip':
                     if (userData.ipAddress && geoip.lookup(userData.ipAddress)?.country === acl.condition) allowed = acl.action;
                     break;
-                case 'group':
+                case 'group': {
                     const userGroups = await Group.findUserGroups(user?.id, userData.ipAddress);
                     if (userGroups.some((group) => group.name === acl.condition)) {
                         allowed = acl.action;
                     }
                     break;
+                }
             }
 
             return allowed;

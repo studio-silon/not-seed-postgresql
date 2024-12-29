@@ -1,8 +1,10 @@
-import parse from './src';
+import {UserData} from '@/system/wiki';
+
 import renderer from './namumark.server';
-import {JoinName, SplitName} from '~/utils/wiki';
+import parse from './src';
+
 import {prisma} from '~/db.server';
-import {UserData} from '~/system/.server/wiki';
+import {JoinName, SplitName} from '~/utils/wiki';
 
 export default async function markup(title: string, namespace: string, content: string, userData: UserData) {
     let match: RegExpMatchArray | null;

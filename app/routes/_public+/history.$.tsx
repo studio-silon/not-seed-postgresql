@@ -1,9 +1,9 @@
-import {json, LoaderFunction, ActionFunction, redirect, LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, useParams, Link, Form} from '@remix-run/react';
-import {Wiki} from '@/system/wiki';
-import {Button} from '~/components/ui/button';
-import {ArrowLeft} from 'lucide-react';
 import {useState} from 'react';
+import {json, LoaderFunctionArgs, redirect} from '@remix-run/node';
+import {Form, Link, useLoaderData, useParams} from '@remix-run/react';
+
+import {ArrowLeft} from 'lucide-react';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -14,20 +14,24 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '~/components/ui/alert-dialog';
+import {Button} from '~/components/ui/button';
 import {Input} from '~/components/ui/input';
-import {getUser, getUserData} from '~/utils/sessions.server';
-import {getCookie, setCookie} from '~/utils/cookies.server';
-import {ReverTypeToMessage} from '~/utils/wiki';
+
 import {Frame} from '~/components/frame';
-import metaTitle from '~/utils/meta';
-import {JoinName} from '~/utils/wiki';
-import {Acl} from '~/system/.server/acl';
-import {prisma} from '~/db.server';
-import backLinkInit from '@/parser/backlink.server';
-import {UserPopover} from '~/components/user-popover';
 import {ReverMiniDiff} from '~/components/rever-mini-diff';
-import {User} from '~/system/.server/user';
+import {UserPopover} from '~/components/user-popover';
+
+import backLinkInit from '@/parser/backlink.server';
+import {Acl} from '@/system/acl';
+import {User} from '@/system/user';
+import {Wiki} from '@/system/wiki';
+
+import {getCookie, setCookie} from '~/utils/cookies.server';
+import metaTitle from '~/utils/meta';
+import {getUser, getUserData} from '~/utils/sessions.server';
 import {urlEncoding} from '~/utils/url-encoding';
+import {ReverTypeToMessage} from '~/utils/wiki';
+import {JoinName} from '~/utils/wiki';
 
 export const meta = metaTitle<typeof loader>(({data}) => (data.wiki ? '역사: ' + JoinName(data.wiki.namespace, data.wiki.title) : ''));
 

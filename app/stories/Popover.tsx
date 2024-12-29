@@ -1,5 +1,7 @@
 import React from 'react';
+
 import * as PopoverPrimitive from '@radix-ui/react-popover';
+
 import {cn} from '../utils/classMerge';
 
 interface PopoverRootProps {
@@ -31,6 +33,7 @@ const Content = React.forwardRef<React.ElementRef<typeof PopoverPrimitive.Conten
         </PopoverPrimitive.Portal>
     ),
 );
+Content.displayName = PopoverPrimitive.Content.displayName;
 
 interface HeaderProps {
     children: React.ReactNode;

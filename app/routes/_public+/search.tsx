@@ -1,8 +1,11 @@
 import {json, LoaderFunctionArgs} from '@remix-run/node';
 import {Link, useLoaderData} from '@remix-run/react';
-import {Frame} from '~/components/frame';
-import {prisma} from '~/db.server';
+
 import {Button} from '~/components/ui/button';
+
+import {Frame} from '~/components/frame';
+
+import {prisma} from '~/db.server';
 import {JoinName} from '~/utils/wiki';
 
 export async function loader({request}: LoaderFunctionArgs) {

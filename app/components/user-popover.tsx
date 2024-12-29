@@ -1,7 +1,5 @@
-import {Form, Link, useFetcher, useRouteLoaderData} from '@remix-run/react';
-import type {loader as RootLoader} from '../root';
-import {Button} from '~/components/ui/button';
-import {urlEncoding} from '~/utils/url-encoding';
+import {Link, useFetcher, useRouteLoaderData} from '@remix-run/react';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -13,13 +11,16 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '~/components/ui/alert-dialog';
-import {Popover, PopoverContent, PopoverTrigger} from '~/components/ui/popover';
+import {Button} from '~/components/ui/button';
 import {Input} from '~/components/ui/input';
-import {useState} from 'react';
+import {Popover, PopoverContent, PopoverTrigger} from '~/components/ui/popover';
+
+import type {loader as RootLoader} from '../root';
+
+import {urlEncoding} from '~/utils/url-encoding';
 
 export function UserPopover({className = '', username, ip}: {className?: string; username?: string; ip: string}) {
     const root = useRouteLoaderData<typeof RootLoader>('root');
-    const [isOpen, setIsOpen] = useState(false);
     const fetcher = useFetcher();
 
     return (

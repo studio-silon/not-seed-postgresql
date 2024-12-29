@@ -1,11 +1,9 @@
 import React from 'react';
-import {json, LoaderFunctionArgs, ActionFunctionArgs} from '@remix-run/node';
-import {useLoaderData, Form, Link, useSearchParams} from '@remix-run/react';
-import {Button} from '~/components/ui/button';
-import {Input} from '~/components/ui/input';
-import {Frame} from '~/components/frame';
-import {getUser, getUserData} from '~/utils/sessions.server';
-import {ArrowLeft, Plus, Trash2, UserPlus, UserMinus, Users} from 'lucide-react';
+import {ActionFunctionArgs, json, LoaderFunctionArgs} from '@remix-run/node';
+import {Form, Link, useLoaderData} from '@remix-run/react';
+
+import {ArrowLeft, Trash2, UserMinus, UserPlus, Users} from 'lucide-react';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -16,11 +14,18 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '~/components/ui/alert-dialog';
-import metaTitle from '~/utils/meta';
+import {Button} from '~/components/ui/button';
+import {Input} from '~/components/ui/input';
+
 import {Combobox} from '~/components/combobox';
-import {useUserSearch} from '~/utils/useUserSearch';
+import {Frame} from '~/components/frame';
+
+import {User} from '@/system/user';
+
 import {prisma} from '~/db.server';
-import {User} from '~/system/.server/user';
+import metaTitle from '~/utils/meta';
+import {getUser} from '~/utils/sessions.server';
+import {useUserSearch} from '~/utils/useUserSearch';
 
 const ITEMS_PER_PAGE = 10;
 

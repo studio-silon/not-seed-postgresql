@@ -1,5 +1,6 @@
-import {prisma} from '~/db.server';
 import {User} from '@/system/user';
+
+import {prisma} from '~/db.server';
 
 async function main() {
     const user = await User.signup('admin', 'admin');

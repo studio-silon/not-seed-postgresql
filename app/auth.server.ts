@@ -1,12 +1,14 @@
+import bcrypt from 'bcryptjs';
 import {Authenticator} from 'remix-auth';
+import {DiscordStrategy} from 'remix-auth-discord';
 import {FormStrategy} from 'remix-auth-form';
 import {GitHubStrategy} from 'remix-auth-github';
 import {GoogleStrategy} from 'remix-auth-google';
-import {DiscordStrategy} from 'remix-auth-discord';
+
+import {User} from '@/system/user';
+
 import {sessionStorage} from './utils/sessions.server';
-import {User} from '~/system/.server/user';
 import {prisma} from './db.server';
-import bcrypt from 'bcryptjs';
 
 // 나중에 할거
 

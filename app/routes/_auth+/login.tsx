@@ -1,9 +1,13 @@
-import {commitSession, getSession, getUser} from '../../utils/sessions.server';
 import {LoaderFunctionArgs, redirect} from '@remix-run/node';
-import {getCookie, setCookie} from '~/utils/cookies.server';
-import {User} from '~/system/.server/user';
-import metaTitle from '~/utils/meta';
+
 import {LoginForm} from '~/components/login-form';
+
+import {User} from '@/system/user';
+
+import {commitSession, getSession, getUser} from '../../utils/sessions.server';
+
+import {getCookie, setCookie} from '~/utils/cookies.server';
+import metaTitle from '~/utils/meta';
 
 export const meta = metaTitle(() => '로그인');
 
@@ -23,7 +27,7 @@ export async function loader({request}: LoaderFunctionArgs) {
     return null;
 }
 
-export async function action({request, params}: {request: Request; params: {'*': string}}) {
+export async function action({request}: {request: Request}) {
     const formData = await request.formData();
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;

@@ -1,12 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {LoaderFunction, LoaderFunctionArgs, json} from '@remix-run/node';
+import React, {useState} from 'react';
+import {json,LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData} from '@remix-run/react';
-import {Frame} from '~/components/frame';
+
 import {Button} from '~/components/ui/button';
-import {getUser, getUserData} from '~/utils/sessions.server';
+
+import {Frame} from '~/components/frame';
+
 import {prisma} from '~/db.server';
 import {JoinName} from '~/utils/wiki';
-import {User} from '~/system/.server/user';
 
 async function getContributions(type: string, skip: number, pageSize: number, userId: number | undefined, identifier: string) {
     if (type === 'user') {

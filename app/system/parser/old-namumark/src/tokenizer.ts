@@ -140,7 +140,6 @@ export class Tokenizer {
             }
 
             let heading: Heading | null;
-            let headingEnd: Heading | null;
             let horizontalLine: number | null;
             let str: string;
             const line = input.slice(this.cursor).split('\n')[0];
@@ -199,7 +198,7 @@ export class Tokenizer {
             }
 
             if (line.startsWith('{{{#!class="')) {
-                let style = line.slice(12).split('"')[0];
+                const style = line.slice(12).split('"')[0];
                 str = line.slice(0, 13 + style.length);
                 this.cursor += 12 + style.length;
 

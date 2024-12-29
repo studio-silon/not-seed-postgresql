@@ -1,5 +1,5 @@
+import {lists,textRules, videos} from './rules';
 import {Token} from './tokenizer';
-import {textRules, videos, lists} from './rules';
 
 export class Node {
     public items: Node[] = [];
@@ -676,7 +676,10 @@ export class Parser {
                     if (this.tokens[this.cursor].type === 'rule' && this.tokens[this.cursor].value === '>') {
                         this.cursor++;
                         let depth = 1;
-                        while (this.tokens[this.cursor]?.type === 'rule' && this.tokens[this.cursor]?.value === '>') depth++, this.cursor++;
+                        while (this.tokens[this.cursor]?.type === 'rule' && this.tokens[this.cursor]?.value === '>') {
+                            depth++;
+                            this.cursor++;
+                        }
 
                         if (currentDepth < depth) {
                             if (inList) inList = false;
@@ -698,7 +701,10 @@ export class Parser {
                             if (inList) inList = false;
 
                             const findNode = quotes.filter((item) => item.depth === depth - 1).pop();
-                            if (findNode) (currentNode = findNode.node), (currentDepth = depth);
+                            if (findNode) {
+                                currentNode = findNode.node;
+                                currentDepth = depth;
+                            }
                         }
 
                         if (this.tokens[this.cursor].value === '\n') {
@@ -722,7 +728,10 @@ export class Parser {
 
                                 this.cursor++;
                                 let depth = 1;
-                                while (this.tokens[this.cursor]?.value === ' ') depth++, this.cursor++;
+                                while (this.tokens[this.cursor]?.value === ' ') {
+                                    depth++;
+                                    this.cursor++;
+                                }
 
                                 const identifier = this.tokens[this.cursor]?.value;
 
@@ -756,7 +765,10 @@ export class Parser {
                                     }
                                 } else if (currentListDepth > depth) {
                                     const findNode = list.filter((item) => item.depth === depth - 1).pop();
-                                    if (findNode) (currentListNode = findNode.node), (currentListDepth = depth);
+                                    if (findNode) {
+                                        currentListNode = findNode.node;
+                                        currentListDepth = depth;
+                                    }
                                 }
 
                                 if (this.tokens[this.cursor].type === 'rule' && this.tokens[this.cursor].value === '#') {
@@ -808,7 +820,10 @@ export class Parser {
                     if (this.tokens[this.cursor].value === ' ') {
                         this.cursor++;
                         let depth = 1;
-                        while (this.tokens[this.cursor]?.value === ' ') depth++, this.cursor++;
+                        while (this.tokens[this.cursor]?.value === ' ') {
+                            depth++;
+                            this.cursor++;
+                        }
 
                         const identifier = this.tokens[this.cursor]?.value;
 
@@ -842,7 +857,10 @@ export class Parser {
                             }
                         } else if (currentDepth > depth) {
                             const findNode = list.filter((item) => item.depth === depth - 1).pop();
-                            if (findNode) (currentNode = findNode.node), (currentDepth = depth);
+                            if (findNode) {
+                                currentNode = findNode.node;
+                                currentDepth = depth;
+                            }
                         }
 
                         if (this.tokens[this.cursor].type === 'rule' && this.tokens[this.cursor].value === '#') {
@@ -889,7 +907,10 @@ export class Parser {
                     if (this.tokens[this.cursor].type === 'rule' && this.tokens[this.cursor].value === ' ') {
                         this.cursor++;
                         let depth = 1;
-                        while (this.tokens[this.cursor]?.type === 'rule' && this.tokens[this.cursor]?.value === ' ') depth++, this.cursor++;
+                        while (this.tokens[this.cursor]?.type === 'rule' && this.tokens[this.cursor]?.value === ' ') {
+                            depth++;
+                            this.cursor++;
+                        }
                         if (currentDepth < depth) {
                             for (let i = 0; i < depth - currentDepth; i++) {
                                 const indent = new Node('Indent', {items: [], depth: currentDepth + i});
@@ -905,7 +926,10 @@ export class Parser {
                             }
                         } else if (currentDepth > depth) {
                             const findNode = indents.filter((item) => item.depth === depth - 1).pop();
-                            if (findNode) (currentNode = findNode.node), (currentDepth = depth);
+                            if (findNode) {
+                                currentNode = findNode.node;
+                                currentDepth = depth;
+                            }
                         }
                         if (this.tokens[this.cursor].value === '\n') {
                             currentNode.items.push(new Node('Literal', {value: '\n'}));

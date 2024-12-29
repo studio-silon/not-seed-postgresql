@@ -1,15 +1,17 @@
 import React from 'react';
 import {json, LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, Link, useNavigate} from '@remix-run/react';
-import {Button} from '~/components/ui/button';
-import {Frame} from '~/components/frame';
-import {getUser} from '~/utils/sessions.server';
+import {Link, useLoaderData, useNavigate} from '@remix-run/react';
+
 import {ArrowLeft} from 'lucide-react';
+
+import {Button} from '~/components/ui/button';
+
+import {Frame} from '~/components/frame';
+import {UserPopover} from '~/components/user-popover';
+
 import {prisma} from '~/db.server';
-import {User} from '~/system/.server/user';
 import metaTitle from '~/utils/meta';
 import {JoinName} from '~/utils/wiki';
-import {UserPopover} from '~/components/user-popover';
 
 export const meta = metaTitle<typeof loader>(() => `Permission History`);
 
@@ -123,8 +125,6 @@ function formatHistoryEntry(entry: PermissionHistoryEntry): React.ReactNode {
 }
 
 export async function loader({request}: LoaderFunctionArgs) {
-    const user = await getUser(request);
-
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('page')) || 1;
     const perPage = 20;

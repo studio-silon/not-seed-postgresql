@@ -1,9 +1,8 @@
-import {prisma} from '~/db.server';
-
-import {JoinName, SplitName} from '~/utils/wiki';
-
 import {v1 as uuidv1} from 'uuid';
+
+import {prisma} from '~/db.server';
 import {calculateDifferences} from '~/utils/diff';
+import {JoinName, SplitName} from '~/utils/wiki';
 
 export interface UserData {
     userId?: number;
@@ -799,7 +798,7 @@ export class Wiki {
         });
     }
 
-    public static async getAcls(namespace: string | null, title: string | null) {
+    public static async getAcls(namespace: string | null) {
         const namespaceAcls = namespace
             ? await prisma.acl.findMany({
                   where: {

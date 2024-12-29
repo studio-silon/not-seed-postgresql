@@ -1,14 +1,16 @@
-import {json, LoaderFunction, LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, Link, useRevalidator} from '@remix-run/react';
-import {prisma} from '~/db.server';
+import {json, LoaderFunctionArgs} from '@remix-run/node';
+import {Link,useLoaderData} from '@remix-run/react';
+
+import {Button} from '~/components/ui/button';
+
 import {Frame} from '~/components/frame';
+import {ReverMiniDiff} from '~/components/rever-mini-diff';
+import {UserPopover} from '~/components/user-popover';
+
+import {prisma} from '~/db.server';
+import {urlEncoding} from '~/utils/url-encoding';
 import {JoinName} from '~/utils/wiki';
 import {ReverTypeToMessage} from '~/utils/wiki';
-import {Button} from '~/components/ui/button';
-import {useEffect} from 'react';
-import {UserPopover} from '~/components/user-popover';
-import {ReverMiniDiff} from '~/components/rever-mini-diff';
-import {urlEncoding} from '~/utils/url-encoding';
 
 export async function loader({request}: LoaderFunctionArgs) {
     const url = new URL(request.url);

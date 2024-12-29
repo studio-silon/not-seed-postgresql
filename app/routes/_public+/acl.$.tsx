@@ -1,22 +1,27 @@
 import React, {useState} from 'react';
-import {json, LoaderFunctionArgs, ActionFunctionArgs} from '@remix-run/node';
-import {useLoaderData, useParams, Form, Link} from '@remix-run/react';
-import {Wiki} from '@/system/wiki';
-import {Acl} from '@/system/acl';
-import {Button} from '~/components/ui/button';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '~/components/ui/select';
-import {Input} from '~/components/ui/input';
-import {Frame} from '~/components/frame';
-import {getUser, getUserData} from '~/utils/sessions.server';
+import {ActionFunctionArgs,json, LoaderFunctionArgs} from '@remix-run/node';
+import {Form, Link,useLoaderData, useParams} from '@remix-run/react';
+
 import {ArrowLeft, Plus, Trash2} from 'lucide-react';
-import metaTitle from '~/utils/meta';
-import {acls} from '~/system/acl';
-import {MiniTab} from '~/stories/MiniTab';
-import {permissions} from '~/system/user';
+
+import {Button} from '~/components/ui/button';
+import {Input} from '~/components/ui/input';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '~/components/ui/select';
+
 import {Combobox} from '~/components/combobox';
-import {useUserSearch} from '~/utils/useUserSearch';
+import {Frame} from '~/components/frame';
+
+import {Acl} from '@/system/acl';
+import {Wiki} from '@/system/wiki';
+
 import {prisma} from '~/db.server';
+import {MiniTab} from '~/stories/MiniTab';
+import {acls} from '~/system/acl';
+import {permissions} from '~/system/user';
+import metaTitle from '~/utils/meta';
+import {getUser, getUserData} from '~/utils/sessions.server';
 import {useGroupSearch} from '~/utils/useGroupSearch';
+import {useUserSearch} from '~/utils/useUserSearch';
 
 export const meta = metaTitle<typeof loader>((data) => `ACL - ${data.wiki?.title || ''}`);
 
@@ -70,7 +75,7 @@ export async function loader({request, params}: LoaderFunctionArgs & {params: {'
         throw new Response('Not Found', {status: 404});
     }
 
-    const acls = await Wiki.getAcls(namespace, title);
+    const acls = await Wiki.getAcls(namespace);
 
     const canManageAcl = await Acl.isAllowed(wiki, user, userData, 'acl');
 

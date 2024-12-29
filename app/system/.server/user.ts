@@ -1,6 +1,7 @@
-import {prisma} from '~/db.server';
-import bcrypt from 'bcryptjs';
 import {Prisma} from '@prisma/client';
+import bcrypt from 'bcryptjs';
+
+import {prisma} from '~/db.server';
 import {getUser} from '~/utils/sessions.server';
 
 export type PermissionsType =

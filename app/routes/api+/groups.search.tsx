@@ -1,4 +1,5 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
+
 import {prisma} from '~/db.server';
 
 export async function loader({request}: LoaderFunctionArgs) {

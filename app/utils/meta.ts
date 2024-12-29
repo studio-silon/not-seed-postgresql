@@ -1,4 +1,5 @@
-import type {MetaFunction, LoaderFunction, SerializeFrom, LoaderFunctionArgs} from '@remix-run/node';
+import type {LoaderFunction, LoaderFunctionArgs,MetaFunction, SerializeFrom} from '@remix-run/node';
+
 import type {loader as rootLoader} from '~/root';
 
 type LoaderFunction1 =

@@ -1,6 +1,6 @@
-import {prisma} from './db.server';
 import {Site} from './system/.server/site';
 import {Wiki} from './system/.server/wiki';
+import {prisma} from './db.server';
 
 interface OrphanedPage {
     title: string;

@@ -1,18 +1,23 @@
 import React from 'react';
-import {json, LoaderFunctionArgs, ActionFunctionArgs} from '@remix-run/node';
-import {useLoaderData, Form, Link} from '@remix-run/react';
-import {Button} from '~/components/ui/button';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '~/components/ui/select';
-import {Frame} from '~/components/frame';
-import {getUser, getUserData} from '~/utils/sessions.server';
+import {ActionFunctionArgs, json, LoaderFunctionArgs} from '@remix-run/node';
+import {Form, Link, useLoaderData} from '@remix-run/react';
+
 import {ArrowLeft, Plus, Trash2} from 'lucide-react';
-import metaTitle from '~/utils/meta';
-import {permissions} from '~/system/user';
-import {Combobox} from '~/components/combobox';
-import {useUserSearch} from '~/utils/useUserSearch';
-import {prisma} from '~/db.server';
-import {User} from '~/system/.server/user';
+
+import {Button} from '~/components/ui/button';
 import {Input} from '~/components/ui/input';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '~/components/ui/select';
+
+import {Combobox} from '~/components/combobox';
+import {Frame} from '~/components/frame';
+
+import {User} from '@/system/user';
+
+import {prisma} from '~/db.server';
+import {permissions} from '~/system/user';
+import metaTitle from '~/utils/meta';
+import {getUser} from '~/utils/sessions.server';
+import {useUserSearch} from '~/utils/useUserSearch';
 
 export const meta = metaTitle<typeof loader>(() => `Permission Management`);
 
@@ -55,7 +60,6 @@ export async function action({request}: ActionFunctionArgs) {
     const formData = await request.formData();
     const action = formData.get('_action') as string;
     const user = await getUser(request);
-    const userData = await getUserData(request);
 
     const canAdmin = !!user?.siteInfo || (await User.checkPermission('admin', user));
 

@@ -1,9 +1,8 @@
-import {Node} from './parser';
+import hljs from 'highlight.js';
+import DOMPurify from 'isomorphic-dompurify';
 
 import parse from './index';
-
-import DOMPurify from 'isomorphic-dompurify';
-import hljs from 'highlight.js';
+import {Node} from './parser';
 
 export function UrlEncoding(url: string) {
     return encodeURI(url).replace(/\?/gm, '%3F').replace(/&/gm, '%25').replace(/#/gm, '%23');
@@ -158,6 +157,8 @@ export class Renderer {
                     try {
                         hignlightd = hljs.highlight(node.value, {language: node.name.trim()}).value;
                     } catch (err) {
+                        console.error(err);
+
                         hignlightd = hljs.highlightAuto(node.value).value;
                     }
                 else hignlightd = this.disableTag(node.value);
@@ -474,7 +475,7 @@ export class Renderer {
                     (
                         await Promise.all(
                             node.items.map(
-                                async (row, rowIndex) =>
+                                async (row) =>
                                     `<tr style="${this.disableQuot(
                                         (row.param['bgcolor'] ? 'background-color: ' + this.getColor(row.param['bgcolor'], false) + ';' : '') +
                                             (row.param['color'] ? 'color: ' + this.getColor(row.param['color'], false) + ';' : ''),

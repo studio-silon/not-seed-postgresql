@@ -1,6 +1,8 @@
-import {Session, createCookie, createCookieSessionStorage, createFileSessionStorage, redirect} from '@remix-run/node';
+import {createCookie, createFileSessionStorage, redirect, Session} from '@remix-run/node';
+
+import {UserData} from '@/system/wiki';
+
 import {prisma} from '~/db.server';
-import {UserData} from '~/system/.server/wiki';
 
 export type SessionData = {
     userId: number;

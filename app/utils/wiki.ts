@@ -18,19 +18,23 @@ export function ReverTypeToMessage(rever: {type: number; data: string}) {
             case 0:
                 return '';
 
-            case 1:
+            case 1: {
                 const name = JSON.parse(rever.data) as [string, string];
                 return `'${name[0]}'에서 '${name[1]}'로 이동`;
+            }
 
             case 2:
                 return '삭제';
 
-            case 3:
+            case 3: {
                 const ver = JSON.parse(rever.data)[0] as number;
 
                 return `r${ver}로 되돌림`;
+            }
         }
     } catch (error) {
+        console.error(error);
+
         return '';
     }
 }

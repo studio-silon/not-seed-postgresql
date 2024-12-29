@@ -8,6 +8,7 @@ function MakePrismaClient() {
 let prisma: ReturnType<typeof MakePrismaClient>;
 
 declare global {
+    // eslint-disable-next-line no-var
     var __db__: ReturnType<typeof MakePrismaClient>;
 }
 

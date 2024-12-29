@@ -1,19 +1,24 @@
+import {useEffect, useRef, useState} from 'react';
 import {json, LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, useNavigate, Form, Link} from '@remix-run/react';
-import {Wiki} from '@/system/wiki';
-import {Button} from '~/components/ui/button';
-import {ArrowLeft, Lock, MessageSquare, PlusIcon, Unlock} from 'lucide-react';
-import {useState, useEffect, useRef} from 'react';
-import {getUser, getUserData} from '~/utils/sessions.server';
-import {Input} from '~/components/ui/input';
-import {Frame} from '~/components/frame';
-import metaTitle from '~/utils/meta';
-import {JoinName} from '~/utils/wiki';
-import {Prisma} from '@prisma/client';
+import {Form, Link, useLoaderData, useNavigate} from '@remix-run/react';
 import {Jsonify} from '@remix-run/server-runtime/dist/jsonify';
+
+import {Prisma} from '@prisma/client';
+import {ArrowLeft, Lock, PlusIcon, Unlock} from 'lucide-react';
+
+import {Button} from '~/components/ui/button';
+import {Input} from '~/components/ui/input';
 import {Toggle} from '~/components/ui/toggle';
-import {Acl} from '~/system/.server/acl';
-import {User} from '~/system/.server/user';
+
+import {Frame} from '~/components/frame';
+
+import {Acl} from '@/system/acl';
+import {User} from '@/system/user';
+import {Wiki} from '@/system/wiki';
+
+import metaTitle from '~/utils/meta';
+import {getUser, getUserData} from '~/utils/sessions.server';
+import {JoinName} from '~/utils/wiki';
 
 type Discussion = Jsonify<Prisma.PromiseReturnType<typeof Wiki.getDiscussion>>;
 

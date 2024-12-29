@@ -1,12 +1,16 @@
-import {Form, Link} from '@remix-run/react';
-import {UserIcon, NotebookPen, Clock8, MessageSquare, Wrench, Search, LucideProps, Shuffle, Users2Icon, Frown, FilterX, ArrowDown01, ArrowUp10, ArrowRight} from 'lucide-react';
 import {ForwardRefExoticComponent, RefAttributes, useState} from 'react';
+import {Form, Link} from '@remix-run/react';
 import {useRouteLoaderData} from '@remix-run/react';
+
+import {ArrowDown01, ArrowRight,ArrowUp10, Clock8, FilterX, Frown, LucideProps, MessageSquare, NotebookPen, Search, Shuffle, UserIcon, Users2Icon, Wrench} from 'lucide-react';
+
 import type {loader as RootLoader} from '../root';
-import {useIsMobile} from '~/hooks/use-mobile';
+
 import {Button} from './ui/button';
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from './ui/dropdown-menu';
 import {Input} from './ui/input';
+
+import {useIsMobile} from '~/hooks/use-mobile';
 import {switchTheme} from '~/utils/switch-theme';
 
 interface NavItemProps {

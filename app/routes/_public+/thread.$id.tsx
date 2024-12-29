@@ -1,18 +1,9 @@
+import {useEffect, useRef, useState} from 'react';
 import {json, LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, useNavigate, Form, useSubmit, useNavigation, useRevalidator} from '@remix-run/react';
-import {Wiki} from '@/system/wiki';
-import {Button} from '~/components/ui/button';
-import {ArrowLeft, Edit2, Lock, EyeOff, Eye, Send, Unlock, X, MoveRight, ArrowRight} from 'lucide-react';
-import {useState, useEffect, useRef} from 'react';
-import {getUserData, getUser} from '~/utils/sessions.server';
-import {Frame} from '~/components/frame';
-import metaTitle from '~/utils/meta';
-import {Textarea} from '~/components/ui/textarea';
-import {User} from '~/system/.server/user';
-import {Acl} from '~/system/.server/acl';
-import {prisma} from '~/db.server';
-import {Input} from '~/components/ui/input';
-import {Toggle} from '~/components/ui/toggle';
+import {Form, useLoaderData, useNavigate, useNavigation, useRevalidator, useSubmit} from '@remix-run/react';
+
+import {ArrowLeft, ArrowRight, Edit2, Eye, EyeOff, Lock, Send, Unlock} from 'lucide-react';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -23,7 +14,21 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '~/components/ui/alert-dialog';
+import {Button} from '~/components/ui/button';
+import {Input} from '~/components/ui/input';
+import {Textarea} from '~/components/ui/textarea';
+import {Toggle} from '~/components/ui/toggle';
+
+import {Frame} from '~/components/frame';
 import {UserPopover} from '~/components/user-popover';
+
+import {Acl} from '@/system/acl';
+import {User} from '@/system/user';
+import {Wiki} from '@/system/wiki';
+
+import {prisma} from '~/db.server';
+import metaTitle from '~/utils/meta';
+import {getUser, getUserData} from '~/utils/sessions.server';
 
 export const meta = metaTitle<typeof loader>((data) => (data.thread ? data.thread.title : ''));
 

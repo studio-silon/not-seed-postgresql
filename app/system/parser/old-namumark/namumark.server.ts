@@ -1,6 +1,8 @@
+import {Wiki} from '@/system/wiki';
+
 import {Renderer} from './src';
+
 import {SplitName} from '~/utils/wiki';
-import {Wiki} from '~/system/.server/wiki';
 
 export default new Renderer(
     async (name) => {
@@ -10,7 +12,7 @@ export default new Renderer(
 
         return page ? {content: page.content} : null;
     },
-    async (name, rever) => {
+    async (name) => {
         const page = await Wiki.getPage('파일', name);
 
         if (!page) return null;

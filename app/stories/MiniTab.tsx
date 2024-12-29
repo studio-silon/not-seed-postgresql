@@ -1,6 +1,8 @@
 import React, {forwardRef} from 'react';
-import {Button} from './Button';
+
 import {cn} from '../utils/classMerge';
+
+import {Button} from './Button';
 
 interface MiniTabProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     className?: string;

@@ -1,7 +1,8 @@
-import {json, LoaderFunctionArgs} from '@remix-run/node';
+import {json} from '@remix-run/node';
+
 import {prisma} from '~/db.server';
 
-export async function loader({request}: LoaderFunctionArgs) {
+export async function loader() {
     const changes = await prisma.wiki.findMany({
         take: 10,
         orderBy: {

@@ -1,7 +1,9 @@
 import {ActionFunctionArgs, LoaderFunctionArgs} from '@remix-run/node';
-import {meta, loader as wikiLoader, action as wikiAction} from './wiki.$';
+
+import {Site} from '@/system/site';
+
+import {action as wikiAction, loader as wikiLoader, meta} from './wiki.$';
 import Index from './wiki.$';
-import {Site} from '~/system/.server/site';
 
 export {meta};
 

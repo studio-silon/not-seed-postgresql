@@ -1,6 +1,8 @@
-import parse from './src';
+import {Wiki} from '@/system/wiki';
+
 import renderer from './namumark.server';
-import {Wiki} from '~/system/.server/wiki';
+import parse from './src';
+
 import {prisma} from '~/db.server';
 
 export default async function backLinkInit(page: {id: number; namespace: string; title: string; content: string}) {

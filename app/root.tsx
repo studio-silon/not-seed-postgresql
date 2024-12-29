@@ -1,16 +1,19 @@
-import {Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData} from '@remix-run/react';
+import {useEffect} from 'react';
 import type {LinksFunction, LoaderFunctionArgs} from '@remix-run/node';
-import {defer, json} from '@remix-run/node';
-import {getSession, commitSession} from '~/utils/sessions.server';
-import {getCookie, setCookie} from '~/utils/cookies.server';
-import {prisma} from './db.server';
+import {defer} from '@remix-run/node';
+import {Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData} from '@remix-run/react';
+
+import {toast} from 'sonner';
+
 import {Toaster} from '~/components/ui/sonner';
 
-import './tailwind.css';
-import {useEffect} from 'react';
 import {Site} from './system/.server/site';
-import {useAtom} from 'jotai';
-import {toast} from 'sonner';
+import {prisma} from './db.server';
+
+import './tailwind.css';
+
+import {getCookie, setCookie} from '~/utils/cookies.server';
+import {commitSession,getSession} from '~/utils/sessions.server';
 
 export const links: LinksFunction = () => [
     {rel: 'preconnect', href: 'https://fonts.googleapis.com'},

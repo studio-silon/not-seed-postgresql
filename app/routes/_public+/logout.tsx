@@ -1,5 +1,7 @@
-import {commitSession, getSession, getUser} from '../../utils/sessions.server';
 import {LoaderFunctionArgs, redirect} from '@remix-run/node';
+
+import {commitSession, getSession, getUser} from '../../utils/sessions.server';
+
 import {getCookie, setCookie} from '~/utils/cookies.server';
 import metaTitle from '~/utils/meta';
 
