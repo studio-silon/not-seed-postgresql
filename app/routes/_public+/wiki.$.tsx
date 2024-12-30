@@ -29,6 +29,7 @@ import {
 import {Badge} from '~/components/ui/badge';
 import {Button} from '~/components/ui/button';
 import {Input} from '~/components/ui/input';
+import {Popover, PopoverContent, PopoverTrigger} from '~/components/ui/popover';
 import {Textarea} from '~/components/ui/textarea';
 import {Toggle} from '~/components/ui/toggle';
 
@@ -42,7 +43,6 @@ import {Wiki} from '@/system/wiki';
 
 import {prisma} from '~/db.server';
 import FileInput from '~/stories/FileInput';
-import Popover from '~/stories/Popover';
 import {Acl} from '~/system/.server/acl';
 import {cn} from '~/utils/classMerge';
 import metaTitle from '~/utils/meta';
@@ -371,12 +371,12 @@ export default function WikiRoute() {
                             )
                         ) : (
                             <Popover>
-                                <Popover.Trigger asChild>
+                                <PopoverTrigger asChild>
                                     <Button variant="ghost" size="sm" className="size-8 p-0">
                                         <Wrench className="h-4 w-4 m-auto" />
                                     </Button>
-                                </Popover.Trigger>
-                                <Popover.Content align="center" className="p-1 rounded-lg flex gap-2 w-auto min-w-min">
+                                </PopoverTrigger>
+                                <PopoverContent align="center" className="p-1 rounded-lg flex gap-2 w-auto min-w-min">
                                     <Toggle onClick={() => setIsRAW(!isRAW)} size="sm" isActive={+isRAW as 0 | 1}>
                                         RAW
                                     </Toggle>
@@ -390,7 +390,7 @@ export default function WikiRoute() {
                                             <Anchor className="h-4 w-4 m-auto" />
                                         </Button>
                                     </Link>
-                                </Popover.Content>
+                                </PopoverContent>
                             </Popover>
                         )}
                     </div>

@@ -22,7 +22,7 @@ export async function loader({request}: LoaderFunctionArgs) {
     return {title: siteInfo.title, needToken: siteInfo.token !== '', termsAndConditions: siteInfo.termsAndConditions};
 }
 
-export async function action({request, params}: {request: Request; params: {'*': string}}) {
+export async function action({request}: {request: Request; params: {'*': string}}) {
     const session = await getSession(request.headers.get('Cookie'));
     const cookie = await getCookie(request);
     const formData = await request.formData();

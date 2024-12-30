@@ -11,6 +11,8 @@ export default async function markup(title: string, namespace: string, content: 
 
         return data.value;
     } catch (err) {
+        console.error(err);
+
         return '';
     }
 }

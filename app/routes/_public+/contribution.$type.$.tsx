@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {json,LoaderFunctionArgs} from '@remix-run/node';
+import {json, LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData} from '@remix-run/react';
 
 import {Button} from '~/components/ui/button';
@@ -108,7 +108,7 @@ export default function ContributionPage() {
                     </h1>
                 </div>
 
-                <div className="bg-background rounded-lg shadow-xs">
+                <div>
                     {contributions.map((contribution, index) => (
                         <div key={index} className="border-b border-border p-4 hover:bg-muted">
                             <div className="flex items-center gap-2">

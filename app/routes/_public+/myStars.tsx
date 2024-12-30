@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {json,LoaderFunctionArgs} from '@remix-run/node';
-import {Link,useFetcher, useLoaderData} from '@remix-run/react';
+import {json, LoaderFunctionArgs} from '@remix-run/node';
+import {Link, useFetcher, useLoaderData} from '@remix-run/react';
 
 import {Button} from '~/components/ui/button';
 
@@ -111,7 +111,7 @@ export default function MyStarsPage() {
                 </div>
 
                 {stars.length > 0 && (
-                    <div className="bg-background rounded-lg shadow-xs">
+                    <div>
                         {selectedStars.length > 0 && (
                             <div className="p-4 bg-gray-50 flex justify-between items-center">
                                 <span className="text-gray-700">{selectedStars.length}개의 문서 선택됨</span>
