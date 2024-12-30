@@ -180,7 +180,7 @@ export default function DiscussionRoute() {
                 )}
             </div>
 
-            <div className="bg-background rounded-lg shadow-xs">
+            <div>
                 {loadedDiscussions
                     .filter((d) => d?.status === 1)
                     .map((discussion) => (
@@ -188,7 +188,7 @@ export default function DiscussionRoute() {
                     ))}
             </div>
 
-            <div className="bg-background rounded-lg shadow-xs">
+            <div>
                 {loadedDiscussions
                     .filter((d) => d?.status === 0)
                     .map((discussion) => (

@@ -25,7 +25,7 @@ interface ComboboxProps<T> {
     rightIcon?: React.ReactNode;
 }
 
-export function Combobox<T extends unknown>({
+export function Combobox<T>({
     value,
     onChange,
     options,

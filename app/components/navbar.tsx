@@ -1,17 +1,17 @@
-import {ForwardRefExoticComponent, RefAttributes, useState} from 'react';
+import {ForwardRefExoticComponent, RefAttributes} from 'react';
 import {Form, Link} from '@remix-run/react';
 import {useRouteLoaderData} from '@remix-run/react';
 
-import {ArrowDown01, ArrowRight,ArrowUp10, Clock8, FilterX, Frown, LucideProps, MessageSquare, NotebookPen, Search, Shuffle, UserIcon, Users2Icon, Wrench} from 'lucide-react';
+import {ArrowDown01, ArrowRight, ArrowUp10, Clock8, FilterX, Frown, LucideProps, MessageSquare, NotebookPen, Search, Shuffle, UserIcon, Users2Icon, Wrench} from 'lucide-react';
+
+import {useIsMobile} from '~/hooks/use-mobile';
+import {useTheme} from '~/hooks/use-theme';
 
 import type {loader as RootLoader} from '../root';
 
 import {Button} from './ui/button';
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from './ui/dropdown-menu';
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from './ui/dropdown-menu';
 import {Input} from './ui/input';
-
-import {useIsMobile} from '~/hooks/use-mobile';
-import {switchTheme} from '~/utils/switch-theme';
 
 interface NavItemProps {
     name: string;
@@ -86,6 +86,7 @@ const items: NavItemProps[] = [
 export function Navbar() {
     const root = useRouteLoaderData<typeof RootLoader>('root');
     const isMobile = useIsMobile();
+    const {theme, toggleTheme} = useTheme();
 
     return (
         <nav className="flex w-full bg-primary items-center px-4 py-2 gap-2 flex-col md:flex-row">
@@ -132,13 +133,17 @@ export function Navbar() {
             </div>
 
             <Form className="flex items-center gap-2 ms-auto w-full md:w-auto">
-                <Button variant="secondary" size="icon">
-                    <Shuffle />
-                </Button>
+                <Link to="/random">
+                    <Button variant="secondary" size="icon">
+                        <Shuffle />
+                    </Button>
+                </Link>
                 <Form method="GET" action="/search" className="relative flex-1">
                     <Input name="keyword" className="w-full md:w-48 bg-secondary" placeholder="여기에서 검색" />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-foreground gap-2 flex">
-                        <Search size={16} className="cursor-pointer" />
+                        <button type="submit">
+                            <Search size={16} className="cursor-pointer" />
+                        </button>
                         <ArrowRight size={16} className="cursor-pointer" />
                     </div>
                 </Form>
@@ -179,7 +184,7 @@ export function Navbar() {
                                 </Link>
                             </>
                         )}
-                        <DropdownMenuItem onClick={() => switchTheme()}>테마 바꾸기</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toggleTheme()}>{theme === 'dark' ? '라이트' : '다크'} 테마로</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

@@ -58,7 +58,7 @@ export function RecentCard() {
                     fetcher.data
                         .filter((change) => change.versions[0])
                         .map((change) => (
-                            <div key={change.id} className="p-1 hover:bg-muted/50 flex justify-between align-center gap-4">
+                            <div key={change.id} className="p-1.5 hover:bg-muted/50 flex justify-between align-center gap-4 rounded-md">
                                 <Link to={`/wiki/${urlEncoding(JoinName(change.namespace, change.title))}`} className="text-sm text-blue-600 hover:underline">
                                     {JoinName(change.namespace, change.title)}
                                 </Link>

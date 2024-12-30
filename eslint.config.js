@@ -9,7 +9,7 @@ export default [
     {files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}']},
     {languageOptions: {globals: {...globals.browser, ...globals.node}}},
     {
-        ignores: ['build/**/*', 'public/**/*', '/.cache/**/*', '/app/components/ui'],
+        ignores: ['build/**/*', 'public/**/*', '/.cache/**/*', 'app/components/ui/**/*'],
     },
     {
         plugins: {
@@ -30,6 +30,7 @@ export default [
                         ['^@?\\w'],
                         ['~/components/ui/.*'],
                         ['~/components/.*'],
+                        ['~/hooks/.*'],
                         ['^(@|components)(/.*|$)'],
                         ['^\\u0000'],
                         ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
