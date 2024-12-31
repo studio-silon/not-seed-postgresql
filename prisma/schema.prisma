@@ -122,6 +122,16 @@ model WikiVersion {
   userId    Int?
   user      User?    @relation(fields: [userId], references: [id])
   ipAddress String? 
+
+  blame Blame? @relation(name: "BlameToWikiVersion")
+}
+
+model Blame {
+  id          Int      @id @default(autoincrement())
+  rever       WikiVersion @relation(name: "BlameToWikiVersion", fields: [reverId], references: [id])
+  reverId     Int  @unique 
+  diff        String  
+  lineOwners  String 
 }
 
 model WikiFile {

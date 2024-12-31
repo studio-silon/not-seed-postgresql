@@ -22,7 +22,7 @@ export class Acl {
 
         if (user && (await User.checkPermission('admin', user))) return true;
 
-        const {namespaceAcls, globalAcls} = await Wiki.getAcls(page.namespace, page.title);
+        const {namespaceAcls, globalAcls} = await Wiki.getAcls(page.namespace);
 
         const acls = [...globalAcls, ...namespaceAcls, ...page.acls];
 

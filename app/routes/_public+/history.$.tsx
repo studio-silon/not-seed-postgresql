@@ -196,11 +196,18 @@ export default function HistoryPage() {
                                 </div>
                                 <div className="ml-auto sm:ml-0 flex items-center gap-2">
                                     {version.rever > 1 && (
-                                        <Link to={`/diff/${params['*']}?original=${version.rever - 1}&modified=${version.rever}`}>
-                                            <Button variant="ghost" size="sm">
-                                                비교
-                                            </Button>
-                                        </Link>
+                                        <>
+                                            <Link to={`/diff/${params['*']}?original=${version.rever - 1}&modified=${version.rever}`}>
+                                                <Button variant="ghost" size="sm">
+                                                    비교
+                                                </Button>
+                                            </Link>
+                                            <Link to={`/blame/${params['*']}?rev=${version.rever}`}>
+                                                <Button variant="ghost" size="sm">
+                                                    Blame
+                                                </Button>
+                                            </Link>
+                                        </>
                                     )}
                                     <Button
                                         variant="ghost"
