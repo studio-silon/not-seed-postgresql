@@ -44,6 +44,7 @@ import {Wiki} from '@/system/wiki';
 import {prisma} from '~/db.server';
 import FileInput from '~/stories/FileInput';
 import {Acl} from '~/system/.server/acl';
+import {Blame} from '~/system/.server/blame';
 import {cn} from '~/utils/classMerge';
 import metaTitle from '~/utils/meta';
 import {getUser, getUserData} from '~/utils/sessions.server';
@@ -151,6 +152,7 @@ export async function action({request, params}: {request: Request; params: {'*':
 
     const wiki = await Wiki.getPage(namespace, oldTitle);
     let wikiId = wiki?.id;
+    const rever = wiki?.rever ? wiki?.rever + 1 : 1;
 
     if (actionType === 'toggle_star') {
         const wikiId = wiki?.id;
@@ -221,21 +223,25 @@ export async function action({request, params}: {request: Request; params: {'*':
         await Wiki.movePage(namespace, oldTitle, newNamespace, newTitle, content, log || '', userData);
     } else {
         const [newNamespace, newTitle] = Wiki.splitName(newName);
-        wikiId = (await Wiki.updatePage(newNamespace, newTitle, content, log || '', userData)).id;
+        const wiki = await Wiki.updatePage(newNamespace, newTitle, content, log || '', userData);
+
+        wikiId = wiki.id;
     }
 
-    (async () => {
+    if (actionType !== 'toggle_star' && actionType !== 'create_edit_request') {
         if (wikiId) {
             const [newNamespace, newTitle] = Wiki.splitName(newName);
 
-            await backLinkInit({
+            backLinkInit({
                 id: wikiId,
                 namespace: newNamespace,
                 title: newTitle,
                 content,
             });
+
+            Blame.create(wikiId, content, rever);
         }
-    })();
+    }
 
     if (newName.startsWith('파일:')) {
         const fileData = await unstable_parseMultipartFormData(
